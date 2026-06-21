@@ -92,10 +92,15 @@ export default function ProfileSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          <div className="step-dots">
-            <span className="dot active" />
-            <span className="dot" />
-            <span className="dot" />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--accent)', opacity: 0.8, letterSpacing: '0.05em' }}>
+              step 1 of 3
+            </span>
+            <div className="step-dots">
+              <span className="dot active" />
+              <span className="dot" />
+              <span className="dot" />
+            </div>
           </div>
         </div>
 
@@ -159,16 +164,18 @@ export default function ProfileSetup() {
                   </button>
                 </div>
               ))}
-              {photos.length < 6 && (
+              {/* Always show at least 3 empty slots; once all 3 are filled show one more (up to 6 total) */}
+              {Array.from({ length: Math.min(6 - photos.length, Math.max(1, 3 - photos.length)) }).map((_, i) => (
                 <button
+                  key={`empty-${i}`}
                   type="button"
                   className="photo-slot add"
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
                 >
-                  {uploading ? '·' : '+'}
+                  {uploading && i === 0 ? '·' : '+'}
                 </button>
-              )}
+              ))}
             </div>
             <p className="hint">photos help people connect with you</p>
             <input
