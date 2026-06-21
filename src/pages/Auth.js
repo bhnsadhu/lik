@@ -12,10 +12,11 @@ export default function Auth() {
     e.preventDefault();
     setError('');
 
-    if (!email.toLowerCase().endsWith('@illinois.edu')) {
-      setError('you need a uiuc email — try your @illinois.edu address');
-      return;
-    }
+    // TODO: re-enable .edu validation before launch
+    // if (!email.toLowerCase().endsWith('@illinois.edu')) {
+    //   setError('you need a uiuc email — try your @illinois.edu address');
+    //   return;
+    // }
 
     setLoading(true);
     const { error: err } = await signIn(email.toLowerCase().trim());
