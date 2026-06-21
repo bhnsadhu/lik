@@ -20,9 +20,23 @@ export default function BudgetSetup() {
   const [budgetMin, setBudgetMin] = useState('');
   const [budgetMax, setBudgetMax] = useState('');
   const [semester, setSemester] = useState('');
-  const [area, setArea] = useState('');
+  const [areas, setAreas] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  const toggleArea = (a) => {
+    if (a === 'anywhere works') {
+      // mutually exclusive — selecting it clears specific picks, and vice versa
+      setAreas((prev) => (prev.includes('anywhere works') ? [] : ['anywhere works']));
+    } else {
+      setAreas((prev) => {
+        const withoutAnywhere = prev.filter((x) => x !== 'anywhere works');
+        return withoutAnywhere.includes(a)
+          ? withoutAnywhere.filter((x) => x !== a)
+          : [...withoutAnywhere, a];
+      });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +44,7 @@ export default function BudgetSetup() {
 
     if (!budgetMin || !budgetMax) { setError('set your budget range'); return; }
     if (!semester) { setError('pick a move-in semester'); return; }
-    if (!area) { setError('pick a preferred area'); return; }
+    if (areas.length === 0) { setError('pick at least one area'); return; }
 
     const min = parseInt(budgetMin, 10);
     const max = parseInt(budgetMax, 10);
@@ -46,7 +60,7 @@ export default function BudgetSetup() {
         budget_min: min,
         budget_max: max,
         move_in_semester: semester,
-        preferred_area: area,
+        preferred_area: areas,
         onboarding_step: 'done',
         updated_at: new Date().toISOString(),
       })
@@ -138,8 +152,8 @@ export default function BudgetSetup() {
                 <button
                   key={a}
                   type="button"
-                  className={`chip ${area === a ? 'active' : ''}`}
-                  onClick={() => setArea(a)}
+                  className={`chip ${areas.includes(a) ? 'active' : ''}`}
+                  onClick={() => toggleArea(a)}
                 >
                   {a}
                 </button>
