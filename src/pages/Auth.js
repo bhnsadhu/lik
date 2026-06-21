@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Auth() {
@@ -7,6 +7,21 @@ export default function Auth() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resentConfirm, setResentConfirm] = useState(false);
+
+  const handleResend = async () => {
+    setResending(true);
+    await signIn(email.toLowerCase().trim());
+    setResending(false);
+    setResentConfirm(true);
+  };
+
+  useEffect(() => {
+    if (!resentConfirm) return;
+    const t = setTimeout(() => setResentConfirm(false), 2500);
+    return () => clearTimeout(t);
+  }, [resentConfirm]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +84,37 @@ export default function Auth() {
             <p className="muted" style={{ marginTop: 8 }}>
               click it and you're in — no password needed
             </p>
+            <button
+              onClick={handleResend}
+              disabled={resending}
+              style={{
+                marginTop: 20,
+                background: 'none',
+                border: 'none',
+                color: resentConfirm ? 'var(--accent)' : 'var(--muted)',
+                fontSize: '0.875rem',
+                cursor: resending ? 'default' : 'pointer',
+                padding: 0,
+                transition: 'color 0.2s',
+              }}
+            >
+              {resending ? 'sending...' : resentConfirm ? 'sent again ✓' : "didn't get it? resend"}
+            </button>
+            <button
+              onClick={() => { setSent(false); setEmail(''); setResentConfirm(false); }}
+              style={{
+                marginTop: 6,
+                background: 'none',
+                border: 'none',
+                color: 'var(--muted)',
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                padding: 0,
+                opacity: 0.7,
+              }}
+            >
+              use a different email
+            </button>
           </div>
         )}
       </div>
