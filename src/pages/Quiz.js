@@ -1,0 +1,195 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+
+export const QUIZ_QUESTIONS = [
+  {
+    key: 'sleep_schedule',
+    topic: 'sleep schedule',
+    question: 'when do you come alive?',
+    a: { label: 'early bird', emoji: '🌅' },
+    b: { label: 'night owl', emoji: '🦉' },
+  },
+  {
+    key: 'temperature',
+    topic: 'temperature',
+    question: "what's your ideal room?",
+    a: { label: 'keep it cool', emoji: '🧊' },
+    b: { label: 'keep it warm', emoji: '🔥' },
+  },
+  {
+    key: 'cleanliness',
+    topic: 'cleanliness',
+    question: 'how do you keep your space?',
+    a: { label: 'tidy as you go', emoji: '✨' },
+    b: { label: 'deep clean weekly', emoji: '🧹' },
+  },
+  {
+    key: 'noise',
+    topic: 'noise level',
+    question: "what's the vibe at home?",
+    a: { label: 'peace & quiet', emoji: '🤫' },
+    b: { label: 'background noise ok', emoji: '🎵' },
+  },
+  {
+    key: 'shared_spaces',
+    topic: 'shared spaces',
+    question: 'how do you use common areas?',
+    a: { label: 'everyone equally', emoji: '🛋️' },
+    b: { label: 'my space is sacred', emoji: '🚪' },
+  },
+  {
+    key: 'study_habits',
+    topic: 'study habits',
+    question: 'where do you hit the books?',
+    a: { label: 'study at home', emoji: '🏠' },
+    b: { label: 'out of the house', emoji: '☕' },
+  },
+  {
+    key: 'social_battery',
+    topic: 'social battery',
+    question: 'weeknight default?',
+    a: { label: 'in & cozy', emoji: '🪴' },
+    b: { label: 'out most nights', emoji: '🎉' },
+  },
+  {
+    key: 'guests',
+    topic: 'guests',
+    question: 'people coming over?',
+    a: { label: 'rarely', emoji: '🚫' },
+    b: { label: 'always welcome', emoji: '🤗' },
+  },
+  {
+    key: 'groceries',
+    topic: 'groceries',
+    question: 'food situation?',
+    a: { label: 'shop separately', emoji: '🛒' },
+    b: { label: 'split & share', emoji: '🤝' },
+  },
+  {
+    key: 'substances',
+    topic: 'lifestyle',
+    question: "what's your space like?",
+    a: { label: 'totally sober', emoji: '🌿' },
+    b: { label: 'casual drinks ok', emoji: '🍻' },
+  },
+  {
+    key: 'conflict_style',
+    topic: 'conflict style',
+    question: 'when something bugs you...',
+    a: { label: 'talk it out now', emoji: '💬' },
+    b: { label: 'cool down first', emoji: '❄️' },
+  },
+  {
+    key: 'budget_flexibility',
+    topic: 'budget',
+    question: 'on rent budget...',
+    a: { label: 'firm on the number', emoji: '💰' },
+    b: { label: 'flexible if worth it', emoji: '💎' },
+  },
+];
+
+export default function Quiz() {
+  const { user, refreshProfile } = useAuth();
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  const q = QUIZ_QUESTIONS[current];
+  const progress = (current / QUIZ_QUESTIONS.length) * 100;
+
+  const handleAnswer = async (answer) => {
+    const newAnswers = { ...answers, [q.key]: answer };
+    setAnswers(newAnswers);
+
+    if (current < QUIZ_QUESTIONS.length - 1) {
+      setCurrent((i) => i + 1);
+      return;
+    }
+
+    setSaving(true);
+
+    const quizData = {};
+    QUIZ_QUESTIONS.forEach((qq) => {
+      quizData[qq.key] = newAnswers[qq.key];
+    });
+
+    await supabase.from('quiz_responses').upsert({
+      user_id: user.id,
+      ...quizData,
+    });
+
+    await supabase
+      .from('profiles')
+      .update({ onboarding_step: 'budget', updated_at: new Date().toISOString() })
+      .eq('id', user.id);
+
+    await refreshProfile();
+  };
+
+  if (saving) {
+    return (
+      <div className="quiz-page">
+        <div className="quiz-inner">
+          <div className="setup-header">
+            <span className="wordmark-sm">lik</span>
+            <div className="step-dots">
+              <span className="dot done" />
+              <span className="dot active" />
+              <span className="dot" />
+            </div>
+          </div>
+          <div className="quiz-saving">
+            <p className="muted">building your vibe...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="quiz-page">
+      <div className="quiz-inner">
+        <div className="setup-header">
+          <span className="wordmark-sm">lik</span>
+          <div className="step-dots">
+            <span className="dot done" />
+            <span className="dot active" />
+            <span className="dot" />
+          </div>
+        </div>
+
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            transition={{ duration: 0.18 }}
+            className="quiz-content"
+          >
+            <p className="quiz-topic">{q.topic}</p>
+            <h2 className="quiz-question">{q.question}</h2>
+            <p className="quiz-count">{current + 1} of {QUIZ_QUESTIONS.length}</p>
+
+            <div className="quiz-options">
+              <button className="quiz-option" onClick={() => handleAnswer('a')}>
+                <span className="option-emoji">{q.a.emoji}</span>
+                <span className="option-label">{q.a.label}</span>
+              </button>
+              <button className="quiz-option" onClick={() => handleAnswer('b')}>
+                <span className="option-emoji">{q.b.emoji}</span>
+                <span className="option-label">{q.b.label}</span>
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
