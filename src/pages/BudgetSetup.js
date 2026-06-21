@@ -53,7 +53,13 @@ export default function BudgetSetup() {
       .eq('id', user.id);
 
     if (err) {
-      setError('something went wrong — try again');
+      const msg =
+        err.message?.toLowerCase().includes('fetch') || err.message?.toLowerCase().includes('network')
+          ? "couldn't reach the server — check your connection"
+          : err.status >= 500
+          ? 'server hiccup — try again in a moment'
+          : 'save failed — try again';
+      setError(msg);
       setSaving(false);
       return;
     }

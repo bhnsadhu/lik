@@ -115,10 +115,10 @@ export default function Quiz() {
       quizData[qq.key] = newAnswers[qq.key];
     });
 
-    await supabase.from('quiz_responses').upsert({
-      user_id: user.id,
-      ...quizData,
-    });
+    await supabase.from('quiz_responses').upsert(
+      { user_id: user.id, ...quizData },
+      { onConflict: 'user_id' }
+    );
 
     await supabase
       .from('profiles')

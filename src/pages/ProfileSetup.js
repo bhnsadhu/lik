@@ -67,19 +67,28 @@ export default function ProfileSetup() {
     setSaving(true);
     const { error: err } = await supabase
       .from('profiles')
-      .upsert({
-        id: user.id,
-        email: user.email,
-        name: name.trim(),
-        age: ageNum,
-        year,
-        photos,
-        onboarding_step: 'quiz',
-        updated_at: new Date().toISOString(),
-      });
+      .upsert(
+        {
+          id: user.id,
+          email: user.email,
+          name: name.trim(),
+          age: ageNum,
+          year,
+          photos,
+          onboarding_step: 'quiz',
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'id' }
+      );
 
     if (err) {
-      setError('something went wrong — try again');
+      const msg =
+        err.message?.toLowerCase().includes('fetch') || err.message?.toLowerCase().includes('network')
+          ? "couldn't reach the server — check your connection"
+          : err.status >= 500
+          ? 'server hiccup — try again in a moment'
+          : 'profile save failed — try again';
+      setError(msg);
       setSaving(false);
       return;
     }
