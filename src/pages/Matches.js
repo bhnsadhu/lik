@@ -35,20 +35,24 @@ export default function Matches() {
   return (
     <div className="app-page">
       <div className="app-header">
-        <h1 className="page-title">liks</h1>
+        <span className="wordmark">lik</span>
       </div>
 
-      <div className="matches-body">
-        {loading ? (
+      {loading ? (
+        <div className="matches-body">
           <p className="muted center-text">loading your liks...</p>
-        ) : matches.length === 0 ? (
-          <div className="empty-state" style={{ marginTop: 60 }}>
+        </div>
+      ) : matches.length === 0 ? (
+        <div className="matches-empty-wrap">
+          <div className="empty-state">
             <p className="empty-emoji">💫</p>
             <p className="empty-title">no liks yet</p>
             <p className="muted">go discover some people — your match is out there</p>
           </div>
-        ) : (
-          matches.map((match) => {
+        </div>
+      ) : (
+        <div className="matches-body">
+          {matches.map((match) => {
             const other = getOther(match);
             if (!other) return null;
             return (
@@ -73,9 +77,9 @@ export default function Matches() {
                 <span className="match-row-arrow">→</span>
               </button>
             );
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
 
       <BottomNav active="matches" />
     </div>

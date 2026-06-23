@@ -7,6 +7,7 @@ import BudgetSetup from './pages/BudgetSetup';
 import SwipeFeed from './pages/SwipeFeed';
 import Matches from './pages/Matches';
 import Chat from './pages/Chat';
+import UserProfile from './pages/UserProfile';
 import './App.css';
 
 function AppRouter() {
@@ -61,7 +62,11 @@ function AppRouter() {
     <Routes>
       <Route path="/feed" element={<SwipeFeed />} />
       <Route path="/matches" element={<Matches />} />
+      <Route path="/profile" element={<UserProfile />} />
       <Route path="/chat/:matchId" element={<Chat />} />
+      <Route path="/setup/profile" element={<ProfileSetup />} />
+      <Route path="/setup/quiz" element={<Quiz />} />
+      <Route path="/setup/budget" element={<BudgetSetup />} />
       <Route path="*" element={<Navigate to="/feed" replace />} />
     </Routes>
   );

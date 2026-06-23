@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -16,11 +17,13 @@ const AREAS = [
 ];
 
 export default function BudgetSetup() {
-  const { user, refreshProfile } = useAuth();
-  const [budgetMin, setBudgetMin] = useState('');
-  const [budgetMax, setBudgetMax] = useState('');
-  const [semester, setSemester] = useState('');
-  const [areas, setAreas] = useState([]);
+  const { user, refreshProfile, profile } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [budgetMin, setBudgetMin] = useState(profile?.budget_min != null ? String(profile.budget_min) : '');
+  const [budgetMax, setBudgetMax] = useState(profile?.budget_max != null ? String(profile.budget_max) : '');
+  const [semester, setSemester] = useState(profile?.move_in_semester || '');
+  const [areas, setAreas] = useState(profile?.preferred_area || []);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -79,6 +82,10 @@ export default function BudgetSetup() {
     }
 
     await refreshProfile();
+    const returnTo = location.state?.returnTo;
+    if (returnTo) {
+      navigate(returnTo);
+    }
   };
 
   return (

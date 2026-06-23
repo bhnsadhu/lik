@@ -1,15 +1,18 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
 const YEARS = ['freshman', 'sophomore', 'junior', 'senior', 'grad'];
 
 export default function ProfileSetup() {
-  const { user, refreshProfile } = useAuth();
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [year, setYear] = useState('');
-  const [photos, setPhotos] = useState([]);
+  const { user, refreshProfile, profile } = useAuth();
+  const navigate = useNavigate();
+  const isEditMode = profile?.onboarding_step === 'done';
+  const [name, setName] = useState(profile?.name || '');
+  const [age, setAge] = useState(profile?.age ? String(profile.age) : '');
+  const [year, setYear] = useState(profile?.year || '');
+  const [photos, setPhotos] = useState(profile?.photos || []);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -75,7 +78,7 @@ export default function ProfileSetup() {
           age: ageNum,
           year,
           photos,
-          onboarding_step: 'quiz',
+          onboarding_step: isEditMode ? 'done' : 'quiz',
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'id' }
@@ -94,6 +97,10 @@ export default function ProfileSetup() {
     }
 
     await refreshProfile();
+    if (isEditMode) {
+      navigate('/profile');
+      return;
+    }
   };
 
   return (
