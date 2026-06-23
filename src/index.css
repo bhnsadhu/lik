@@ -1217,7 +1217,7 @@ body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 16px;
+  padding-bottom: 24px;
 }
 
 .profile-hero {
@@ -1225,9 +1225,12 @@ body {
   aspect-ratio: 3 / 3.8;
   overflow: hidden;
   background: var(--surface);
+  position: relative;
 }
 
 .profile-hero-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1241,16 +1244,24 @@ body {
   margin-top: 2px;
 }
 
-.profile-photo-thumb {
+.profile-photo-slot {
   aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--surface);
+  position: relative;
+}
+
+.profile-photo-thumb {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  background: var(--surface);
 }
 
 .profile-identity {
-  padding: 20px 20px 0;
+  padding: 22px 20px 0;
 }
 
 .profile-name {
@@ -1262,39 +1273,77 @@ body {
 }
 
 .profile-year {
-  color: var(--muted);
+  color: rgba(234, 246, 250, 0.52);
   font-weight: 400;
 }
 
 .profile-section {
-  padding: 14px 20px 0;
+  padding: 22px 20px 0;
+}
+
+.profile-section .label {
+  margin-bottom: 10px;
 }
 
 .profile-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 8px;
 }
 
 .profile-chip {
-  background: rgba(61, 220, 255, 0.07);
-  border: 1px solid rgba(61, 220, 255, 0.2);
-  border-radius: 100px;
-  padding: 6px 14px;
-  font-size: 0.83rem;
-  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 7px 15px;
+  font-size: 0.875rem;
+  color: var(--muted);
   white-space: nowrap;
 }
 
 .profile-detail {
   color: var(--muted);
   font-size: 0.93rem;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 .profile-actions {
-  padding: 28px 20px 8px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 28px 20px 8px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.profile-edit-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+.profile-edit-btn:hover {
+  color: var(--text);
+}
+
+.profile-edit-sep {
+  color: var(--border);
+  font-size: 0.82rem;
+  user-select: none;
+  line-height: 1;
+}
+
+/* ─── Quiz option selected state (edit mode) ─── */
+
+.quiz-option.selected {
+  border-color: rgba(61, 220, 255, 0.5);
+  background: rgba(61, 220, 255, 0.06);
 }

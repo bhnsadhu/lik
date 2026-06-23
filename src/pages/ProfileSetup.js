@@ -108,16 +108,18 @@ export default function ProfileSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-            <span style={{ fontSize: '0.72rem', color: 'var(--accent)', opacity: 0.8, letterSpacing: '0.05em' }}>
-              step 1 of 3
-            </span>
-            <div className="step-dots">
-              <span className="dot active" />
-              <span className="dot" />
-              <span className="dot" />
+          {!isEditMode && (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--accent)', opacity: 0.8, letterSpacing: '0.05em' }}>
+                step 1 of 3
+              </span>
+              <div className="step-dots">
+                <span className="dot active" />
+                <span className="dot" />
+                <span className="dot" />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <h2 className="setup-title">first, the basics</h2>
@@ -211,7 +213,7 @@ export default function ProfileSetup() {
             className="btn-primary"
             disabled={saving || uploading}
           >
-            {saving ? 'saving...' : 'continue →'}
+            {saving ? 'saving...' : isEditMode ? 'save changes' : 'continue →'}
           </button>
         </form>
       </div>

@@ -34,11 +34,16 @@ export default function UserProfile() {
       }).filter(Boolean)
     : [];
 
-  const areas = Array.isArray(profile.preferred_area)
-    ? profile.preferred_area
-    : profile.preferred_area
-    ? [profile.preferred_area]
-    : [];
+  const areas = (
+    Array.isArray(profile.preferred_area)
+      ? profile.preferred_area
+      : profile.preferred_area
+      ? [profile.preferred_area]
+      : []
+  ).map((a) => a.toLowerCase());
+
+  const year = profile.year?.toLowerCase();
+  const semester = profile.move_in_semester?.toLowerCase();
 
   return (
     <div className="app-page">
@@ -55,7 +60,9 @@ export default function UserProfile() {
             {photos.length > 1 && (
               <div className="profile-photo-strip">
                 {photos.slice(1).map((url, i) => (
-                  <img key={i} src={url} alt="" className="profile-photo-thumb" />
+                  <div key={i} className="profile-photo-slot">
+                    <img src={url} alt="" className="profile-photo-thumb" />
+                  </div>
                 ))}
               </div>
             )}
@@ -65,12 +72,13 @@ export default function UserProfile() {
         <div className="profile-identity">
           <h2 className="profile-name">
             {profile.name}, {profile.age}
-            {profile.year && <span className="profile-year"> · {profile.year}</span>}
+            {year && <span className="profile-year"> · {year}</span>}
           </h2>
         </div>
 
         {quizChips.length > 0 && (
           <div className="profile-section">
+            <p className="label">vibe</p>
             <div className="profile-chips">
               {quizChips.map((label, i) => (
                 <span key={i} className="profile-chip">{label}</span>
@@ -79,27 +87,21 @@ export default function UserProfile() {
           </div>
         )}
 
-        {(profile.budget_min != null || profile.move_in_semester) && (
+        {(profile.budget_min != null || semester) && (
           <div className="profile-section">
-            {profile.budget_min != null && profile.move_in_semester ? (
-              <p className="profile-detail">
-                ${profile.budget_min} – ${profile.budget_max} / mo · {profile.move_in_semester}
-              </p>
-            ) : (
-              <>
-                {profile.budget_min != null && (
-                  <p className="profile-detail">${profile.budget_min} – ${profile.budget_max} / mo</p>
-                )}
-                {profile.move_in_semester && (
-                  <p className="profile-detail">{profile.move_in_semester}</p>
-                )}
-              </>
+            <p className="label">budget</p>
+            {profile.budget_min != null && (
+              <p className="profile-detail">${profile.budget_min} – ${profile.budget_max} / mo</p>
+            )}
+            {semester && (
+              <p className="profile-detail">{semester}</p>
             )}
           </div>
         )}
 
         {areas.length > 0 && (
           <div className="profile-section">
+            <p className="label">areas</p>
             <div className="profile-chips">
               {areas.map((a, i) => (
                 <span key={i} className="profile-chip">{a}</span>
@@ -109,14 +111,19 @@ export default function UserProfile() {
         )}
 
         <div className="profile-actions">
-          <button className="btn-ghost" onClick={() => navigate('/setup/profile')}>
+          <button className="profile-edit-btn" onClick={() => navigate('/setup/profile')}>
             edit profile
           </button>
-          <button className="btn-ghost" onClick={() => navigate('/setup/quiz')}>
+          <span className="profile-edit-sep">·</span>
+          <button
+            className="profile-edit-btn"
+            onClick={() => navigate('/setup/quiz', { state: { editMode: true } })}
+          >
             retake quiz
           </button>
+          <span className="profile-edit-sep">·</span>
           <button
-            className="btn-ghost"
+            className="profile-edit-btn"
             onClick={() => navigate('/setup/budget', { state: { returnTo: '/profile' } })}
           >
             edit preferences

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -92,9 +93,34 @@ export const QUIZ_QUESTIONS = [
 
 export default function Quiz() {
   const { user, refreshProfile } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isEditMode = location.state?.editMode === true;
+
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [saving, setSaving] = useState(false);
+  const [loadingExisting, setLoadingExisting] = useState(isEditMode);
+
+  useEffect(() => {
+    if (!isEditMode) return;
+    async function loadExisting() {
+      const { data } = await supabase
+        .from('quiz_responses')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (data) {
+        const initial = {};
+        QUIZ_QUESTIONS.forEach((q) => {
+          if (data[q.key]) initial[q.key] = data[q.key];
+        });
+        setAnswers(initial);
+      }
+      setLoadingExisting(false);
+    }
+    loadExisting();
+  }, [isEditMode, user.id]);
 
   const q = QUIZ_QUESTIONS[current];
   const progress = (current / QUIZ_QUESTIONS.length) * 100;
@@ -120,6 +146,12 @@ export default function Quiz() {
       { onConflict: 'user_id' }
     );
 
+    if (isEditMode) {
+      await refreshProfile();
+      navigate('/profile');
+      return;
+    }
+
     await supabase
       .from('profiles')
       .update({ onboarding_step: 'budget', updated_at: new Date().toISOString() })
@@ -128,20 +160,37 @@ export default function Quiz() {
     await refreshProfile();
   };
 
+  if (loadingExisting) {
+    return (
+      <div className="quiz-page">
+        <div className="quiz-inner">
+          <div className="setup-header">
+            <span className="wordmark-sm">lik</span>
+          </div>
+          <div className="quiz-saving">
+            <p className="muted">loading your answers...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (saving) {
     return (
       <div className="quiz-page">
         <div className="quiz-inner">
           <div className="setup-header">
             <span className="wordmark-sm">lik</span>
-            <div className="step-dots">
-              <span className="dot done" />
-              <span className="dot active" />
-              <span className="dot" />
-            </div>
+            {!isEditMode && (
+              <div className="step-dots">
+                <span className="dot done" />
+                <span className="dot active" />
+                <span className="dot" />
+              </div>
+            )}
           </div>
           <div className="quiz-saving">
-            <p className="muted">building your vibe...</p>
+            <p className="muted">{isEditMode ? 'saving changes...' : 'building your vibe...'}</p>
           </div>
         </div>
       </div>
@@ -153,11 +202,13 @@ export default function Quiz() {
       <div className="quiz-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          <div className="step-dots">
-            <span className="dot done" />
-            <span className="dot active" />
-            <span className="dot" />
-          </div>
+          {!isEditMode && (
+            <div className="step-dots">
+              <span className="dot done" />
+              <span className="dot active" />
+              <span className="dot" />
+            </div>
+          )}
         </div>
 
         <div className="progress-bar">
@@ -178,11 +229,17 @@ export default function Quiz() {
             <p className="quiz-count">{current + 1} of {QUIZ_QUESTIONS.length}</p>
 
             <div className="quiz-options">
-              <button className="quiz-option" onClick={() => handleAnswer('a')}>
+              <button
+                className={`quiz-option${answers[q.key] === 'a' ? ' selected' : ''}`}
+                onClick={() => handleAnswer('a')}
+              >
                 <span className="option-emoji">{q.a.emoji}</span>
                 <span className="option-label">{q.a.label}</span>
               </button>
-              <button className="quiz-option" onClick={() => handleAnswer('b')}>
+              <button
+                className={`quiz-option${answers[q.key] === 'b' ? ' selected' : ''}`}
+                onClick={() => handleAnswer('b')}
+              >
                 <span className="option-emoji">{q.b.emoji}</span>
                 <span className="option-label">{q.b.label}</span>
               </button>

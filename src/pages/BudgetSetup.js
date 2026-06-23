@@ -20,6 +20,7 @@ export default function BudgetSetup() {
   const { user, refreshProfile, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const isEditMode = location.state?.returnTo != null;
   const [budgetMin, setBudgetMin] = useState(profile?.budget_min != null ? String(profile.budget_min) : '');
   const [budgetMax, setBudgetMax] = useState(profile?.budget_max != null ? String(profile.budget_max) : '');
   const [semester, setSemester] = useState(profile?.move_in_semester || '');
@@ -93,11 +94,13 @@ export default function BudgetSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          <div className="step-dots">
-            <span className="dot done" />
-            <span className="dot done" />
-            <span className="dot active" />
-          </div>
+          {!isEditMode && (
+            <div className="step-dots">
+              <span className="dot done" />
+              <span className="dot done" />
+              <span className="dot active" />
+            </div>
+          )}
         </div>
 
         <h2 className="setup-title">almost there</h2>
@@ -171,7 +174,7 @@ export default function BudgetSetup() {
           {error && <p className="error-text">{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={saving}>
-            {saving ? "setting things up..." : "let's find your people →"}
+            {saving ? 'saving...' : isEditMode ? 'save changes' : "let's find your people →"}
           </button>
         </form>
       </div>
