@@ -1,70 +1,78 @@
-# Getting Started with Create React App
+# lik
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+find a place you lik. with someone you lik.
 
-## Available Scripts
+UIUC-only roommate-matching app — like Tinder, but for finding a roommate, not a date. University of Illinois Urbana-Champaign students only. Dark mode only. Minimal, intentional design.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| layer | tech |
+|---|---|
+| frontend | React (Create React App) |
+| backend / db | Supabase (auth, database, storage) |
+| email | Resend (magic link delivery) |
+| deployment | Vercel (coming soon) |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## what's built
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**auth**
+- Magic link login — no passwords
+- `@illinois.edu` email validation (bypassed locally, see notes)
 
-### `npm run build`
+**onboarding** (3-step flow)
+1. Profile setup — name, age, year, 3–6 photos
+2. Compatibility quiz — 12 this-or-that questions, auto-advance
+3. Budget & preferences — monthly budget range, move-in semester, preferred areas (multi-select)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**main app**
+- Discover feed — swipeable card stack, like/pass buttons
+- Liks screen — matched users, tap to chat
+- Chat — real-time 1:1 messaging per match
+- Profile page — view your profile as others see it; edit profile, retake quiz, or edit preferences inline
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**nav**
+- Bottom nav: discover · liks · profile
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## running locally
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm install
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Requires `.env.local`:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+REACT_APP_SUPABASE_URL=your_supabase_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## notes
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `.edu` validation is temporarily bypassed for local testing — `// TODO: re-enable .edu validation before launch`
+- RLS policies need audit before public launch
+- Resend free tier only delivers to the verified account email — custom domain pending before real user testing
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## brand
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **name:** lik (always lowercase)
+- **tagline:** find a place you lik. with someone you lik.
+- **colors:** `#0A0E12` base · `#3DDCFF` accent
+- **type:** Playfair Display (headings) · Inter (body)
+- **voice:** lowercase, calm, minimal
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## status
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Active development. Core onboarding, profile, and discover/match/chat flow complete. Needs real user data to fully exercise the feed and matching logic.
