@@ -154,7 +154,7 @@ export default function Quiz() {
 
     await supabase
       .from('profiles')
-      .update({ onboarding_step: 'budget', updated_at: new Date().toISOString() })
+      .update({ onboarding_step: 'preferences', updated_at: new Date().toISOString() })
       .eq('id', user.id);
 
     await refreshProfile();
@@ -181,13 +181,7 @@ export default function Quiz() {
         <div className="quiz-inner">
           <div className="setup-header">
             <span className="wordmark-sm">lik</span>
-            {!isEditMode && (
-              <div className="step-dots">
-                <span className="dot done" />
-                <span className="dot active" />
-                <span className="dot" />
-              </div>
-            )}
+            {!isEditMode && <span className="setup-step-label">step 5 of 5</span>}
           </div>
           <div className="quiz-saving">
             <p className="muted">{isEditMode ? 'saving changes...' : 'building your vibe...'}</p>

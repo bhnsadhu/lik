@@ -4,6 +4,18 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import BottomNav from '../components/BottomNav';
 
+function timeSince(dateStr) {
+  const ms = Date.now() - new Date(dateStr).getTime();
+  const min = Math.floor(ms / 60000);
+  const hr = Math.floor(ms / 3600000);
+  const day = Math.floor(ms / 86400000);
+  if (min < 1) return 'just now';
+  if (hr < 1) return `${min}m ago`;
+  if (day < 1) return `${hr}h ago`;
+  if (day < 7) return `${day}d ago`;
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 export default function Matches() {
   const { user } = useAuth();
   const [matches, setMatches] = useState([]);
@@ -71,7 +83,7 @@ export default function Matches() {
                 <div className="match-row-info">
                   <p className="match-row-name">{other.name}</p>
                   <p className="match-row-meta">
-                    {other.age} · {other.year}
+                    {other.age} · {other.year} · {timeSince(match.created_at)}
                   </p>
                 </div>
                 <span className="match-row-arrow">→</span>

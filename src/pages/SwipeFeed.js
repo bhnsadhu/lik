@@ -1,306 +1,452 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, useMotionValue, useTransform, useAnimation, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence, useMotionValue, useTransform, useMotionValueEvent, animate } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import BottomNav from '../components/BottomNav';
 
-// Which quiz keys to show as pills on the card (4 most social)
-const CARD_PILLS = [
-  { key: 'sleep_schedule', a: '🌅 early bird', b: '🦉 night owl' },
-  { key: 'noise', a: '🤫 quiet', b: '🎵 noise ok' },
-  { key: 'social_battery', a: '🪴 homebody', b: '🎉 social' },
-  { key: 'substances', a: '🌿 sober', b: '🍻 drinks ok' },
-];
+// ─── Match Moment ────────────────────────────────────────────
 
-function SwipeCard({ profile, isTop, onSwipe }) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-220, 220], [-28, 28]);
-  const likeOpacity = useTransform(x, [25, 90], [0, 1]);
-  const passOpacity = useTransform(x, [-90, -25], [1, 0]);
-  const controls = useAnimation();
-
-  // Use a ref so stale closures in drag callbacks always get latest onSwipe
-  const onSwipeRef = useRef(onSwipe);
-  useEffect(() => { onSwipeRef.current = onSwipe; }, [onSwipe]);
-
-  const triggerSwipe = useCallback(
-    async (dir) => {
-      await controls.start({
-        x: dir === 'like' ? 650 : -650,
-        rotate: dir === 'like' ? 32 : -32,
-        opacity: 0,
-        transition: { duration: 0.32, ease: 'easeOut' },
-      });
-      onSwipeRef.current(dir, profile.id);
-    },
-    [controls, profile.id]
-  );
-
-  const handleDragEnd = (_, info) => {
-    if (info.offset.x > 100) {
-      triggerSwipe('like');
-    } else if (info.offset.x < -100) {
-      triggerSwipe('pass');
-    } else {
-      controls.start({ x: 0, rotate: 0, transition: { duration: 0.45, type: 'spring', stiffness: 300 } });
-    }
-  };
-
-  const quiz = profile.quiz_responses?.[0];
-  const photo = profile.photos?.[0];
-
+function MatchMoment({ theirProfile, matchId, myProfile, onDismiss, onMessage }) {
   return (
     <motion.div
-      className={`swipe-card ${isTop ? 'is-top' : ''}`}
-      drag={isTop ? 'x' : false}
-      dragElastic={0.85}
-      style={{ x, rotate }}
-      animate={controls}
-      onDragEnd={isTop ? handleDragEnd : undefined}
-      whileDrag={{ scale: 1.02 }}
-    >
-      {photo ? (
-        <img src={photo} alt={profile.name} className="card-photo" draggable={false} />
-      ) : (
-        <div className="card-photo-placeholder">🎓</div>
-      )}
-      <div className="card-gradient" />
-
-      {isTop && (
-        <>
-          <motion.div className="swipe-label like" style={{ opacity: likeOpacity }}>
-            lik
-          </motion.div>
-          <motion.div className="swipe-label pass" style={{ opacity: passOpacity }}>
-            pass
-          </motion.div>
-        </>
-      )}
-
-      <div className="card-info">
-        <div className="card-name-row">
-          <h2 className="card-name">{profile.name}, {profile.age}</h2>
-          <span className="verified-badge">🎓 illinois.edu</span>
-        </div>
-        <p className="card-year">{profile.year}</p>
-
-        {quiz && (
-          <div className="card-pills">
-            {CARD_PILLS.map(({ key, a, b }) => {
-              const val = quiz[key];
-              if (!val) return null;
-              return <span key={key} className="pill">{val === 'a' ? a : b}</span>;
-            })}
-          </div>
-        )}
-
-        {profile.budget_min != null && (
-          <p className="card-budget">
-            ${profile.budget_min}–${profile.budget_max}/mo · {profile.preferred_area}
-          </p>
-        )}
-      </div>
-    </motion.div>
-  );
-}
-
-function MatchModal({ profile, onDismiss, onChat }) {
-  return (
-    <motion.div
-      className="match-overlay"
+      className="match-takeover"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
     >
       <motion.div
-        className="match-modal"
-        initial={{ scale: 0.82, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ delay: 0.08, type: 'spring', stiffness: 280, damping: 22 }}
+        className="match-star"
+        initial={{ scale: 0.3, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.05, type: 'spring', stiffness: 280, damping: 18 }}
       >
-        <p className="match-label">it's a lik!</p>
-        <p className="match-sub">you and {profile.name} both liked each other 🎉</p>
+        🌠
+      </motion.div>
 
-        <div className="match-photo-ring">
-          {profile.photos?.[0] ? (
-            <img src={profile.photos[0]} alt={profile.name} className="match-photo" />
-          ) : (
-            <div className="match-photo-placeholder">🎓</div>
-          )}
-        </div>
+      <div className="match-photos-row">
+        <motion.div
+          className="match-photo-wrap"
+          initial={{ scale: 0.4, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, type: 'spring', stiffness: 260, damping: 20 }}
+        >
+          {myProfile?.photos?.[0]
+            ? <img className="match-photo-img" src={myProfile.photos[0]} alt="" />
+            : <div className="match-photo-placeholder">👤</div>}
+        </motion.div>
+        <motion.div
+          className="match-photo-wrap"
+          initial={{ scale: 0.4, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.25, type: 'spring', stiffness: 260, damping: 20 }}
+        >
+          {theirProfile?.photos?.[0]
+            ? <img className="match-photo-img" src={theirProfile.photos[0]} alt="" />
+            : <div className="match-photo-placeholder">👤</div>}
+        </motion.div>
+      </div>
 
-        <div className="match-actions">
-          <button className="btn-primary" onClick={onChat}>
-            say hi 👋
-          </button>
-          <button className="btn-ghost" onClick={onDismiss}>
-            keep swiping
-          </button>
-        </div>
+      <motion.div
+        className="match-text-block"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.35 }}
+      >
+        <p className="match-headline">it's a lik.</p>
+        <p className="match-subline">
+          you and <span className="match-their-name">{theirProfile?.name}</span>
+        </p>
+      </motion.div>
+
+      <motion.div
+        className="match-cta-group"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.3 }}
+      >
+        <button className="btn-primary" onClick={onMessage}>send a message</button>
+        <button className="btn-ghost" onClick={onDismiss}>keep swiping</button>
       </motion.div>
     </motion.div>
   );
 }
 
-export default function SwipeFeed() {
-  const { user } = useAuth();
-  const [deck, setDeck] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [matchedProfile, setMatchedProfile] = useState(null);
-  const [matchId, setMatchId] = useState(null);
-  const deckRef = useRef(deck);
+// ─── Detail View ─────────────────────────────────────────────
 
-  useEffect(() => { deckRef.current = deck; }, [deck]);
+function DetailView({ person, onClose }) {
+  const [photoIdx, setPhotoIdx] = useState(0);
+  const photos = person.photos || [];
+  const areas = Array.isArray(person.preferred_area) ? person.preferred_area : [];
+  const dorms = Array.isArray(person.dorm_preference) ? person.dorm_preference : [];
 
-  useEffect(() => {
-    async function load() {
-      const { data: swipes } = await supabase
-        .from('swipes')
-        .select('swiped_id')
-        .eq('swiper_id', user.id);
+  return (
+    <motion.div
+      className="detail-overlay"
+      initial={{ y: '100%' }}
+      animate={{ y: 0 }}
+      exit={{ y: '100%' }}
+      transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+    >
+      <div className="detail-inner">
+        <div className="detail-hero">
+          {photos.length > 0 && (
+            <img className="detail-hero-img" src={photos[photoIdx]} alt="" />
+          )}
+          {photoIdx > 0 && (
+            <button
+              className="detail-tap-prev"
+              onClick={() => setPhotoIdx(i => Math.max(0, i - 1))}
+            />
+          )}
+          {photoIdx < photos.length - 1 && (
+            <button
+              className="detail-tap-next"
+              onClick={() => setPhotoIdx(i => Math.min(photos.length - 1, i + 1))}
+            />
+          )}
+          {photos.length > 1 && (
+            <div className="detail-photo-bars">
+              {photos.map((_, i) => (
+                <div key={i} className={`detail-photo-bar${i === photoIdx ? ' active' : ''}`} />
+              ))}
+            </div>
+          )}
+          <div className="detail-hero-gradient" />
+          <div className="detail-hero-info">
+            <p className="detail-hero-name">{person.name}, {person.age}</p>
+            <p className="detail-hero-meta">
+              {person.year}{person.major ? ` · ${person.major}` : ''}
+            </p>
+          </div>
+          <button className="detail-close-btn" onClick={onClose}>↓</button>
+        </div>
 
-      const swipedIds = swipes?.map((s) => s.swiped_id) ?? [];
-
-      let query = supabase
-        .from('profiles')
-        .select('*, quiz_responses(*)')
-        .eq('onboarding_step', 'done')
-        .neq('id', user.id)
-        .limit(40);
-
-      if (swipedIds.length > 0) {
-        query = query.not('id', 'in', `(${swipedIds.join(',')})`);
-      }
-
-      const { data } = await query;
-      setDeck(data ?? []);
-      setLoading(false);
-    }
-    load();
-  }, [user.id]);
-
-  const handleSwipe = useCallback(
-    async (dir, profileId) => {
-      // Optimistic: remove from deck immediately
-      const swiped = deckRef.current.find((p) => p.id === profileId);
-      setDeck((d) => d.filter((p) => p.id !== profileId));
-
-      const { error } = await supabase.from('swipes').insert({
-        swiper_id: user.id,
-        swiped_id: profileId,
-        direction: dir,
-      });
-
-      if (error || dir !== 'like') return;
-
-      // Check if the trigger created a match (it runs synchronously in Postgres)
-      const u1 = user.id < profileId ? user.id : profileId;
-      const u2 = user.id < profileId ? profileId : user.id;
-
-      const { data: match } = await supabase
-        .from('matches')
-        .select('id')
-        .eq('user1_id', u1)
-        .eq('user2_id', u2)
-        .maybeSingle();
-
-      if (match && swiped) {
-        setMatchedProfile(swiped);
-        setMatchId(match.id);
-      }
-    },
-    [user.id]
+        <div className="detail-body">
+          {person.bio && (
+            <div className="detail-section">
+              <p className="detail-bio">"{person.bio}"</p>
+            </div>
+          )}
+          {person.housing_type && (
+            <div className="detail-section">
+              <p className="label">looking for</p>
+              <span className={`housing-badge ${person.housing_type}`}>
+                {person.housing_type === 'dorm' ? '🏠 dorm' : '🏢 apartment'}
+              </span>
+            </div>
+          )}
+          {person.move_in_semester && (
+            <div className="detail-section">
+              <p className="label">move-in</p>
+              <p className="detail-value">{person.move_in_semester}</p>
+            </div>
+          )}
+          {person.housing_type === 'apartment' && person.budget_min != null && (
+            <div className="detail-section">
+              <p className="label">budget</p>
+              <p className="detail-value">${person.budget_min}–${person.budget_max}/mo</p>
+            </div>
+          )}
+          {person.housing_type === 'apartment' && areas.length > 0 && (
+            <div className="detail-section">
+              <p className="label">areas</p>
+              <div className="detail-chips">
+                {areas.map(a => <span key={a} className="profile-chip">{a}</span>)}
+              </div>
+            </div>
+          )}
+          {person.housing_type === 'dorm' && dorms.length > 0 && (
+            <div className="detail-section">
+              <p className="label">dorm preference</p>
+              <div className="detail-chips">
+                {dorms.map(d => <span key={d} className="profile-chip">{d}</span>)}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
+}
 
-  const handleButtonSwipe = (dir) => {
-    if (deck.length === 0) return;
-    // For button taps, trigger via the top card's onSwipe directly
-    handleSwipe(dir, deck[0].id);
-  };
+// ─── Swipe Card Content ───────────────────────────────────────
 
-  const handleMatchDismiss = () => {
-    setMatchedProfile(null);
-    setMatchId(null);
-  };
+function SwipeCardContent({ person, overlay, isTop, depth, onOpenDetail }) {
+  const [photoIdx, setPhotoIdx] = useState(0);
+  const photos = person.photos || [];
 
-  const handleMatchChat = () => {
-    setMatchedProfile(null);
-    setMatchId(null);
-    if (matchId) {
-      window.location.href = `/chat/${matchId}`;
+  const handlePhotoTap = (e) => {
+    if (!isTop) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    if (x < rect.width * 0.33) {
+      setPhotoIdx(i => Math.max(0, i - 1));
+    } else {
+      setPhotoIdx(i => Math.min(photos.length - 1, i + 1));
     }
   };
 
   return (
-    <div className="app-page">
-      <div className="app-header">
-        <span className="wordmark">lik</span>
+    <div className={`swipe-card-inner depth-${depth}-inner`}>
+      {photos.length > 0 ? (
+        <img
+          className="swipe-card-photo"
+          src={photos[photoIdx]}
+          alt=""
+          onClick={handlePhotoTap}
+          draggable={false}
+        />
+      ) : (
+        <div className="swipe-card-placeholder">👤</div>
+      )}
+
+      {isTop && photos.length > 1 && (
+        <div className="swipe-photo-bars">
+          {photos.map((_, i) => (
+            <div key={i} className={`swipe-photo-bar${i === photoIdx ? ' active' : ''}`} />
+          ))}
+        </div>
+      )}
+
+      {person.housing_type && (
+        <div className={`card-housing-badge ${person.housing_type}`}>
+          {person.housing_type === 'dorm' ? '🏠 dorm' : '🏢 apt'}
+        </div>
+      )}
+
+      {isTop && overlay === 'right' && (
+        <div className="swipe-overlay-label like">lik</div>
+      )}
+      {isTop && overlay === 'left' && (
+        <div className="swipe-overlay-label pass">pass</div>
+      )}
+
+      <div className="swipe-card-gradient" />
+
+      <div className="swipe-card-info">
+        <span className="swipe-name">{person.name}, {person.age}</span>
+        <p className="swipe-meta">
+          {person.year}{person.major ? ` · ${person.major}` : ''}
+        </p>
+        {person.bio && <p className="swipe-bio">{person.bio}</p>}
+        {isTop && (
+          <button className="card-info-toggle" onClick={onOpenDetail}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <circle cx="9" cy="9" r="8" />
+              <line x1="9" y1="8" x2="9" y2="13" />
+              <circle cx="9" cy="5.5" r="0.9" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Feed ───────────────────────────────────────────────
+
+export default function SwipeFeed() {
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
+
+  const [deck, setDeck] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [overlay, setOverlay] = useState(null);
+  const [matchedProfile, setMatchedProfile] = useState(null);
+  const [matchId, setMatchId] = useState(null);
+  const [showDetail, setShowDetail] = useState(false);
+  const [housingFilter, setHousingFilter] = useState(null);
+
+  const topCardX = useMotionValue(0);
+  const topCardRotate = useTransform(topCardX, [-200, 200], [-15, 15]);
+
+  useMotionValueEvent(topCardX, 'change', (x) => {
+    if (x > 30) setOverlay('right');
+    else if (x < -30) setOverlay('left');
+    else setOverlay(null);
+  });
+
+  const loadDeck = useCallback(async (filter) => {
+    setLoading(true);
+    const { data: swiped } = await supabase
+      .from('swipes')
+      .select('swiped_id')
+      .eq('swiper_id', user.id);
+
+    const swipedIds = (swiped || []).map(s => s.swiped_id);
+    let query = supabase
+      .from('profiles')
+      .select('*')
+      .neq('id', user.id)
+      .eq('onboarding_step', 'done');
+
+    if (filter) query = query.eq('housing_type', filter);
+    if (swipedIds.length > 0) {
+      query = query.not('id', 'in', `(${swipedIds.join(',')})`);
+    }
+
+    const { data } = await query.limit(40);
+    setDeck(data || []);
+    setLoading(false);
+  }, [user.id]);
+
+  useEffect(() => {
+    loadDeck(housingFilter);
+  }, [housingFilter, loadDeck]);
+
+  const handleSwipe = useCallback(async (dir, person) => {
+    await supabase.from('swipes').insert({
+      swiper_id: user.id,
+      swiped_id: person.id,
+      direction: dir === 'right' ? 'like' : 'pass',
+    });
+
+    if (dir !== 'right') return;
+
+    const u1 = user.id < person.id ? user.id : person.id;
+    const u2 = user.id < person.id ? person.id : user.id;
+    const { data: match } = await supabase
+      .from('matches')
+      .select('id')
+      .eq('user1_id', u1)
+      .eq('user2_id', u2)
+      .maybeSingle();
+
+    if (match) {
+      setMatchedProfile(person);
+      setMatchId(match.id);
+    }
+  }, [user.id]);
+
+  const handleCardLeft = useCallback((personId) => {
+    setDeck(prev => prev.filter(p => p.id !== personId));
+    setOverlay(null);
+  }, []);
+
+  const flyCard = useCallback(async (dir, person) => {
+    const target = dir === 'right' ? 800 : -800;
+    animate(topCardX, target, { duration: 0.28, ease: [0.4, 0, 0.6, 1] });
+    await new Promise(r => setTimeout(r, 220));
+    topCardX.set(0);
+    handleSwipe(dir, person);
+    handleCardLeft(person.id);
+  }, [topCardX, handleSwipe, handleCardLeft]);
+
+  const handleDragEnd = useCallback((e, info, person) => {
+    const THRESHOLD = 80;
+    if (info.offset.x > THRESHOLD || info.velocity.x > 600) {
+      flyCard('right', person);
+    } else if (info.offset.x < -THRESHOLD || info.velocity.x < -600) {
+      flyCard('left', person);
+    } else {
+      animate(topCardX, 0, { type: 'spring', stiffness: 400, damping: 30 });
+      setOverlay(null);
+    }
+  }, [flyCard, topCardX]);
+
+  const swipeCard = useCallback((dir) => {
+    if (deck.length === 0) return;
+    flyCard(dir, deck[0]);
+  }, [deck, flyCard]);
+
+  // Render reversed: deck[0] is last DOM child = highest stacking order
+  const visibleDeck = deck.slice(0, 3).reverse();
+
+  return (
+    <div className="feed-page">
+      <div className="feed-filter-bar">
+        {[
+          { key: null, label: 'all' },
+          { key: 'dorm', label: '🏠 dorm' },
+          { key: 'apartment', label: '🏢 apt' },
+        ].map(({ key, label }) => (
+          <button
+            key={String(key)}
+            className={`feed-filter-btn${housingFilter === key ? ' active' : ''}`}
+            onClick={() => setHousingFilter(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <div className="feed-body">
+      <div className="feed-area">
         {loading ? (
-          <div className="empty-state">
-            <p className="muted">still scanning your matches...</p>
+          <div className="feed-loading">
+            <p className="muted">finding people...</p>
           </div>
         ) : deck.length === 0 ? (
-          <div className="empty-state">
-            <p className="empty-emoji">🌙</p>
-            <p className="empty-title">no liks yet</p>
-            <p className="muted">your people are out there — check back soon</p>
+          <div className="feed-empty">
+            <div className="empty-emoji">✨</div>
+            <p className="empty-title">you've seen everyone</p>
+            <p className="muted">check back later</p>
           </div>
         ) : (
           <>
-            <div className="card-stack">
-              {deck.slice(0, 3).map((profile, i) => (
-                <div
-                  key={profile.id}
-                  className="card-wrapper"
-                  style={{
-                    zIndex: 3 - i,
-                    transform:
-                      i === 0
-                        ? 'none'
-                        : `scale(${1 - i * 0.04}) translateY(${i * 11}px)`,
-                  }}
-                >
-                  <SwipeCard
-                    profile={profile}
-                    isTop={i === 0}
-                    onSwipe={handleSwipe}
-                  />
-                </div>
-              ))}
-            </div>
+            {visibleDeck.map((person, i) => {
+              const depth = visibleDeck.length - 1 - i;
+              const isTop = depth === 0;
+              const scale = depth === 0 ? 1 : depth === 1 ? 0.95 : 0.90;
+              const yOffset = depth === 0 ? 0 : depth === 1 ? 8 : 16;
 
-            <div className="swipe-buttons">
-              <button
-                className="swipe-btn pass"
-                onClick={() => handleButtonSwipe('pass')}
-              >
-                ✕
-              </button>
-              <button
-                className="swipe-btn like"
-                onClick={() => handleButtonSwipe('like')}
-              >
-                ♡
-              </button>
+              return (
+                <motion.div
+                  key={person.id}
+                  className={`tinder-card-wrapper card-depth-${depth}`}
+                  style={isTop
+                    ? { x: topCardX, rotate: topCardRotate, scale, y: yOffset }
+                    : { scale, y: yOffset }
+                  }
+                  drag={isTop ? 'x' : false}
+                  dragElastic={0.7}
+                  dragMomentum={false}
+                  onDragEnd={isTop ? (e, info) => handleDragEnd(e, info, person) : undefined}
+                >
+                  <SwipeCardContent
+                    person={person}
+                    overlay={isTop ? overlay : null}
+                    isTop={isTop}
+                    depth={depth}
+                    onOpenDetail={isTop ? () => setShowDetail(true) : undefined}
+                  />
+                </motion.div>
+              );
+            })}
+
+            <div className="feed-actions">
+              <button className="feed-action-btn pass" onClick={() => swipeCard('left')}>✕</button>
+              <button className="feed-action-btn like" onClick={() => swipeCard('right')}>♡</button>
             </div>
           </>
         )}
       </div>
 
+      <BottomNav active="feed" />
+
       <AnimatePresence>
         {matchedProfile && (
-          <MatchModal
-            profile={matchedProfile}
-            onDismiss={handleMatchDismiss}
-            onChat={handleMatchChat}
+          <MatchMoment
+            key={matchId}
+            theirProfile={matchedProfile}
+            matchId={matchId}
+            myProfile={profile}
+            onDismiss={() => { setMatchedProfile(null); setMatchId(null); }}
+            onMessage={() => navigate(`/chat/${matchId}`)}
           />
         )}
       </AnimatePresence>
 
-      <BottomNav active="feed" />
+      <AnimatePresence>
+        {showDetail && deck.length > 0 && (
+          <DetailView
+            key={deck[0].id}
+            person={deck[0]}
+            onClose={() => setShowDetail(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

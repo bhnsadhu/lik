@@ -1,14 +1,26 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Auth from './pages/Auth';
-import ProfileSetup from './pages/ProfileSetup';
+import PhotosSetup from './pages/PhotosSetup';
+import BasicsSetup from './pages/BasicsSetup';
+import HousingSetup from './pages/HousingSetup';
+import BioSetup from './pages/BioSetup';
 import Quiz from './pages/Quiz';
-import BudgetSetup from './pages/BudgetSetup';
+import PreferencesSetup from './pages/PreferencesSetup';
 import SwipeFeed from './pages/SwipeFeed';
 import Matches from './pages/Matches';
 import Chat from './pages/Chat';
 import UserProfile from './pages/UserProfile';
 import './App.css';
+
+const STEP_ROUTES = {
+  basics: '/setup/basics',
+  housing: '/setup/housing',
+  bio: '/setup/bio',
+  quiz: '/setup/quiz',
+  budget: '/setup/preferences',
+  preferences: '/setup/preferences',
+};
 
 function AppRouter() {
   const { user, profile, loading } = useAuth();
@@ -31,43 +43,45 @@ function AppRouter() {
 
   const step = profile?.onboarding_step;
 
-  if (!step || step === 'profile') {
+  if (step === 'done') {
     return (
       <Routes>
-        <Route path="/setup/profile" element={<ProfileSetup />} />
-        <Route path="*" element={<Navigate to="/setup/profile" replace />} />
-      </Routes>
-    );
-  }
-
-  if (step === 'quiz') {
-    return (
-      <Routes>
+        <Route path="/feed" element={<SwipeFeed />} />
+        <Route path="/matches" element={<Matches />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/chat/:matchId" element={<Chat />} />
+        <Route path="/setup/photos" element={<PhotosSetup />} />
+        <Route path="/setup/basics" element={<BasicsSetup />} />
+        <Route path="/setup/housing" element={<HousingSetup />} />
+        <Route path="/setup/bio" element={<BioSetup />} />
         <Route path="/setup/quiz" element={<Quiz />} />
-        <Route path="*" element={<Navigate to="/setup/quiz" replace />} />
+        <Route path="/setup/preferences" element={<PreferencesSetup />} />
+        <Route path="*" element={<Navigate to="/feed" replace />} />
       </Routes>
     );
   }
 
-  if (step === 'budget') {
+  const redirectTo = STEP_ROUTES[step];
+  if (redirectTo) {
     return (
       <Routes>
-        <Route path="/setup/budget" element={<BudgetSetup />} />
-        <Route path="*" element={<Navigate to="/setup/budget" replace />} />
+        <Route path={redirectTo} element={
+          step === 'basics' ? <BasicsSetup /> :
+          step === 'housing' ? <HousingSetup /> :
+          step === 'bio' ? <BioSetup /> :
+          step === 'quiz' ? <Quiz /> :
+          <PreferencesSetup />
+        } />
+        <Route path="*" element={<Navigate to={redirectTo} replace />} />
       </Routes>
     );
   }
 
+  // null / 'profile' / unknown → start new onboarding
   return (
     <Routes>
-      <Route path="/feed" element={<SwipeFeed />} />
-      <Route path="/matches" element={<Matches />} />
-      <Route path="/profile" element={<UserProfile />} />
-      <Route path="/chat/:matchId" element={<Chat />} />
-      <Route path="/setup/profile" element={<ProfileSetup />} />
-      <Route path="/setup/quiz" element={<Quiz />} />
-      <Route path="/setup/budget" element={<BudgetSetup />} />
-      <Route path="*" element={<Navigate to="/feed" replace />} />
+      <Route path="/setup/photos" element={<PhotosSetup />} />
+      <Route path="*" element={<Navigate to="/setup/photos" replace />} />
     </Routes>
   );
 }
