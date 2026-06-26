@@ -166,19 +166,12 @@ export default function Auth() {
             {verifying && <p className="otp-status">verifying...</p>}
             {verifyError && <p className="otp-status otp-status-error">{verifyError}</p>}
 
-            <p className="otp-links">
-              <span>didn't get it?&nbsp;</span>
-              <button
-                className={`otp-resend-btn${resentConfirm ? ' otp-confirmed' : ''}`}
-                onClick={handleResend}
-                disabled={resending}
-              >
-                <span className="otp-word-resend">resend</span>
-                <span className="otp-word-sent">sent ✓</span>
-              </button>
-              <span>&nbsp;·&nbsp;</span>
-              <button className="otp-change-btn" onClick={resetToEmail}>change email</button>
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginTop: '32px' }}>
+              <span style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: 'rgba(255,255,255,0.35)', lineHeight: '1' }}>didn't get it?&nbsp;</span>
+              <span onClick={handleResend} style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: '#3DDCFF', lineHeight: '1', cursor: 'pointer' }}>{resentConfirm ? 'sent ✓' : 'resend'}</span>
+              <span style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: 'rgba(255,255,255,0.2)', lineHeight: '1', margin: '0 6px' }}>·</span>
+              <span onClick={resetToEmail} style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: '#3DDCFF', lineHeight: '1', cursor: 'pointer' }}>change email</span>
+            </div>
           </div>
         )}
     </div>
