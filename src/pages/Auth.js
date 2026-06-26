@@ -9,14 +9,14 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [resentConfirm, setResentConfirm] = useState(false);
-  const [digits, setDigits] = useState(['', '', '', '', '', '']);
+  const [digits, setDigits] = useState(['', '', '', '', '', '', '', '']);
   const [verifyError, setVerifyError] = useState('');
   const [verifying, setVerifying] = useState(false);
   const inputRefs = useRef([]);
 
   const handleResend = async () => {
     setResending(true);
-    setDigits(['', '', '', '', '', '']);
+    setDigits(['', '', '', '', '', '', '', '']);
     setVerifyError('');
     await signIn(email.toLowerCase().trim());
     setResending(false);
@@ -51,14 +51,14 @@ export default function Auth() {
 
   const attemptVerify = async (ds) => {
     const code = ds.join('');
-    if (code.length !== 6) return;
+    if (code.length !== 8) return;
     setVerifyError('');
     setVerifying(true);
     const { error: err } = await verifyOtp(email.toLowerCase().trim(), code);
     setVerifying(false);
     if (err) {
       setVerifyError('invalid code. try again?');
-      setDigits(['', '', '', '', '', '']);
+      setDigits(['', '', '', '', '', '', '', '']);
       setTimeout(() => inputRefs.current[0]?.focus(), 0);
     }
     // on success: AuthContext onAuthStateChange handles the session + redirect
@@ -67,13 +67,13 @@ export default function Auth() {
   const handleDigitChange = async (i, val) => {
     // handle paste of full code
     if (val.length > 1) {
-      const pasted = val.replace(/\D/g, '').slice(0, 6);
-      const newDigits = Array.from({ length: 6 }, (_, j) => pasted[j] || '');
+      const pasted = val.replace(/\D/g, '').slice(0, 8);
+      const newDigits = Array.from({ length: 8 }, (_, j) => pasted[j] || '');
       setDigits(newDigits);
-      if (pasted.length === 6) {
+      if (pasted.length === 8) {
         await attemptVerify(newDigits);
       } else {
-        inputRefs.current[Math.min(pasted.length, 5)]?.focus();
+        inputRefs.current[Math.min(pasted.length, 7)]?.focus();
       }
       return;
     }
@@ -83,7 +83,7 @@ export default function Auth() {
     newDigits[i] = digit;
     setDigits(newDigits);
 
-    if (digit && i < 5) {
+    if (digit && i < 7) {
       inputRefs.current[i + 1]?.focus();
     }
 
@@ -101,7 +101,7 @@ export default function Auth() {
   const resetToEmail = () => {
     setSent(false);
     setEmail('');
-    setDigits(['', '', '', '', '', '']);
+    setDigits(['', '', '', '', '', '', '', '']);
     setVerifyError('');
     setResentConfirm(false);
   };

@@ -244,13 +244,13 @@ html, body {
 
 .otp-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-top: 8px;
 }
 
 .otp-box {
-  width: 44px;
-  height: 56px;
+  width: 36px;
+  height: 52px;
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: 10px;
