@@ -332,74 +332,38 @@ html, body {
 .otp-status-error { color: var(--danger); }
 
 .otp-links {
-  display: flex;
-  align-items: center;
-  line-height: 1;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px;
   font-weight: 300;
+  line-height: 1;
   color: rgba(255,255,255,0.35);
+  text-align: center;
+  margin: 0;
+  padding: 0;
   margin-top: 32px;
 }
 
-.otp-resend-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--accent);
-  position: relative;
-  width: 44px;
-  height: 1.2em;
-  overflow: hidden;
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 1;
-}
-
-.otp-resend-btn:disabled { cursor: default; opacity: 0.55; }
-
-.otp-word-resend,
-.otp-word-sent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  white-space: nowrap;
-  transition: transform 0.18s ease, opacity 0.18s ease;
-}
-
-.otp-word-sent {
-  transform: translateX(10px);
-  opacity: 0;
-  transition-delay: 0.06s;
-}
-
-.otp-confirmed .otp-word-resend {
-  transform: translateX(-6px);
-  opacity: 0;
-}
-
-.otp-confirmed .otp-word-sent {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.otp-change-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font-family: var(--font-sans);
+.otp-links .otp-link {
+  font-family: 'Outfit', sans-serif;
   font-size: 12px;
   font-weight: 300;
   line-height: 1;
-  color: var(--accent);
-  transition: opacity 0.15s;
+  color: #3DDCFF;
+  cursor: pointer;
+  display: inline;
+  vertical-align: baseline;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 
-.otp-change-btn:hover { opacity: 0.75; }
+.otp-links .otp-sep {
+  color: rgba(255,255,255,0.2);
+  margin: 0 5px;
+  display: inline;
+  vertical-align: baseline;
+}
 
 /* ─── Setup Pages ─── */
 
