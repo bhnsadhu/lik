@@ -34,7 +34,7 @@ export default function Auth() {
     setError('');
 
     if (!email.toLowerCase().endsWith('@illinois.edu')) {
-      setError('you need a uiuc email — try your @illinois.edu address');
+      setError('you need a uiuc email · try your @illinois.edu address');
       return;
     }
 
@@ -112,8 +112,7 @@ export default function Auth() {
         <h1 className="wordmark">lik</h1>
 
         <p className="auth-tagline">
-          find a place you lik.<br />
-          with someone you lik.
+          find a place you lik. with someone you lik.
         </p>
 
         {!sent ? (
@@ -123,7 +122,7 @@ export default function Auth() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="yournetid@illinois.edu"
+              placeholder="netid@illinois.edu"
               autoComplete="email"
               autoFocus
               required
@@ -133,12 +132,11 @@ export default function Auth() {
               {loading ? 'sending...' : 'send code'}
             </button>
             <p className="auth-edu-note">
-              🎓 uiuc students only — @illinois.edu required
+              uiuc students only · @illinois.edu required
             </p>
           </form>
         ) : (
           <div className="auth-sent">
-            <div className="sent-icon">✉️</div>
             <p style={{ color: 'var(--text)', fontWeight: 500 }}>check your inbox</p>
             <p className="muted">
               we sent a code to <strong>{email}</strong>

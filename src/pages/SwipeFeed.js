@@ -16,15 +16,6 @@ function MatchMoment({ theirProfile, matchId, myProfile, onDismiss, onMessage })
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <motion.div
-        className="match-star"
-        initial={{ scale: 0.3, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.05, type: 'spring', stiffness: 280, damping: 18 }}
-      >
-        🌠
-      </motion.div>
-
       <div className="match-photos-row">
         <motion.div
           className="match-photo-wrap"
@@ -34,7 +25,7 @@ function MatchMoment({ theirProfile, matchId, myProfile, onDismiss, onMessage })
         >
           {myProfile?.photos?.[0]
             ? <img className="match-photo-img" src={myProfile.photos[0]} alt="" />
-            : <div className="match-photo-placeholder">👤</div>}
+            : <div className="match-photo-placeholder" />}
         </motion.div>
         <motion.div
           className="match-photo-wrap"
@@ -44,7 +35,7 @@ function MatchMoment({ theirProfile, matchId, myProfile, onDismiss, onMessage })
         >
           {theirProfile?.photos?.[0]
             ? <img className="match-photo-img" src={theirProfile.photos[0]} alt="" />
-            : <div className="match-photo-placeholder">👤</div>}
+            : <div className="match-photo-placeholder" />}
         </motion.div>
       </div>
 
@@ -133,7 +124,7 @@ function DetailView({ person, onClose }) {
             <div className="detail-section">
               <p className="label">looking for</p>
               <span className={`housing-badge ${person.housing_type}`}>
-                {person.housing_type === 'dorm' ? '🏠 dorm' : '🏢 apartment'}
+                {person.housing_type === 'dorm' ? 'dorm' : 'apartment'}
               </span>
             </div>
           )}
@@ -146,7 +137,7 @@ function DetailView({ person, onClose }) {
           {person.housing_type === 'apartment' && person.budget_min != null && (
             <div className="detail-section">
               <p className="label">budget</p>
-              <p className="detail-value">${person.budget_min}–${person.budget_max}/mo</p>
+              <p className="detail-value">${person.budget_min} to ${person.budget_max}/mo</p>
             </div>
           )}
           {person.housing_type === 'apartment' && areas.length > 0 && (
@@ -199,7 +190,7 @@ function SwipeCardContent({ person, overlay, isTop, depth, onOpenDetail }) {
           draggable={false}
         />
       ) : (
-        <div className="swipe-card-placeholder">👤</div>
+        <div className="swipe-card-placeholder" />
       )}
 
       {isTop && photos.length > 1 && (
@@ -212,7 +203,7 @@ function SwipeCardContent({ person, overlay, isTop, depth, onOpenDetail }) {
 
       {person.housing_type && (
         <div className={`card-housing-badge ${person.housing_type}`}>
-          {person.housing_type === 'dorm' ? '🏠 dorm' : '🏢 apt'}
+          {person.housing_type === 'dorm' ? 'dorm' : 'apt'}
         </div>
       )}
 
@@ -359,8 +350,8 @@ export default function SwipeFeed() {
       <div className="feed-filter-bar">
         {[
           { key: null, label: 'all' },
-          { key: 'dorm', label: '🏠 dorm' },
-          { key: 'apartment', label: '🏢 apt' },
+          { key: 'dorm', label: 'dorm' },
+          { key: 'apartment', label: 'apt' },
         ].map(({ key, label }) => (
           <button
             key={String(key)}
@@ -379,7 +370,6 @@ export default function SwipeFeed() {
           </div>
         ) : deck.length === 0 ? (
           <div className="feed-empty">
-            <div className="empty-emoji">✨</div>
             <p className="empty-title">you've seen everyone</p>
             <p className="muted">check back later</p>
           </div>

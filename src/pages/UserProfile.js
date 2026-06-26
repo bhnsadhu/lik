@@ -35,7 +35,7 @@ export default function UserProfile() {
         const ans = quiz[q.key];
         if (!ans) return null;
         const opt = ans === 'a' ? q.a : q.b;
-        return `${opt.emoji} ${opt.label}`;
+        return opt.label;
       }).filter(Boolean)
     : [];
 
@@ -75,7 +75,7 @@ export default function UserProfile() {
             alt={profile.name}
           />
         ) : (
-          <div className="profile-hero-placeholder">👤</div>
+          <div className="profile-hero-placeholder" />
         )}
 
         {/* Photo bars */}
@@ -121,7 +121,7 @@ export default function UserProfile() {
           <div className="profile-section">
             <p className="label">looking for</p>
             <span className={`housing-badge ${profile.housing_type}`}>
-              {profile.housing_type === 'dorm' ? '🏠 dorm' : '🏢 apartment'}
+              {profile.housing_type === 'dorm' ? 'dorm' : 'apartment'}
             </span>
           </div>
         )}
@@ -147,7 +147,7 @@ export default function UserProfile() {
         {profile.housing_type === 'apartment' && profile.budget_min != null && (
           <div className="profile-section">
             <p className="label">budget</p>
-            <p className="profile-detail">${profile.budget_min} – ${profile.budget_max}/mo</p>
+            <p className="profile-detail">${profile.budget_min} to ${profile.budget_max}/mo</p>
           </div>
         )}
 

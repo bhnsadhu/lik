@@ -73,10 +73,10 @@ export default function BudgetSetup() {
     if (err) {
       const msg =
         err.message?.toLowerCase().includes('fetch') || err.message?.toLowerCase().includes('network')
-          ? "couldn't reach the server — check your connection"
+          ? "couldn't reach the server · check your connection"
           : err.status >= 500
-          ? 'server hiccup — try again in a moment'
-          : 'save failed — try again';
+          ? 'server hiccup · try again in a moment'
+          : 'save failed · try again';
       setError(msg);
       setSaving(false);
       return;
@@ -122,7 +122,7 @@ export default function BudgetSetup() {
                   max={5000}
                 />
               </div>
-              <span className="budget-to">–</span>
+              <span className="budget-to">to</span>
               <div className="budget-input">
                 <span className="budget-symbol">$</span>
                 <input

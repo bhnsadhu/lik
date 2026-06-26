@@ -44,7 +44,7 @@ export default function HousingSetup() {
         </div>
 
         <h2 className="setup-title">where are you living?</h2>
-        <p className="setup-sub">tap to continue — you can change this later</p>
+        <p className="setup-sub">tap to continue · you can change this later</p>
 
         <div className="housing-cards">
           <button
@@ -52,7 +52,6 @@ export default function HousingSetup() {
             onClick={() => handleSelect('dorm')}
             disabled={saving}
           >
-            <span className="housing-card-emoji">🏠</span>
             <span className="housing-card-label">dorm</span>
             <span className="housing-card-sub">university housing</span>
           </button>
@@ -61,7 +60,6 @@ export default function HousingSetup() {
             onClick={() => handleSelect('apartment')}
             disabled={saving}
           >
-            <span className="housing-card-emoji">🏢</span>
             <span className="housing-card-label">apartment</span>
             <span className="housing-card-sub">off-campus housing</span>
           </button>

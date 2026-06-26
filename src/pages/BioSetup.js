@@ -62,7 +62,7 @@ export default function BioSetup() {
         </div>
 
         <h2 className="setup-title">say something</h2>
-        <p className="setup-sub">a line about you — totally optional</p>
+        <p className="setup-sub">a line about you · totally optional</p>
 
         <div className="bio-wrap">
           <textarea

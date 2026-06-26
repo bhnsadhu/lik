@@ -99,7 +99,7 @@ export default function PreferencesSetup() {
       .eq('id', user.id);
 
     if (err) {
-      setError('save failed — try again');
+      setError('save failed · try again');
       setSaving(false);
       return;
     }
@@ -144,7 +144,7 @@ export default function PreferencesSetup() {
                     max={5000}
                   />
                 </div>
-                <span className="budget-to">–</span>
+                <span className="budget-to">to</span>
                 <div className="budget-input">
                   <span className="budget-symbol">$</span>
                   <input

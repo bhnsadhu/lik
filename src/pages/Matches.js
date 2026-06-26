@@ -57,9 +57,8 @@ export default function Matches() {
       ) : matches.length === 0 ? (
         <div className="matches-empty-wrap">
           <div className="empty-state">
-            <p className="empty-emoji">💫</p>
             <p className="empty-title">no liks yet</p>
-            <p className="muted">go discover some people — your match is out there</p>
+            <p className="muted">go discover some people · your match is out there</p>
           </div>
         </div>
       ) : (
@@ -77,7 +76,7 @@ export default function Matches() {
                   {other.photos?.[0] ? (
                     <img src={other.photos[0]} alt={other.name} />
                   ) : (
-                    <div className="match-avatar-placeholder">🎓</div>
+                    <div className="match-avatar-placeholder" />
                   )}
                 </div>
                 <div className="match-row-info">

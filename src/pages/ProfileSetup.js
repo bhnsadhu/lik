@@ -38,7 +38,7 @@ export default function ProfileSetup() {
         .upload(path, file, { upsert: false });
 
       if (uploadErr) {
-        setError('photo upload failed — try again');
+        setError('photo upload failed · try again');
         setUploading(false);
         return;
       }
@@ -87,10 +87,10 @@ export default function ProfileSetup() {
     if (err) {
       const msg =
         err.message?.toLowerCase().includes('fetch') || err.message?.toLowerCase().includes('network')
-          ? "couldn't reach the server — check your connection"
+          ? "couldn't reach the server · check your connection"
           : err.status >= 500
-          ? 'server hiccup — try again in a moment'
-          : 'profile save failed — try again';
+          ? 'server hiccup · try again in a moment'
+          : 'profile save failed · try again';
       setError(msg);
       setSaving(false);
       return;
@@ -167,7 +167,7 @@ export default function ProfileSetup() {
 
           <div className="field-group">
             <label className="label">
-              photos <span className="muted" style={{ textTransform: 'none', letterSpacing: 0 }}>— at least 3</span>
+              photos <span className="muted" style={{ textTransform: 'none', letterSpacing: 0 }}>· at least 3</span>
             </label>
             <div className="photo-grid">
               {photos.map((url, i) => (

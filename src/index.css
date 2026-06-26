@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;600&display=swap');
+
 :root {
   --bg: #0A0E12;
   --surface: #121A20;
@@ -7,8 +9,8 @@
   --border: rgba(61, 220, 255, 0.12);
   --danger: #FF6B6B;
   --radius: 16px;
-  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'DM Serif Display', serif;
+  --font-sans: 'Outfit', sans-serif;
 }
 
 * {
@@ -23,6 +25,7 @@ html, body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior: none;
@@ -215,20 +218,45 @@ html, body {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 36px;
   align-items: center;
 }
 
-.auth-tagline { color: var(--muted); font-size: 1.15rem; line-height: 1.75; }
-.auth-form { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+.auth-inner .wordmark { margin-bottom: 8px; }
+
+.auth-tagline {
+  color: rgba(255,255,255,0.38);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.auth-form { width: 100%; display: flex; flex-direction: column; }
+
+.auth-form .input {
+  font-size: 13px;
+  font-weight: 300;
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 15px 18px;
+  margin-bottom: 10px;
+}
+
+.auth-form .input::placeholder { color: rgba(255,255,255,0.28); }
+
+.auth-form .btn-primary {
+  border-radius: 12px;
+  font-size: 14px;
+  padding: 15px;
+  margin-bottom: 14px;
+}
 
 .auth-edu-note {
-  color: var(--muted);
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+  color: rgba(255,255,255,0.18);
+  font-size: 11px;
+  font-weight: 300;
+  text-align: center;
 }
 
 .auth-sent {
@@ -239,7 +267,6 @@ html, body {
   padding: 8px 0;
 }
 
-.sent-icon { font-size: 3.5rem; margin-bottom: 4px; line-height: 1; }
 .auth-sent strong { color: var(--accent); font-weight: 500; }
 
 .otp-row {

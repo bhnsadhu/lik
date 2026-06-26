@@ -23,7 +23,7 @@ export default function BasicsSetup() {
     setError('');
     if (!name.trim()) { setError('add your name'); return; }
     const ageNum = parseInt(age, 10);
-    if (!age || ageNum < 17 || ageNum > 35) { setError('age must be 17–35'); return; }
+    if (!age || ageNum < 17 || ageNum > 35) { setError('age must be 17 to 35'); return; }
     if (!year) { setError('pick your year'); return; }
     setSaving(true);
 
@@ -100,7 +100,7 @@ export default function BasicsSetup() {
 
           <div className="field-group">
             <label className="label">
-              major <span style={{ color: 'var(--muted)', textTransform: 'none', letterSpacing: 0, fontSize: '0.8rem' }}>— optional</span>
+              major <span style={{ color: 'var(--muted)', textTransform: 'none', letterSpacing: 0, fontSize: '0.8rem' }}>· optional</span>
             </label>
             <input
               className="input"

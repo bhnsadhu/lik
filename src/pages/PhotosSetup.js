@@ -31,7 +31,7 @@ export default function PhotosSetup() {
         .from('photos')
         .upload(path, file, { upsert: false });
       if (uploadErr) {
-        setError('upload failed — try again');
+        setError('upload failed · try again');
         setUploading(false);
         return;
       }

@@ -227,14 +227,12 @@ export default function Quiz() {
                 className={`quiz-option${answers[q.key] === 'a' ? ' selected' : ''}`}
                 onClick={() => handleAnswer('a')}
               >
-                <span className="option-emoji">{q.a.emoji}</span>
                 <span className="option-label">{q.a.label}</span>
               </button>
               <button
                 className={`quiz-option${answers[q.key] === 'b' ? ' selected' : ''}`}
                 onClick={() => handleAnswer('b')}
               >
-                <span className="option-emoji">{q.b.emoji}</span>
                 <span className="option-label">{q.b.label}</span>
               </button>
             </div>
