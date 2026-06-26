@@ -210,6 +210,7 @@ html, body {
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
+  position: relative;
 }
 
 .auth-inner {
@@ -268,32 +269,61 @@ html, body {
   text-align: center;
 }
 
-.auth-sent {
+/* ─── OTP Sent Screen ─── */
+
+.otp-back {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.otp-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 8px 0;
+  text-align: center;
 }
 
-.auth-sent strong { color: var(--accent); font-weight: 500; }
+.otp-headline {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.otp-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.otp-email { color: var(--accent); }
 
 .otp-row {
   display: flex;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 8px;
 }
 
 .otp-box {
-  width: 36px;
-  height: 52px;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
+  width: 30px;
+  height: 38px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
   color: var(--text);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-family: inherit;
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
   outline: none;
   transition: border-color 0.15s;
@@ -303,6 +333,31 @@ html, body {
 
 .otp-box:focus { border-color: var(--accent); }
 .otp-box:disabled { opacity: 0.5; }
+
+.otp-status {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.35);
+  margin-top: 12px;
+}
+
+.otp-status-error { color: var(--danger); }
+
+.otp-resend {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 32px;
+  transition: opacity 0.15s;
+}
+
+.otp-resend:disabled { cursor: default; opacity: 0.6; }
+.otp-resend-accent { color: var(--accent); }
 
 /* ─── Setup Pages ─── */
 
