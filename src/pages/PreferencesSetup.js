@@ -107,8 +107,9 @@ export default function PreferencesSetup() {
     await refreshProfile();
     if (returnTo) {
       navigate(returnTo);
+    } else {
+      navigate('/feed', { replace: true });
     }
-    // else: router sees step='done' → main app
   };
 
   return (
