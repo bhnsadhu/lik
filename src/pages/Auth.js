@@ -137,47 +137,49 @@ export default function Auth() {
           </form>
         </div>
       ) : (
-          <>
-            <button className="otp-back" onClick={resetToEmail}>←</button>
-            <div className="otp-inner">
-              <h2 className="otp-headline">check your inbox</h2>
-              <p className="otp-sub">
-                we sent a code to<br />
-                <span className="otp-email">{email}</span>
-              </p>
+          <div className="otp-inner">
+            <h2 className="otp-headline">check your inbox</h2>
+            <p className="otp-sub">
+              we sent a code to<br />
+              <span className="otp-email">{email}</span>
+            </p>
 
-              <div className="otp-row">
-                {digits.map((d, i) => (
-                  <input
-                    key={i}
-                    ref={el => { inputRefs.current[i] = el; }}
-                    className="otp-box"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    value={d}
-                    onChange={e => handleDigitChange(i, e.target.value)}
-                    onKeyDown={e => handleKeyDown(i, e)}
-                    onFocus={e => e.target.select()}
-                    autoFocus={i === 0}
-                    disabled={verifying}
-                  />
-                ))}
-              </div>
-
-              {verifying && <p className="otp-status">verifying...</p>}
-              {verifyError && <p className="otp-status otp-status-error">{verifyError}</p>}
-
-              <button className="otp-resend" onClick={handleResend} disabled={resending}>
-                {resending
-                  ? 'sending...'
-                  : resentConfirm
-                  ? <span className="otp-resend-accent">sent again ✓</span>
-                  : <><span>didn't get it? </span><span className="otp-resend-accent">resend</span></>
-                }
-              </button>
+            <div className="otp-row">
+              {digits.map((d, i) => (
+                <input
+                  key={i}
+                  ref={el => { inputRefs.current[i] = el; }}
+                  className="otp-box"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={d}
+                  onChange={e => handleDigitChange(i, e.target.value)}
+                  onKeyDown={e => handleKeyDown(i, e)}
+                  onFocus={e => e.target.select()}
+                  autoFocus={i === 0}
+                  disabled={verifying}
+                />
+              ))}
             </div>
-          </>
+
+            {verifying && <p className="otp-status">verifying...</p>}
+            {verifyError && <p className="otp-status otp-status-error">{verifyError}</p>}
+
+            <p className="otp-links">
+              <span>didn't get it?&nbsp;</span>
+              <button
+                className={`otp-resend-btn${resentConfirm ? ' otp-confirmed' : ''}`}
+                onClick={handleResend}
+                disabled={resending}
+              >
+                <span className="otp-word-resend">resend</span>
+                <span className="otp-word-sent">sent ✓</span>
+              </button>
+              <span>&nbsp;·&nbsp;</span>
+              <button className="otp-change-btn" onClick={resetToEmail}>change email</button>
+            </p>
+          </div>
         )}
     </div>
   );
