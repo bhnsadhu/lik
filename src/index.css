@@ -221,7 +221,7 @@ html, body {
   align-items: center;
 }
 
-.auth-inner .wordmark { margin-bottom: 8px; }
+.auth-inner .wordmark { margin-bottom: 8px; color: #fff; }
 
 .auth-tagline {
   color: rgba(255,255,255,0.38);
@@ -244,6 +244,7 @@ html, body {
 }
 
 .auth-form .input::placeholder { color: rgba(255,255,255,0.28); }
+.auth-form .input:focus { border-color: var(--accent); }
 
 .auth-form .btn-primary {
   border-radius: 12px;
