@@ -166,11 +166,8 @@ export default function Auth() {
             {verifying && <p className="otp-status">verifying...</p>}
             {verifyError && <p className="otp-status otp-status-error">{verifyError}</p>}
 
-            <p className="otp-links">
-              didn't get it?{' '}
-              <span className="otp-link" onClick={handleResend}>{resentConfirm ? 'sent ✓' : 'resend'}</span>
-              <span className="otp-sep">·</span>
-              <span className="otp-link" onClick={resetToEmail}>change email</span>
+            <p className="otp-bottom">
+              didn't get it? <a onClick={handleResend}>{resentConfirm ? 'sent ✓' : 'resend'}</a><span className="sep">·</span><a onClick={resetToEmail}>change email</a>
             </p>
           </div>
         )}

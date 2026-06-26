@@ -331,38 +331,34 @@ html, body {
 
 .otp-status-error { color: var(--danger); }
 
-.otp-links {
+.otp-bottom {
   font-family: 'Outfit', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  line-height: 1;
+  line-height: 12px;
   color: rgba(255,255,255,0.35);
   text-align: center;
   margin: 0;
   padding: 0;
+  display: block;
   margin-top: 32px;
 }
 
-.otp-links .otp-link {
+.otp-bottom a {
   font-family: 'Outfit', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  line-height: 1;
+  line-height: 12px;
   color: #3DDCFF;
   cursor: pointer;
+  text-decoration: none;
   display: inline;
-  vertical-align: baseline;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
 }
 
-.otp-links .otp-sep {
+.otp-bottom .sep {
   color: rgba(255,255,255,0.2);
-  margin: 0 5px;
+  padding: 0 5px;
   display: inline;
-  vertical-align: baseline;
 }
 
 /* ─── Setup Pages ─── */
