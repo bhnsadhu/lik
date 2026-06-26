@@ -333,7 +333,8 @@ html, body {
 
 .otp-links {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  line-height: 1;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.35);
@@ -354,7 +355,8 @@ html, body {
   height: 1.2em;
   overflow: hidden;
   display: inline-block;
-  vertical-align: baseline;
+  vertical-align: middle;
+  line-height: 1;
 }
 
 .otp-resend-btn:disabled { cursor: default; opacity: 0.55; }
@@ -392,11 +394,12 @@ html, body {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.35);
-  transition: color 0.15s;
+  line-height: 1;
+  color: var(--accent);
+  transition: opacity 0.15s;
 }
 
-.otp-change-btn:hover { color: rgba(255,255,255,0.6); }
+.otp-change-btn:hover { opacity: 0.75; }
 
 /* ─── Setup Pages ─── */
 
