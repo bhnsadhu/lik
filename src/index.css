@@ -253,6 +253,14 @@ html, body {
   margin-bottom: 14px;
 }
 
+.auth-error {
+  color: var(--danger);
+  font-size: 11px;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
 .auth-edu-note {
   color: rgba(255,255,255,0.18);
   font-size: 11px;

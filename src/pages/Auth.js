@@ -34,7 +34,7 @@ export default function Auth() {
     setError('');
 
     if (!email.toLowerCase().endsWith('@illinois.edu')) {
-      setError('you need a uiuc email · try your @illinois.edu address');
+      setError('illinois.edu email required');
       return;
     }
 
@@ -43,7 +43,7 @@ export default function Auth() {
     setLoading(false);
 
     if (err) {
-      setError('something went wrong. try again?');
+      setError('something went wrong · try again');
     } else {
       setSent(true);
     }
@@ -127,10 +127,10 @@ export default function Auth() {
               autoFocus
               required
             />
-            {error && <p className="error-text">{error}</p>}
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? 'sending...' : 'send code'}
             </button>
+            {error && <p className="auth-error">{error}</p>}
             <p className="auth-edu-note">
               uiuc students only · @illinois.edu required
             </p>
