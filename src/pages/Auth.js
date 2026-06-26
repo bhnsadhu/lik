@@ -108,14 +108,14 @@ export default function Auth() {
 
   return (
     <div className="auth-page">
-      <div className="auth-inner">
-        <h1 className="wordmark">lik</h1>
+      {!sent ? (
+        <div className="auth-inner">
+          <h1 className="wordmark">lik</h1>
 
-        <p className="auth-tagline">
-          find a place you lik. with someone you lik.
-        </p>
+          <p className="auth-tagline">
+            find a place you lik. with someone you lik.
+          </p>
 
-        {!sent ? (
           <form onSubmit={handleSubmit} className="auth-form">
             <input
               className="input"
@@ -135,7 +135,8 @@ export default function Auth() {
               uiuc students only · @illinois.edu required
             </p>
           </form>
-        ) : (
+        </div>
+      ) : (
           <>
             <button className="otp-back" onClick={resetToEmail}>←</button>
             <div className="otp-inner">
@@ -178,7 +179,6 @@ export default function Auth() {
             </div>
           </>
         )}
-      </div>
     </div>
   );
 }

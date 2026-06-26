@@ -277,8 +277,9 @@ html, body {
   left: 24px;
   background: none;
   border: none;
-  color: rgba(255,255,255,0.35);
-  font-size: 1.25rem;
+  color: rgba(255,255,255,0.6);
+  font-size: 24px;
+  font-weight: 600;
   cursor: pointer;
   padding: 4px;
   line-height: 1;
@@ -294,6 +295,7 @@ html, body {
 .otp-headline {
   font-family: var(--font-serif);
   font-size: 28px;
+  font-weight: 400;
   color: #fff;
   line-height: 1.2;
   margin-bottom: 8px;
