@@ -166,12 +166,9 @@ export default function Auth() {
             {verifying && <p className="otp-status">verifying...</p>}
             {verifyError && <p className="otp-status otp-status-error">{verifyError}</p>}
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginTop: '32px' }}>
-              <span style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: 'rgba(255,255,255,0.35)', lineHeight: '1' }}>didn't get it?&nbsp;</span>
-              <span onClick={handleResend} style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: '#3DDCFF', lineHeight: '1', cursor: 'pointer' }}>{resentConfirm ? 'sent ✓' : 'resend'}</span>
-              <span style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: 'rgba(255,255,255,0.2)', lineHeight: '1', margin: '0 6px' }}>·</span>
-              <span onClick={resetToEmail} style={{ fontFamily: 'Outfit', fontWeight: 300, fontSize: '12px', color: '#3DDCFF', lineHeight: '1', cursor: 'pointer' }}>change email</span>
-            </div>
+            <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 300, color: 'rgba(255,255,255,0.35)', textAlign: 'center', margin: 0, lineHeight: '1', marginTop: '32px' }}>
+              didn't get it?{' '}<span onClick={handleResend} style={{ color: '#3DDCFF', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 300 }}>{resentConfirm ? 'sent ✓' : 'resend'}</span>{' · '}<span onClick={resetToEmail} style={{ color: '#3DDCFF', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 300 }}>change email</span>
+            </p>
           </div>
         )}
     </div>
