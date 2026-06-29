@@ -41,9 +41,9 @@ export default function HousingSetup() {
     <div className="setup-page">
       <div className="setup-inner">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
-          <span onClick={() => navigate('/setup/basics')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+          <span onClick={() => navigate('/setup/basics')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, width: '24px' }}>←</span>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
-          <span style={{ width: '18px' }}></span>
+          <span style={{ width: '24px' }}></span>
         </div>
         {!isEditMode && <StepIndicator currentStep={3} />}
 

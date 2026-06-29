@@ -116,9 +116,9 @@ export default function PreferencesSetup() {
     <div className="setup-page">
       <div className="setup-inner">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
-          <span onClick={() => navigate('/setup/quiz')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+          <span onClick={() => navigate('/setup/quiz')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, width: '24px' }}>←</span>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
-          <span style={{ width: '18px' }}></span>
+          <span style={{ width: '24px' }}></span>
         </div>
         {!isEditMode && <StepIndicator currentStep={5} />}
 
@@ -219,7 +219,7 @@ export default function PreferencesSetup() {
         </div>
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ position: 'sticky', bottom: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
         <button onClick={handleSubmit} style={{
           fontFamily: "'Outfit', sans-serif", fontSize: 12, fontWeight: 600,
           background: '#3DDCFF', color: '#0A0E12',

@@ -108,10 +108,12 @@ export default function PhotosSetup() {
   };
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
       {/* Header */}
-      <div style={{ padding: '16px 18px 8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
+        <span style={{ width: '24px' }} />
         <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+        <span style={{ width: '24px' }} />
       </div>
 
       {!isEditMode && !returnToProfile && <StepIndicator currentStep={1} />}
@@ -213,7 +215,7 @@ export default function PhotosSetup() {
       )}
 
       {/* Bottom bar */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 18px 20px' }}>
+      <div style={{ position: 'sticky', bottom: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
         <button
           onClick={handleContinue}
           style={{

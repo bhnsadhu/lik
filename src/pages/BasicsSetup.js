@@ -55,37 +55,6 @@ const UIUC_MAJORS = [
   'Systems Engineering and Design','Theatre','Urban Studies and Planning','Voice',
 ];
 
-const YEARS = [
-  'freshman','sophomore','junior','senior',
-  'masters student','doctoral student','other',
-];
-
-const F = {
-  background: 'transparent',
-  border: 'none',
-  borderBottom: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 0,
-  padding: '8px 0',
-  fontFamily: "'Outfit', sans-serif",
-  fontSize: 12,
-  fontWeight: 300,
-  color: 'white',
-  width: '100%',
-  boxSizing: 'border-box',
-  outline: 'none',
-};
-
-const LBL = {
-  fontFamily: "'Outfit', sans-serif",
-  fontSize: 9,
-  fontWeight: 300,
-  color: 'rgba(255,255,255,0.28)',
-  marginBottom: 5,
-  display: 'block',
-};
-
-const WRAP = { padding: '0 18px', marginBottom: 16 };
-
 function dataUrlToBlob(dataUrl) {
   const [header, data] = dataUrl.split(',');
   const mime = header.match(/:(.*?);/)[1];
@@ -109,11 +78,10 @@ export default function BasicsSetup() {
 
   const [name, setName] = useState(profile?.name || '');
   const [age, setAge] = useState(profile?.age ? String(profile.age) : '');
-  const [ageError, setAgeError] = useState('');
+  const [ageError, setAgeError] = useState(false);
   const [year, setYear] = useState(profile?.year || '');
   const [major, setMajor] = useState(profile?.major || '');
-  const [majorSuggestions, setMajorSuggestions] = useState([]);
-  const [showMajorDrop, setShowMajorDrop] = useState(false);
+  const [showMajorDropdown, setShowMajorDropdown] = useState(false);
   const [bio, setBio] = useState(profile?.bio || '');
   const [profilePicDataUrl, setProfilePicDataUrl] = useState(profile?.profile_pic_url || null);
   const [rawPhotoDataUrl, setRawPhotoDataUrl] = useState(null);
@@ -130,26 +98,9 @@ export default function BasicsSetup() {
   const pinchRef = useRef({ dist: 0, scale: 1 });
   const isDragging = useRef(false);
 
-  const handleMajorChange = (val) => {
-    setMajor(val);
-    if (val.trim().length < 2) { setMajorSuggestions([]); setShowMajorDrop(false); return; }
-    const lower = val.toLowerCase();
-    const matches = UIUC_MAJORS.filter(m => m.toLowerCase().includes(lower)).slice(0, 8);
-    setMajorSuggestions(matches);
-    setShowMajorDrop(matches.length > 0);
-  };
-
-  const selectMajor = (m) => { setMajor(m); setMajorSuggestions([]); setShowMajorDrop(false); };
-
-  const handleAgeBlur = () => {
-    if (!age) { setAgeError(''); return; }
-    const n = parseInt(age, 10);
-    if (String(age).length !== 2 || isNaN(n) || n < 16) {
-      setAgeError('must be 2 digits, 16 or older');
-    } else {
-      setAgeError('');
-    }
-  };
+  const filteredMajors = major.trim().length >= 1
+    ? UIUC_MAJORS.filter(m => m.toLowerCase().includes(major.toLowerCase()))
+    : [];
 
   const handleCropFileSelect = (e) => {
     const file = e.target.files[0];
@@ -157,10 +108,7 @@ export default function BasicsSetup() {
     const reader = new FileReader();
     reader.onload = ev => {
       setRawPhotoDataUrl(ev.target.result);
-      setPanX(0);
-      setPanY(0);
-      setScale(1);
-      setShowCropModal(true);
+      setPanX(0); setPanY(0); setScale(1);
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -182,8 +130,7 @@ export default function BasicsSetup() {
       setPanY(panStartRef.current.py + (e.touches[0].clientY - panStartRef.current.y));
     } else if (e.touches.length === 2) {
       const newDist = getPinchDist(e.touches);
-      const newScale = Math.min(3, Math.max(0.5, pinchRef.current.scale * (newDist / pinchRef.current.dist)));
-      setScale(newScale);
+      setScale(Math.min(3, Math.max(0.5, pinchRef.current.scale * (newDist / pinchRef.current.dist))));
     }
   };
 
@@ -230,7 +177,7 @@ export default function BasicsSetup() {
   };
 
   const ageNum = parseInt(age, 10);
-  const ageValid = String(age).length === 2 && !isNaN(ageNum) && ageNum >= 16;
+  const ageValid = String(age).length === 2 && !isNaN(ageNum) && ageNum >= 16 && !ageError;
   const canContinue = !!(name.trim() && ageValid && year && major.trim() && profilePicDataUrl && bio.trim());
 
   const handleContinue = async () => {
@@ -270,115 +217,156 @@ export default function BasicsSetup() {
 
   return (
     <>
-      <style>{`
-        .lk-input::placeholder { color: rgba(255,255,255,0.18); }
-        .lk-select { -webkit-appearance: none; appearance: none; }
-        .lk-select option { background: #131820; color: white; }
-        .lk-major-opt:hover { color: white !important; }
-      `}</style>
+      <style>{`.lk-input::placeholder { color: rgba(255,255,255,0.18); }`}</style>
 
-      <div style={{ minHeight: '100vh', overflowY: 'auto', background: '#0A0E12', paddingBottom: 80 }}>
+      <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
-          <span onClick={() => navigate('/setup/photos')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+          <span onClick={() => navigate('/setup/photos')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, width: '24px' }}>←</span>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
-          <span style={{ width: '18px' }}></span>
+          <span style={{ width: '24px' }} />
         </div>
 
         {!isEditMode && <StepIndicator currentStep={2} />}
 
-        <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: '#fff', padding: '0 18px 3px', margin: 0 }}>your profile</p>
-        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 14px', margin: 0 }}>how you show up everywhere</p>
+        <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: '#fff', padding: '0 18px 12px', margin: 0 }}>your profile</p>
 
-        {/* pfp + name — inline flex row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '0 18px', marginBottom: 16 }}>
-          {/* Profile pic circle */}
-          <div style={{ position: 'relative', width: 58, height: 58, flexShrink: 0 }}>
-            <div style={{ width: 58, height: 58, borderRadius: '50%', background: '#0d1820', border: '1.5px solid rgba(255,255,255,0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+        {/* Cards */}
+        <div style={{ padding: '0 14px' }}>
+
+          {/* Profile pic card */}
+          <div
+            style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', position: 'relative' }}
+            onClick={() => setShowCropModal(true)}
+          >
+            <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#131820', border: '1.5px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
               {profilePicDataUrl
-                ? <img src={profilePicDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
-                : <span style={{ color: 'rgba(255,255,255,0.18)', fontSize: 20, fontWeight: 300, lineHeight: 1 }}>+</span>
+                ? <img src={profilePicDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>+</span>
               }
             </div>
-            {profilePicDataUrl
-              ? <div onClick={() => setShowCropModal(true)} style={{ position: 'absolute', inset: 0, borderRadius: '50%', cursor: 'pointer' }} />
-              : <input type="file" accept="image/*" onChange={handleCropFileSelect} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', borderRadius: '50%' }} />
-            }
+            <div>
+              <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>profile pic</div>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.2)', fontWeight: 300, fontFamily: "'Outfit', sans-serif" }}>{profilePicDataUrl ? 'tap to change' : 'tap to set'}</div>
+            </div>
+            {/* Overlay file input when no pic — opens native picker directly */}
+            {!profilePicDataUrl && (
+              <input type="file" accept="image/*" onChange={handleCropFileSelect} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', borderRadius: '12px' }} onClick={e => e.stopPropagation()} />
+            )}
           </div>
-          {/* Name field */}
-          <div style={{ flex: 1 }}>
-            <span style={LBL}>name</span>
-            <input className="lk-input" style={F} type="text" value={name}
-              onChange={e => setName(e.target.value)} placeholder="first and last name" maxLength={60} />
-          </div>
-        </div>
 
-        {/* age + year */}
-        <div style={{ display: 'flex', gap: 20, padding: '0 18px', marginBottom: 16 }}>
-          <div style={{ flex: 1 }}>
-            <span style={LBL}>age</span>
-            <input className="lk-input" style={{ ...F, borderBottomColor: ageError ? 'rgba(255,80,80,0.6)' : 'rgba(255,255,255,0.08)' }}
-              type="number" value={age}
-              onChange={e => setAge(e.target.value)} onBlur={handleAgeBlur}
-              placeholder="16+" min={16} max={99} />
-            {ageError && <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,80,80,0.7)', display: 'block', marginTop: 3 }}>{ageError}</span>}
+          {/* Name card */}
+          <div style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px' }}>
+            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>name</div>
+            <input
+              className="lk-input"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="first and last name"
+              maxLength={60}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box' }}
+            />
           </div>
-          <div style={{ flex: 1 }}>
-            <span style={LBL}>year</span>
-            <div style={{ position: 'relative' }}>
-              <select className="lk-select" style={{ ...F, cursor: 'pointer' }} value={year} onChange={e => setYear(e.target.value)}>
-                <option value="" disabled>select</option>
-                {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+
+          {/* Age + year cards */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ flex: 1, background: '#0d1117', borderRadius: '12px', padding: '12px' }}>
+              <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>age</div>
+              <input
+                className="lk-input"
+                type="number"
+                value={age}
+                onChange={e => setAge(e.target.value)}
+                placeholder="16+"
+                min={16} max={99}
+                style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: ageError ? 'rgba(255,80,80,0.8)' : '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
+                onBlur={() => {
+                  if (!age) { setAgeError(false); return; }
+                  if (String(age).length !== 2 || parseInt(age, 10) < 16) setAgeError(true);
+                  else setAgeError(false);
+                }}
+              />
+              {ageError && <div style={{ fontSize: '9px', color: 'rgba(255,80,80,0.7)', marginTop: '3px', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>must be 2 digits, 16 or older</div>}
+            </div>
+            <div style={{ flex: 1, background: '#0d1117', borderRadius: '12px', padding: '12px', position: 'relative' }}>
+              <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>year</div>
+              <select
+                value={year}
+                onChange={e => setYear(e.target.value)}
+                style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: year ? '#fff' : 'rgba(255,255,255,0.2)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, appearance: 'none', WebkitAppearance: 'none', cursor: 'pointer' }}
+              >
+                <option value="" disabled style={{ background: '#131820' }}>select</option>
+                <option value="freshman" style={{ background: '#131820' }}>freshman</option>
+                <option value="sophomore" style={{ background: '#131820' }}>sophomore</option>
+                <option value="junior" style={{ background: '#131820' }}>junior</option>
+                <option value="senior" style={{ background: '#131820' }}>senior</option>
+                <option value="masters student" style={{ background: '#131820' }}>masters student</option>
+                <option value="doctoral student" style={{ background: '#131820' }}>doctoral student</option>
+                <option value="other" style={{ background: '#131820' }}>other</option>
               </select>
-              <span style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', fontSize: 10, pointerEvents: 'none' }}>▾</span>
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', fontSize: '10px', pointerEvents: 'none' }}>▾</span>
             </div>
           </div>
+
+          {/* Major card with autocomplete */}
+          <div style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px', position: 'relative' }}>
+            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>major</div>
+            <input
+              className="lk-input"
+              value={major}
+              onChange={e => { setMajor(e.target.value); setShowMajorDropdown(true); }}
+              onBlur={() => setTimeout(() => setShowMajorDropdown(false), 150)}
+              placeholder="start typing your major..."
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
+            />
+            {showMajorDropdown && major && filteredMajors.length > 0 && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#131820', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', zIndex: 10, maxHeight: '160px', overflowY: 'auto', marginTop: '4px' }}>
+                {filteredMajors.slice(0, 6).map((m, i) => (
+                  <div
+                    key={i}
+                    onMouseDown={() => { setMajor(m); setShowMajorDropdown(false); }}
+                    style={{ padding: '10px 14px', fontSize: '11px', color: i === 0 ? '#3DDCFF' : 'rgba(255,255,255,0.5)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer' }}
+                  >{m}</div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Bio card */}
+          <div style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px' }}>
+            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>bio</div>
+            <textarea
+              className="lk-input"
+              value={bio}
+              onChange={e => setBio(e.target.value.slice(0, 150))}
+              placeholder="night owl, keeps things clean, loves to cook"
+              rows={2}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', resize: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box' }}
+            />
+            <div style={{ textAlign: 'right', fontSize: '8px', color: 'rgba(255,255,255,0.15)', marginTop: '4px', fontFamily: "'Outfit', sans-serif" }}>{bio.length} / 150</div>
+          </div>
+
+          {error && <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '0 0 8px' }}>{error}</p>}
         </div>
 
-        {/* major autocomplete */}
-        <div style={{ ...WRAP, position: 'relative' }}>
-          <span style={LBL}>major</span>
-          <input className="lk-input" style={F} type="text" value={major}
-            onChange={e => handleMajorChange(e.target.value)}
-            onFocus={() => { if (major.trim().length >= 2 && majorSuggestions.length > 0) setShowMajorDrop(true); }}
-            onBlur={() => setTimeout(() => setShowMajorDrop(false), 150)}
-            placeholder="start typing your major..." />
-          {showMajorDrop && (
-            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#131820', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, zIndex: 10, maxHeight: 160, overflowY: 'auto' }}>
-              {majorSuggestions.map((m, i) => (
-                <div key={m} className="lk-major-opt" onMouseDown={() => selectMajor(m)}
-                  style={{ padding: '10px 14px', fontFamily: "'Outfit', sans-serif", fontSize: 12, fontWeight: 300, color: i === 0 ? '#3DDCFF' : 'rgba(255,255,255,0.5)', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer' }}>
-                  {m}
-                </div>
-              ))}
-            </div>
-          )}
+        {/* Sticky bottom bar */}
+        <div style={{ position: 'sticky', bottom: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            onClick={handleContinue}
+            disabled={!canContinue}
+            style={{
+              background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.12)',
+              color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.3)',
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: '12px',
+              fontWeight: 600,
+              padding: '9px 20px',
+              borderRadius: '20px',
+              border: 'none',
+              cursor: canContinue && !saving ? 'pointer' : 'not-allowed',
+            }}
+          >{saving ? 'saving...' : isEditMode ? 'save changes' : 'next →'}</button>
         </div>
-
-        {/* bio */}
-        <div style={WRAP}>
-          <span style={LBL}>bio</span>
-          <textarea className="lk-input" rows={1} style={{ ...F, height: 'auto', minHeight: 36, resize: 'none', overflow: 'hidden' }}
-            value={bio} onChange={e => setBio(e.target.value.slice(0, 150))}
-            placeholder="night owl, keeps things clean, loves to cook" maxLength={150} />
-          <span style={{ display: 'block', textAlign: 'right', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,255,255,0.18)', marginTop: 3 }}>{bio.length} / 150</span>
-        </div>
-
-        {error && <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '0 18px 8px' }}>{error}</p>}
-      </div>
-
-      {/* Sticky bottom bar */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={handleContinue} style={{
-          fontFamily: "'Outfit', sans-serif", fontSize: 12, fontWeight: 600,
-          background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.12)',
-          color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.3)',
-          borderRadius: 20, padding: '9px 20px', border: 'none',
-          cursor: canContinue && !saving ? 'pointer' : 'default',
-          pointerEvents: canContinue && !saving ? 'auto' : 'none',
-        }}>
-          {saving ? 'saving...' : isEditMode ? 'save changes' : 'next →'}
-        </button>
       </div>
 
       {/* Crop modal */}
@@ -408,19 +396,12 @@ export default function BasicsSetup() {
                   src={rawPhotoDataUrl}
                   alt=""
                   draggable={false}
-                  style={{
-                    width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-                    pointerEvents: 'none', userSelect: 'none',
-                    transform: `translate(${panX}px, ${panY}px) scale(${scale})`,
-                    transformOrigin: 'center center',
-                  }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none', transform: `translate(${panX}px, ${panY}px) scale(${scale})`, transformOrigin: 'center center' }}
                 />
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 220, height: 220, borderRadius: '50%', border: '2px solid #3DDCFF', boxShadow: '0 0 0 2000px rgba(0,0,0,0.55)', zIndex: 2, pointerEvents: 'none' }} />
               </div>
-
               <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '10px 18px', margin: 0 }}>drag to reposition · pinch to zoom</p>
               <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.2)', textAlign: 'center', padding: '4px 18px', margin: 0 }}>shown next to your name in chats and matches</p>
-
               <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 18px' }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#3DDCFF' }}>change photo</span>
