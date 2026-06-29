@@ -277,7 +277,7 @@ export default function BasicsSetup() {
         .lk-major-opt:hover { color: white !important; }
       `}</style>
 
-      <div style={{ minHeight: '100vh', overflowY: 'auto', background: '#0A0E12', paddingBottom: 100 }}>
+      <div style={{ minHeight: '100vh', overflowY: 'auto', background: '#0A0E12', paddingBottom: 80 }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
           <span onClick={() => navigate('/setup/photos')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
@@ -291,9 +291,9 @@ export default function BasicsSetup() {
         <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 14px', margin: 0 }}>how you show up everywhere</p>
 
         {/* pfp + name — inline flex row */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '0 18px', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '0 18px', marginBottom: 16 }}>
           {/* Profile pic circle */}
-          <div style={{ position: 'relative', width: 58, height: 58, flexShrink: 0, marginTop: 18 }}>
+          <div style={{ position: 'relative', width: 58, height: 58, flexShrink: 0 }}>
             <div style={{ width: 58, height: 58, borderRadius: '50%', background: '#0d1820', border: '1.5px solid rgba(255,255,255,0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
               {profilePicDataUrl
                 ? <img src={profilePicDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
@@ -358,7 +358,7 @@ export default function BasicsSetup() {
         {/* bio */}
         <div style={WRAP}>
           <span style={LBL}>bio</span>
-          <textarea className="lk-input" style={{ ...F, minHeight: 40, height: 'auto', resize: 'none' }}
+          <textarea className="lk-input" rows={1} style={{ ...F, height: 'auto', minHeight: 36, resize: 'none', overflow: 'hidden' }}
             value={bio} onChange={e => setBio(e.target.value.slice(0, 150))}
             placeholder="night owl, keeps things clean, loves to cook" maxLength={150} />
           <span style={{ display: 'block', textAlign: 'right', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,255,255,0.18)', marginTop: 3 }}>{bio.length} / 150</span>
