@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
 
+
 export default function HousingSetup() {
   const { user, refreshProfile } = useAuth();
   const navigate = useNavigate();
@@ -39,8 +40,10 @@ export default function HousingSetup() {
   return (
     <div className="setup-page">
       <div className="setup-inner">
-        <div className="setup-header">
-          <span className="wordmark-sm">lik</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
+          <span onClick={() => navigate('/setup/basics')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ width: '18px' }}></span>
         </div>
         {!isEditMode && <StepIndicator currentStep={3} />}
 

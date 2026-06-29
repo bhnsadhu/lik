@@ -161,13 +161,19 @@ export default function Quiz() {
     await refreshProfile();
   };
 
+  const backHeader = (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
+      <span onClick={() => navigate('/setup/housing')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+      <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+      <span style={{ width: '18px' }}></span>
+    </div>
+  );
+
   if (loadingExisting) {
     return (
       <div className="quiz-page">
         <div className="quiz-inner">
-          <div className="setup-header">
-            <span className="wordmark-sm">lik</span>
-          </div>
+          {backHeader}
           <div className="quiz-saving">
             <p className="muted">loading your answers...</p>
           </div>
@@ -180,9 +186,7 @@ export default function Quiz() {
     return (
       <div className="quiz-page">
         <div className="quiz-inner">
-          <div className="setup-header">
-            <span className="wordmark-sm">lik</span>
-          </div>
+          {backHeader}
           {!isEditMode && <StepIndicator currentStep={4} />}
           <div className="quiz-saving">
             <p className="muted">{isEditMode ? 'saving changes...' : 'building your vibe...'}</p>
@@ -195,9 +199,7 @@ export default function Quiz() {
   return (
     <div className="quiz-page">
       <div className="quiz-inner">
-        <div className="setup-header">
-          <span className="wordmark-sm">lik</span>
-        </div>
+        {backHeader}
         {!isEditMode && <StepIndicator currentStep={4} />}
 
         <div className="progress-bar">

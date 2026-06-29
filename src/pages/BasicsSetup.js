@@ -65,9 +65,9 @@ const F = {
   border: 'none',
   borderBottom: '1px solid rgba(255,255,255,0.08)',
   borderRadius: 0,
-  padding: '10px 0',
+  padding: '8px 0',
   fontFamily: "'Outfit', sans-serif",
-  fontSize: 13,
+  fontSize: 12,
   fontWeight: 300,
   color: 'white',
   width: '100%',
@@ -80,12 +80,11 @@ const LBL = {
   fontSize: 9,
   fontWeight: 300,
   color: 'rgba(255,255,255,0.28)',
-  letterSpacing: '0.05em',
-  marginBottom: 4,
+  marginBottom: 5,
   display: 'block',
 };
 
-const WRAP = { margin: '0 18px 16px' };
+const WRAP = { padding: '0 18px', marginBottom: 16 };
 
 function dataUrlToBlob(dataUrl) {
   const [header, data] = dataUrl.split(',');
@@ -143,9 +142,13 @@ export default function BasicsSetup() {
   const selectMajor = (m) => { setMajor(m); setMajorSuggestions([]); setShowMajorDrop(false); };
 
   const handleAgeBlur = () => {
+    if (!age) { setAgeError(''); return; }
     const n = parseInt(age, 10);
-    if (age && (isNaN(n) || n < 16)) setAgeError('must be 16 or older');
-    else setAgeError('');
+    if (String(age).length !== 2 || isNaN(n) || n < 16) {
+      setAgeError('must be 2 digits, 16 or older');
+    } else {
+      setAgeError('');
+    }
   };
 
   const handleCropFileSelect = (e) => {
@@ -163,7 +166,6 @@ export default function BasicsSetup() {
     e.target.value = '';
   };
 
-  // Touch handlers with pan + pinch-to-zoom
   const handleCropTouchStart = (e) => {
     if (e.touches.length === 1) {
       panStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, px: panX, py: panY };
@@ -187,7 +189,6 @@ export default function BasicsSetup() {
 
   const handleCropTouchEnd = () => { isDragging.current = false; };
 
-  // Mouse pan (desktop)
   const startMousePan = (e) => {
     panStartRef.current = { x: e.clientX, y: e.clientY, px: panX, py: panY };
     isDragging.current = true;
@@ -199,7 +200,6 @@ export default function BasicsSetup() {
   };
   const endMousePan = () => { isDragging.current = false; };
 
-  // Canvas circular crop with pan + scale
   const doCrop = () => {
     const c = cropContainerRef.current;
     const img = cropImgRef.current;
@@ -230,13 +230,8 @@ export default function BasicsSetup() {
   };
 
   const ageNum = parseInt(age, 10);
-  const canContinue = !!(
-    name.trim() &&
-    age && !isNaN(ageNum) && ageNum >= 16 &&
-    year &&
-    major.trim() &&
-    profilePicDataUrl
-  );
+  const ageValid = String(age).length === 2 && !isNaN(ageNum) && ageNum >= 16;
+  const canContinue = !!(name.trim() && ageValid && year && major.trim() && profilePicDataUrl && bio.trim());
 
   const handleContinue = async () => {
     if (!canContinue || saving) return;
@@ -276,35 +271,33 @@ export default function BasicsSetup() {
   return (
     <>
       <style>{`
-        .lk-input::placeholder { color: rgba(255,255,255,0.2); }
+        .lk-input::placeholder { color: rgba(255,255,255,0.18); }
         .lk-select { -webkit-appearance: none; appearance: none; }
         .lk-select option { background: #131820; color: white; }
         .lk-major-opt:hover { color: white !important; }
       `}</style>
 
       <div style={{ minHeight: '100vh', overflowY: 'auto', background: '#0A0E12', paddingBottom: 100 }}>
-        {/* Header — back arrow · wordmark · spacer */}
-        <div style={{ display: 'flex', alignItems: 'center', padding: '16px 18px 8px' }}>
-          <span
-            onClick={() => navigate('/setup/photos')}
-            style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 300, color: 'rgba(255,255,255,0.4)', cursor: 'pointer', flex: 1 }}
-          >←</span>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: '#fff' }}>lik</span>
-          <div style={{ flex: 1 }} />
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
+          <span onClick={() => navigate('/setup/photos')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ width: '18px' }}></span>
         </div>
 
         {!isEditMode && <StepIndicator currentStep={2} />}
 
         <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: '#fff', padding: '0 18px 3px', margin: 0 }}>your profile</p>
-        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 16px', margin: 0 }}>how you show up everywhere</p>
+        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 14px', margin: 0 }}>how you show up everywhere</p>
 
-        {/* Profile pic */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 18px 18px' }}>
-          <div style={{ position: 'relative', width: 72, height: 72 }}>
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#0d1820', border: '1.5px solid rgba(255,255,255,0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* pfp + name — inline flex row */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '0 18px', marginBottom: 16 }}>
+          {/* Profile pic circle */}
+          <div style={{ position: 'relative', width: 58, height: 58, flexShrink: 0, marginTop: 18 }}>
+            <div style={{ width: 58, height: 58, borderRadius: '50%', background: '#0d1820', border: '1.5px solid rgba(255,255,255,0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
               {profilePicDataUrl
-                ? <img src={profilePicDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                : <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 22, fontWeight: 300 }}>+</span>
+                ? <img src={profilePicDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
+                : <span style={{ color: 'rgba(255,255,255,0.18)', fontSize: 20, fontWeight: 300, lineHeight: 1 }}>+</span>
               }
             </div>
             {profilePicDataUrl
@@ -312,24 +305,23 @@ export default function BasicsSetup() {
               : <input type="file" accept="image/*" onChange={handleCropFileSelect} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', borderRadius: '50%' }} />
             }
           </div>
-          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.25)', marginTop: 6 }}>tap to set profile pic</span>
-        </div>
-
-        {/* full name */}
-        <div style={WRAP}>
-          <span style={LBL}>full name</span>
-          <input className="lk-input" style={F} type="text" value={name}
-            onChange={e => setName(e.target.value)} placeholder="first and last name" maxLength={60} />
+          {/* Name field */}
+          <div style={{ flex: 1 }}>
+            <span style={LBL}>name</span>
+            <input className="lk-input" style={F} type="text" value={name}
+              onChange={e => setName(e.target.value)} placeholder="first and last name" maxLength={60} />
+          </div>
         </div>
 
         {/* age + year */}
-        <div style={{ display: 'flex', gap: 24, margin: '0 18px 16px' }}>
+        <div style={{ display: 'flex', gap: 20, padding: '0 18px', marginBottom: 16 }}>
           <div style={{ flex: 1 }}>
             <span style={LBL}>age</span>
-            <input className="lk-input" style={F} type="number" value={age}
+            <input className="lk-input" style={{ ...F, borderBottomColor: ageError ? 'rgba(255,80,80,0.6)' : 'rgba(255,255,255,0.08)' }}
+              type="number" value={age}
               onChange={e => setAge(e.target.value)} onBlur={handleAgeBlur}
-              placeholder="16+" maxLength={2} min={16} max={99} />
-            {ageError && <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,100,100,0.8)', display: 'block', marginTop: 3 }}>{ageError}</span>}
+              placeholder="16+" min={16} max={99} />
+            {ageError && <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,80,80,0.7)', display: 'block', marginTop: 3 }}>{ageError}</span>}
           </div>
           <div style={{ flex: 1 }}>
             <span style={LBL}>year</span>
@@ -364,13 +356,12 @@ export default function BasicsSetup() {
         </div>
 
         {/* bio */}
-        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.22)', margin: '0 18px 4px', padding: 0 }}>describe yourself as a roommate</p>
         <div style={WRAP}>
           <span style={LBL}>bio</span>
-          <textarea className="lk-input" style={{ ...F, minHeight: 60, height: 'auto', resize: 'none' }}
+          <textarea className="lk-input" style={{ ...F, minHeight: 40, height: 'auto', resize: 'none' }}
             value={bio} onChange={e => setBio(e.target.value.slice(0, 150))}
-            placeholder="early bird, clean, love cooking..." maxLength={150} />
-          <span style={{ display: 'block', textAlign: 'right', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,255,255,0.18)', marginTop: 4 }}>{bio.length} / 150</span>
+            placeholder="night owl, keeps things clean, loves to cook" maxLength={150} />
+          <span style={{ display: 'block', textAlign: 'right', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,255,255,0.18)', marginTop: 3 }}>{bio.length} / 150</span>
         </div>
 
         {error && <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '0 18px 8px' }}>{error}</p>}
@@ -379,10 +370,10 @@ export default function BasicsSetup() {
       {/* Sticky bottom bar */}
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
         <button onClick={handleContinue} style={{
-          fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 600,
-          background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.15)',
-          color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.35)',
-          borderRadius: 20, padding: '10px 22px', border: 'none',
+          fontFamily: "'Outfit', sans-serif", fontSize: 12, fontWeight: 600,
+          background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.12)',
+          color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.3)',
+          borderRadius: 20, padding: '9px 20px', border: 'none',
           cursor: canContinue && !saving ? 'pointer' : 'default',
           pointerEvents: canContinue && !saving ? 'auto' : 'none',
         }}>
@@ -393,7 +384,6 @@ export default function BasicsSetup() {
       {/* Crop modal */}
       {showCropModal && (
         <div style={{ position: 'fixed', inset: 0, background: '#0A0E12', zIndex: 100, display: 'flex', flexDirection: 'column' }}>
-          {/* Top bar */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 18px', flexShrink: 0 }}>
             <span onClick={() => setShowCropModal(false)} style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>cancel</span>
             <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 16, color: '#fff' }}>set profile pic</span>
@@ -402,7 +392,6 @@ export default function BasicsSetup() {
 
           {rawPhotoDataUrl ? (
             <>
-              {/* Crop area — pan + pinch to zoom */}
               <div
                 ref={cropContainerRef}
                 style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, overflow: 'hidden', position: 'relative', background: '#0d1820', cursor: 'grab', flexShrink: 0, touchAction: 'none' }}
@@ -426,7 +415,6 @@ export default function BasicsSetup() {
                     transformOrigin: 'center center',
                   }}
                 />
-                {/* Circular crop cutout */}
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 220, height: 220, borderRadius: '50%', border: '2px solid #3DDCFF', boxShadow: '0 0 0 2000px rgba(0,0,0,0.55)', zIndex: 2, pointerEvents: 'none' }} />
               </div>
 

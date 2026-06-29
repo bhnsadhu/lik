@@ -65,8 +65,7 @@ export default function PreferencesSetup() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError('');
     if (!semester) { setError('pick a move-in semester'); return; }
 
@@ -116,8 +115,10 @@ export default function PreferencesSetup() {
   return (
     <div className="setup-page">
       <div className="setup-inner">
-        <div className="setup-header">
-          <span className="wordmark-sm">lik</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
+          <span onClick={() => navigate('/setup/quiz')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>←</span>
+          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ width: '18px' }}></span>
         </div>
         {!isEditMode && <StepIndicator currentStep={5} />}
 
@@ -128,7 +129,7 @@ export default function PreferencesSetup() {
           {housingType === 'dorm' ? 'when & where?' : 'budget & location'}
         </p>
 
-        <form onSubmit={handleSubmit} className="setup-form">
+        <div className="setup-form">
           {(housingType === 'apartment' || !housingType) && (
             <div className="field-group">
               <label className="label">monthly budget (your share)</label>
@@ -215,11 +216,19 @@ export default function PreferencesSetup() {
           )}
 
           {error && <p className="error-text">{error}</p>}
+        </div>
+      </div>
 
-          <button type="submit" className="btn-primary" disabled={saving}>
-            {saving ? 'saving...' : isEditMode ? 'save changes' : "let's find your people →"}
-          </button>
-        </form>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={handleSubmit} style={{
+          fontFamily: "'Outfit', sans-serif", fontSize: 12, fontWeight: 600,
+          background: '#3DDCFF', color: '#0A0E12',
+          borderRadius: 20, padding: '9px 20px', border: 'none',
+          cursor: saving ? 'default' : 'pointer',
+          pointerEvents: saving ? 'none' : 'auto',
+        }}>
+          {saving ? 'saving...' : isEditMode ? 'save changes' : "let's find your people →"}
+        </button>
       </div>
     </div>
   );
