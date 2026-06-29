@@ -251,10 +251,6 @@ export default function BasicsSetup() {
               <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>profile pic</div>
               <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.2)', fontWeight: 300, fontFamily: "'Outfit', sans-serif" }}>{profilePicDataUrl ? 'tap to change' : 'tap to set'}</div>
             </div>
-            {/* Overlay file input when no pic — opens native picker directly */}
-            {!profilePicDataUrl && (
-              <input type="file" accept="image/*" onChange={handleCropFileSelect} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', borderRadius: '12px' }} onClick={e => e.stopPropagation()} />
-            )}
           </div>
 
           {/* Name card */}
