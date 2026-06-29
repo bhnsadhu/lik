@@ -166,9 +166,14 @@ export default function Auth() {
             {verifying && <p className="otp-status">verifying...</p>}
             {verifyError && <p className="otp-status otp-status-error">{verifyError}</p>}
 
-            <p className="otp-bottom">
-              didn't get it? <a onClick={handleResend}>{resentConfirm ? 'sent ✓' : 'resend'}</a><span className="sep">·</span><a onClick={resetToEmail}>change email</a>
-            </p>
+            <div style={{ textAlign: 'center', marginTop: '24px' }}>
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 300, color: 'rgba(255,255,255,0.35)', margin: '0 0 8px 0' }}>
+                didn't get it?{' '}<span onClick={handleResend} style={{ color: '#3DDCFF', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 300 }}>{resentConfirm ? 'sent ✓' : 'resend'}</span>
+              </p>
+              <p onClick={resetToEmail} style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 300, color: '#3DDCFF', margin: 0, cursor: 'pointer' }}>
+                change email
+              </p>
+            </div>
           </div>
         )}
     </div>
