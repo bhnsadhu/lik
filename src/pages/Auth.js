@@ -7,7 +7,6 @@ export default function Auth() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resending, setResending] = useState(false);
   const [resentConfirm, setResentConfirm] = useState(false);
   const [digits, setDigits] = useState(['', '', '', '', '', '', '', '']);
   const [verifyError, setVerifyError] = useState('');
@@ -15,11 +14,9 @@ export default function Auth() {
   const inputRefs = useRef([]);
 
   const handleResend = async () => {
-    setResending(true);
     setDigits(['', '', '', '', '', '', '', '']);
     setVerifyError('');
     await signIn(email.toLowerCase().trim());
-    setResending(false);
     setResentConfirm(true);
   };
 
