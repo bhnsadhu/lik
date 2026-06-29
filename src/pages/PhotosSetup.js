@@ -123,7 +123,7 @@ export default function PhotosSetup() {
       {/* Photo viewer — full width, no side margins */}
       <div
         style={{
-          height: '240px',
+          height: 'calc(100vh - 280px)',
           borderRadius: '12px',
           overflow: 'hidden',
           position: 'relative',
