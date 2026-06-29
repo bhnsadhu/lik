@@ -81,7 +81,6 @@ const LBL = {
   fontWeight: 300,
   color: 'rgba(255,255,255,0.28)',
   letterSpacing: '0.05em',
-  textTransform: 'uppercase',
   marginBottom: 4,
   display: 'block',
 };
@@ -95,6 +94,12 @@ function dataUrlToBlob(dataUrl) {
   const arr = new Uint8Array(bytes.length);
   for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
   return new Blob([arr], { type: mime });
+}
+
+function getPinchDist(touches) {
+  const dx = touches[1].clientX - touches[0].clientX;
+  const dy = touches[1].clientY - touches[0].clientY;
+  return Math.hypot(dx, dy);
 }
 
 export default function BasicsSetup() {
@@ -115,6 +120,7 @@ export default function BasicsSetup() {
   const [rawPhotoDataUrl, setRawPhotoDataUrl] = useState(null);
   const [panX, setPanX] = useState(0);
   const [panY, setPanY] = useState(0);
+  const [scale, setScale] = useState(1);
   const [showCropModal, setShowCropModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -122,9 +128,9 @@ export default function BasicsSetup() {
   const cropContainerRef = useRef();
   const cropImgRef = useRef();
   const panStartRef = useRef({ x: 0, y: 0, px: 0, py: 0 });
+  const pinchRef = useRef({ dist: 0, scale: 1 });
   const isDragging = useRef(false);
 
-  // Major autocomplete
   const handleMajorChange = (val) => {
     setMajor(val);
     if (val.trim().length < 2) { setMajorSuggestions([]); setShowMajorDrop(false); return; }
@@ -142,7 +148,6 @@ export default function BasicsSetup() {
     else setAgeError('');
   };
 
-  // Profile pic file selection → read dataURL → open crop modal
   const handleCropFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -151,36 +156,62 @@ export default function BasicsSetup() {
       setRawPhotoDataUrl(ev.target.result);
       setPanX(0);
       setPanY(0);
+      setScale(1);
       setShowCropModal(true);
     };
     reader.readAsDataURL(file);
     e.target.value = '';
   };
 
-  // Pan handlers for crop area
-  const startPan = (clientX, clientY) => {
-    panStartRef.current = { x: clientX, y: clientY, px: panX, py: panY };
+  // Touch handlers with pan + pinch-to-zoom
+  const handleCropTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      panStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, px: panX, py: panY };
+      isDragging.current = true;
+    } else if (e.touches.length === 2) {
+      isDragging.current = false;
+      pinchRef.current = { dist: getPinchDist(e.touches), scale };
+    }
+  };
+
+  const handleCropTouchMove = (e) => {
+    if (e.touches.length === 1 && isDragging.current) {
+      setPanX(panStartRef.current.px + (e.touches[0].clientX - panStartRef.current.x));
+      setPanY(panStartRef.current.py + (e.touches[0].clientY - panStartRef.current.y));
+    } else if (e.touches.length === 2) {
+      const newDist = getPinchDist(e.touches);
+      const newScale = Math.min(3, Math.max(0.5, pinchRef.current.scale * (newDist / pinchRef.current.dist)));
+      setScale(newScale);
+    }
+  };
+
+  const handleCropTouchEnd = () => { isDragging.current = false; };
+
+  // Mouse pan (desktop)
+  const startMousePan = (e) => {
+    panStartRef.current = { x: e.clientX, y: e.clientY, px: panX, py: panY };
     isDragging.current = true;
   };
-  const movePan = (clientX, clientY) => {
+  const moveMousePan = (e) => {
     if (!isDragging.current) return;
-    setPanX(panStartRef.current.px + (clientX - panStartRef.current.x));
-    setPanY(panStartRef.current.py + (clientY - panStartRef.current.y));
+    setPanX(panStartRef.current.px + (e.clientX - panStartRef.current.x));
+    setPanY(panStartRef.current.py + (e.clientY - panStartRef.current.y));
   };
-  const endPan = () => { isDragging.current = false; };
+  const endMousePan = () => { isDragging.current = false; };
 
-  // Canvas crop
+  // Canvas circular crop with pan + scale
   const doCrop = () => {
     const c = cropContainerRef.current;
     const img = cropImgRef.current;
     if (!c || !img || !img.naturalWidth) return null;
     const cW = c.clientWidth, cH = c.clientHeight;
     const iW = img.naturalWidth, iH = img.naturalHeight;
-    const scale = Math.max(cW / iW, cH / iH);
+    const baseScale = Math.max(cW / iW, cH / iH);
+    const totalScale = baseScale * scale;
     const R = 110;
-    const srcX = iW / 2 - (R + panX) / scale;
-    const srcY = iH / 2 - (R + panY) / scale;
-    const srcSize = (R * 2) / scale;
+    const srcX = iW / 2 - (R + panX) / totalScale;
+    const srcY = iH / 2 - (R + panY) / totalScale;
+    const srcSize = (R * 2) / totalScale;
     const canvas = document.createElement('canvas');
     canvas.width = 220; canvas.height = 220;
     const ctx = canvas.getContext('2d');
@@ -235,7 +266,6 @@ export default function BasicsSetup() {
       } else {
         await supabase.from('profiles').update({ ...updates, onboarding_step: 'housing' }).eq('id', user.id);
         await refreshProfile();
-        // router routes step='housing' → /setup/housing
       }
     } catch {
       setError('something went wrong · try again');
@@ -253,14 +283,18 @@ export default function BasicsSetup() {
       `}</style>
 
       <div style={{ minHeight: '100vh', overflowY: 'auto', background: '#0A0E12', paddingBottom: 100 }}>
-        {/* Header */}
-        <div style={{ padding: '16px 18px 8px' }}>
+        {/* Header — back arrow · wordmark · spacer */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '16px 18px 8px' }}>
+          <span
+            onClick={() => navigate('/setup/photos')}
+            style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 300, color: 'rgba(255,255,255,0.4)', cursor: 'pointer', flex: 1 }}
+          >←</span>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: '#fff' }}>lik</span>
+          <div style={{ flex: 1 }} />
         </div>
 
         {!isEditMode && <StepIndicator currentStep={2} />}
 
-        {/* Title + subhead */}
         <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: '#fff', padding: '0 18px 3px', margin: 0 }}>your profile</p>
         <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 16px', margin: 0 }}>how you show up everywhere</p>
 
@@ -281,14 +315,14 @@ export default function BasicsSetup() {
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.25)', marginTop: 6 }}>tap to set profile pic</span>
         </div>
 
-        {/* Full name */}
+        {/* full name */}
         <div style={WRAP}>
           <span style={LBL}>full name</span>
           <input className="lk-input" style={F} type="text" value={name}
             onChange={e => setName(e.target.value)} placeholder="first and last name" maxLength={60} />
         </div>
 
-        {/* Age + Year */}
+        {/* age + year */}
         <div style={{ display: 'flex', gap: 24, margin: '0 18px 16px' }}>
           <div style={{ flex: 1 }}>
             <span style={LBL}>age</span>
@@ -309,7 +343,7 @@ export default function BasicsSetup() {
           </div>
         </div>
 
-        {/* Major autocomplete */}
+        {/* major autocomplete */}
         <div style={{ ...WRAP, position: 'relative' }}>
           <span style={LBL}>major</span>
           <input className="lk-input" style={F} type="text" value={major}
@@ -329,20 +363,20 @@ export default function BasicsSetup() {
           )}
         </div>
 
-        {/* Bio */}
+        {/* bio */}
         <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.22)', margin: '0 18px 4px', padding: 0 }}>describe yourself as a roommate</p>
         <div style={WRAP}>
           <span style={LBL}>bio</span>
-          <textarea className="lk-input" style={{ ...F, height: 80, resize: 'none' }}
+          <textarea className="lk-input" style={{ ...F, minHeight: 60, height: 'auto', resize: 'none' }}
             value={bio} onChange={e => setBio(e.target.value.slice(0, 150))}
             placeholder="early bird, clean, love cooking..." maxLength={150} />
-          <span style={{ display: 'block', textAlign: 'right', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,255,255,0.18)', marginTop: 2 }}>{bio.length} / 150</span>
+          <span style={{ display: 'block', textAlign: 'right', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 300, color: 'rgba(255,255,255,0.18)', marginTop: 4 }}>{bio.length} / 150</span>
         </div>
 
         {error && <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '0 18px 8px' }}>{error}</p>}
       </div>
 
-      {/* Sticky bottom bar — outside the scrollable div so it truly sticks */}
+      {/* Sticky bottom bar */}
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
         <button onClick={handleContinue} style={{
           fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 600,
@@ -368,33 +402,37 @@ export default function BasicsSetup() {
 
           {rawPhotoDataUrl ? (
             <>
-              {/* Crop area */}
+              {/* Crop area — pan + pinch to zoom */}
               <div
                 ref={cropContainerRef}
                 style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, overflow: 'hidden', position: 'relative', background: '#0d1820', cursor: 'grab', flexShrink: 0, touchAction: 'none' }}
-                onTouchStart={e => startPan(e.touches[0].clientX, e.touches[0].clientY)}
-                onTouchMove={e => movePan(e.touches[0].clientX, e.touches[0].clientY)}
-                onTouchEnd={endPan}
-                onMouseDown={e => startPan(e.clientX, e.clientY)}
-                onMouseMove={e => movePan(e.clientX, e.clientY)}
-                onMouseUp={endPan}
-                onMouseLeave={endPan}
+                onTouchStart={handleCropTouchStart}
+                onTouchMove={handleCropTouchMove}
+                onTouchEnd={handleCropTouchEnd}
+                onMouseDown={startMousePan}
+                onMouseMove={moveMousePan}
+                onMouseUp={endMousePan}
+                onMouseLeave={endMousePan}
               >
                 <img
                   ref={cropImgRef}
                   src={rawPhotoDataUrl}
                   alt=""
                   draggable={false}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: `calc(50% + ${panX}px) calc(50% + ${panY}px)`, display: 'block', pointerEvents: 'none', userSelect: 'none' }}
+                  style={{
+                    width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+                    pointerEvents: 'none', userSelect: 'none',
+                    transform: `translate(${panX}px, ${panY}px) scale(${scale})`,
+                    transformOrigin: 'center center',
+                  }}
                 />
-                {/* Circular crop cutout via box-shadow */}
+                {/* Circular crop cutout */}
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 220, height: 220, borderRadius: '50%', border: '2px solid #3DDCFF', boxShadow: '0 0 0 2000px rgba(0,0,0,0.55)', zIndex: 2, pointerEvents: 'none' }} />
               </div>
 
-              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '10px 18px', margin: 0 }}>drag to reposition</p>
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '10px 18px', margin: 0 }}>drag to reposition · pinch to zoom</p>
               <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.2)', textAlign: 'center', padding: '4px 18px', margin: 0 }}>shown next to your name in chats and matches</p>
 
-              {/* Change photo link */}
               <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 18px' }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#3DDCFF' }}>change photo</span>
@@ -403,7 +441,6 @@ export default function BasicsSetup() {
               </div>
             </>
           ) : (
-            /* No photo yet */
             <div style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, background: '#0d1820', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', flexShrink: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, pointerEvents: 'none' }}>
                 <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 40, fontWeight: 300, lineHeight: 1 }}>+</span>
