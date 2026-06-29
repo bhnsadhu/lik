@@ -2,7 +2,7 @@ import React from 'react';
 const steps = ['photos', 'profile', 'housing', 'vibe', 'details'];
 export default function StepIndicator({ currentStep }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', padding: '0 18px', marginBottom: '14px' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '0 18px', marginBottom: '14px' }}>
       {steps.map((step, i) => {
         const num = i + 1;
         const done = num < currentStep;
