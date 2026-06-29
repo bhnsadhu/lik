@@ -169,6 +169,8 @@ export default function BasicsSetup() {
     return canvas.toDataURL('image/jpeg', 0.85);
   };
 
+  const openCropModal = () => setShowCropModal(true);
+
   const handleDone = () => {
     if (!rawPhotoDataUrl) { setShowCropModal(false); return; }
     const result = doCrop();
@@ -237,7 +239,7 @@ export default function BasicsSetup() {
           {/* Profile pic card */}
           <div
             style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', position: 'relative' }}
-            onClick={() => setShowCropModal(true)}
+            onClick={openCropModal}
           >
             <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#131820', border: '1.5px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
               {profilePicDataUrl
