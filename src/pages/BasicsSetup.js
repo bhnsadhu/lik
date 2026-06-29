@@ -177,7 +177,7 @@ export default function BasicsSetup() {
   };
 
   const ageNum = parseInt(age, 10);
-  const ageValid = String(age).length === 2 && !isNaN(ageNum) && ageNum >= 16 && !ageError;
+  const ageValid = age.length === 2 && !isNaN(ageNum) && ageNum >= 16 && !ageError;
   const canContinue = !!(name.trim() && ageValid && year && major.trim() && profilePicDataUrl && bio.trim());
 
   const handleContinue = async () => {
@@ -274,15 +274,17 @@ export default function BasicsSetup() {
               <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>age</div>
               <input
                 className="lk-input"
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={age}
-                onChange={e => setAge(e.target.value)}
+                onChange={e => setAge(e.target.value.replace(/\D/g, '').slice(0, 2))}
                 placeholder="16+"
-                min={16} max={99}
+                maxLength={2}
                 style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: ageError ? 'rgba(255,80,80,0.8)' : '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
                 onBlur={() => {
                   if (!age) { setAgeError(false); return; }
-                  if (String(age).length !== 2 || parseInt(age, 10) < 16) setAgeError(true);
+                  if (age.length !== 2 || parseInt(age, 10) < 16) setAgeError(true);
                   else setAgeError(false);
                 }}
               />
