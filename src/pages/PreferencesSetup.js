@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import StepIndicator from '../components/StepIndicator';
 
 const SEMESTERS = ['fall 2026', 'spring 2027', 'fall 2027', 'spring 2028'];
 
@@ -117,8 +118,8 @@ export default function PreferencesSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          {!isEditMode && <span className="setup-step-label">almost there</span>}
         </div>
+        {!isEditMode && <StepIndicator currentStep={5} />}
 
         <h2 className="setup-title">
           {housingType === 'dorm' ? 'dorm details' : 'your preferences'}

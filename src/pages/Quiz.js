@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import StepIndicator from '../components/StepIndicator';
 
 export const QUIZ_QUESTIONS = [
   {
@@ -181,8 +182,8 @@ export default function Quiz() {
         <div className="quiz-inner">
           <div className="setup-header">
             <span className="wordmark-sm">lik</span>
-            {!isEditMode && <span className="setup-step-label">step 5 of 5</span>}
           </div>
+          {!isEditMode && <StepIndicator currentStep={4} />}
           <div className="quiz-saving">
             <p className="muted">{isEditMode ? 'saving changes...' : 'building your vibe...'}</p>
           </div>
@@ -196,14 +197,8 @@ export default function Quiz() {
       <div className="quiz-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          {!isEditMode && (
-            <div className="step-dots">
-              <span className="dot done" />
-              <span className="dot active" />
-              <span className="dot" />
-            </div>
-          )}
         </div>
+        {!isEditMode && <StepIndicator currentStep={4} />}
 
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progress}%` }} />

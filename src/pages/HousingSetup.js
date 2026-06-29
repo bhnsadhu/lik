@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import StepIndicator from '../components/StepIndicator';
 
 export default function HousingSetup() {
   const { user, refreshProfile } = useAuth();
@@ -40,8 +41,8 @@ export default function HousingSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          {!isEditMode && <span className="setup-step-label">step 3 of 5</span>}
         </div>
+        {!isEditMode && <StepIndicator currentStep={3} />}
 
         <h2 className="setup-title">where are you living?</h2>
         <p className="setup-sub">tap to continue · you can change this later</p>

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import StepIndicator from '../components/StepIndicator';
 
 export default function PhotosSetup() {
   const { user, refreshProfile, profile } = useAuth();
@@ -12,13 +13,10 @@ export default function PhotosSetup() {
 
   const [photos, setPhotos] = useState(profile?.photos || []);
   const [coverIdx, setCoverIdx] = useState(profile?.photos?.length ? 0 : null);
-  const [profilePicIdx, setProfilePicIdx] = useState(profile?.photos?.length ? 0 : null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef();
-  const longPressTimer = useRef(null);
-  const longPressActivated = useRef(false);
 
   const handlePhotoSelect = async (e) => {
     const files = Array.from(e.target.files);
@@ -46,7 +44,6 @@ export default function PhotosSetup() {
     setPhotos(prev => [...prev, ...uploaded]);
     if (isFirst && uploaded.length > 0) {
       setCoverIdx(0);
-      setProfilePicIdx(0);
     }
     setUploading(false);
     e.target.value = '';
@@ -60,55 +57,22 @@ export default function PhotosSetup() {
       if (ci === i) return next.length > 0 ? 0 : null;
       return ci > i ? ci - 1 : ci;
     });
-    setProfilePicIdx(pi => {
-      if (pi === null) return null;
-      if (pi === i) return next.length > 0 ? 0 : null;
-      return pi > i ? pi - 1 : pi;
-    });
   };
 
-  const startLongPress = (i) => {
-    longPressActivated.current = false;
-    longPressTimer.current = setTimeout(() => {
-      longPressActivated.current = true;
-      setProfilePicIdx(i);
-    }, 500);
-  };
+  const canContinue = photos.length >= 5;
 
-  const endPress = (i) => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-    if (!longPressActivated.current) {
-      setCoverIdx(i);
-    }
-    longPressActivated.current = false;
-  };
-
-  const cancelPress = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-    longPressActivated.current = false;
-  };
-
-  const canContinue = photos.length >= 5 && profilePicIdx !== null;
-
-  const statusText = photos.length < 5
+  const statusText = photos.length === 0
     ? 'add at least 5 photos to continue'
-    : profilePicIdx === null
-      ? 'now hold a photo to set your profile pic'
-      : `${photos.length} of 10 photos added`;
+    : photos.length < 5
+      ? `add ${5 - photos.length} more photo${5 - photos.length === 1 ? '' : 's'} to continue`
+      : `${photos.length} of 10 photos`;
 
   const handleContinue = async () => {
     if (!canContinue || saving || uploading) return;
     setSaving(true);
     await supabase.from('profiles').update({
       photos,
-      cover_photo_url: photos[coverIdx],
-      profile_pic_url: photos[profilePicIdx],
+      cover_photo_url: coverIdx !== null ? photos[coverIdx] : photos[0] || null,
       updated_at: new Date().toISOString(),
       ...(isEditMode || returnToProfile ? {} : { onboarding_step: 'basics' }),
     }).eq('id', user.id);
@@ -120,107 +84,81 @@ export default function PhotosSetup() {
   };
 
   const coverUrl = coverIdx !== null ? photos[coverIdx] : null;
-  const picUrl = profilePicIdx !== null ? photos[profilePicIdx] : null;
 
   return (
-    <div style={{ minHeight: '100vh', paddingBottom: '88px' }}>
+    <div style={{ minHeight: '100vh' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '28px 16px 20px' }}>
-        <span className="wordmark-sm">lik</span>
-        {!isEditMode && !returnToProfile && (
-          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.3)' }}>step 1 of 5</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 18px 10px' }}>
+        <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+      </div>
+
+      {/* Step indicator */}
+      {!isEditMode && !returnToProfile && <StepIndicator currentStep={1} />}
+
+      {/* Title */}
+      <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#fff', padding: '2px 18px 4px', margin: 0 }}>show yourself</p>
+      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 12px', margin: 0 }}>add at least 5 photos</p>
+
+      {/* Cover preview */}
+      <div style={{ margin: '0 18px', height: '180px', borderRadius: '10px', background: '#0d1820', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {coverUrl ? (
+          <>
+            <img src={coverUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <span style={{ position: 'absolute', top: '8px', left: '8px', background: '#3DDCFF', color: '#0A0E12', fontFamily: "'Outfit', sans-serif", fontSize: '8px', fontWeight: 600, padding: '2px 7px', borderRadius: '4px' }}>cover</span>
+          </>
+        ) : (
+          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'rgba(255,255,255,0.18)' }}>tap a photo to set as cover</span>
         )}
       </div>
 
-      {/* Preview row */}
-      <div style={{ display: 'flex', gap: '10px', margin: '0 16px' }}>
-        {/* Cover photo */}
-        <div style={{ flex: '0 0 calc(58% - 5px)' }}>
-          <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '9px', fontWeight: 300, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 6px 0' }}>cover photo</p>
-          <div style={{ height: '160px', borderRadius: '10px', background: '#0d1820', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {coverUrl ? (
-              <img src={coverUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            ) : (
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.2)' }}>tap below to set</span>
-            )}
-          </div>
-        </div>
-
-        {/* Profile pic */}
-        <div style={{ flex: '0 0 calc(38% - 5px)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '9px', fontWeight: 300, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 6px 0', alignSelf: 'flex-start' }}>profile pic</p>
-          <div style={{ width: '100%', aspectRatio: '1', borderRadius: '50%', background: '#0d1820', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {picUrl ? (
-              <img src={picUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            ) : (
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '20px', fontWeight: 300, color: 'rgba(255,255,255,0.2)', lineHeight: 1 }}>+</span>
-            )}
-          </div>
-          <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '9px', fontWeight: 300, color: 'rgba(255,255,255,0.2)', textAlign: 'center', margin: '6px 0 0 0' }}>shown in chats</p>
-        </div>
-      </div>
-
       {/* Hint */}
-      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.25)', textAlign: 'center', margin: '14px 0 0 0' }}>tap to set cover · hold to set profile pic</p>
+      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.22)', textAlign: 'center', padding: '8px 18px', margin: 0 }}>tap to set as cover</p>
 
       {/* Photo strip */}
-      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginTop: '16px' }}>
-        <div style={{ display: 'flex', gap: '6px', padding: '4px 16px 8px', width: 'max-content' }}>
-          {photos.map((url, i) => (
-            <div
-              key={url + i}
-              style={{
-                position: 'relative',
-                width: '70px',
-                height: '70px',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                flexShrink: 0,
-                cursor: 'pointer',
-                outline: i === coverIdx ? '2px solid #3DDCFF' : '2px solid transparent',
-                boxSizing: 'border-box',
-                userSelect: 'none',
-              }}
-              onPointerDown={() => startLongPress(i)}
-              onPointerUp={() => endPress(i)}
-              onPointerLeave={cancelPress}
-            >
-              <img
-                src={url}
-                alt=""
-                draggable={false}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none' }}
-              />
-              {/* Order badge */}
-              <span style={{ position: 'absolute', top: '3px', left: '3px', width: '14px', height: '14px', borderRadius: '50%', background: '#3DDCFF', color: '#0A0E12', fontFamily: "'Outfit', sans-serif", fontSize: '8px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, pointerEvents: 'none' }}>{i + 1}</span>
-              {/* Remove button */}
-              <button
-                onPointerDown={e => e.stopPropagation()}
-                onClick={e => { e.stopPropagation(); removePhoto(i); }}
-                style={{ position: 'absolute', top: '3px', right: '3px', width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(0,0,0,0.65)', color: 'white', border: 'none', fontFamily: "'Outfit', sans-serif", fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, lineHeight: 1 }}
-              >×</button>
-              {/* Profile pic indicator dot */}
-              {i === profilePicIdx && (
-                <span style={{ position: 'absolute', bottom: '3px', left: '3px', width: '10px', height: '10px', borderRadius: '50%', background: 'white', border: '1.5px solid rgba(0,0,0,0.35)', display: 'block', pointerEvents: 'none' }} />
-              )}
-            </div>
-          ))}
-          {/* Add slot */}
-          {photos.length < 10 && (
+      <div style={{ display: 'flex', gap: '6px', padding: '0 18px 4px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        {photos.map((url, i) => (
+          <div
+            key={url + i}
+            onClick={() => setCoverIdx(i)}
+            style={{
+              position: 'relative',
+              width: '62px',
+              height: '62px',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              flexShrink: 0,
+              cursor: 'pointer',
+              outline: i === coverIdx ? '2px solid #3DDCFF' : '2px solid transparent',
+              outlineOffset: '1px',
+            }}
+          >
+            <img
+              src={url}
+              alt=""
+              draggable={false}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+            />
+            <span style={{ position: 'absolute', top: '2px', left: '2px', width: '13px', height: '13px', borderRadius: '50%', background: '#3DDCFF', color: '#0A0E12', fontFamily: "'Outfit', sans-serif", fontSize: '7px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>{i + 1}</span>
             <button
-              onClick={() => fileRef.current?.click()}
-              disabled={uploading}
-              style={{ width: '70px', height: '70px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)', fontSize: '20px', cursor: uploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: "'Outfit', sans-serif" }}
-            >{uploading ? '·' : '+'}</button>
-          )}
-        </div>
+              onClick={e => { e.stopPropagation(); removePhoto(i); }}
+              style={{ position: 'absolute', top: '2px', right: '2px', width: '13px', height: '13px', borderRadius: '50%', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', fontFamily: "'Outfit', sans-serif", fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, lineHeight: 1 }}
+            >×</button>
+          </div>
+        ))}
+        {photos.length < 10 && (
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            style={{ width: '62px', height: '62px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)', fontSize: '18px', cursor: uploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: "'Outfit', sans-serif" }}
+          >{uploading ? '·' : '+'}</button>
+        )}
       </div>
 
-      {/* Status text */}
-      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'rgba(255,255,255,0.3)', textAlign: 'center', margin: '8px 0 0 0' }}>{statusText}</p>
+      {/* Status */}
+      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.28)', textAlign: 'center', padding: '8px 18px 4px', margin: 0 }}>{statusText}</p>
 
       {error && (
-        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '6px 0 0 0' }}>{error}</p>
+        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '4px 0 0 0' }}>{error}</p>
       )}
 
       <input
@@ -232,8 +170,8 @@ export default function PhotosSetup() {
         onChange={handlePhotoSelect}
       />
 
-      {/* Fixed bottom bar */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 18px 24px', display: 'flex', justifyContent: 'flex-end', background: 'linear-gradient(to top, #0A0E12 60%, transparent)' }}>
+      {/* Bottom bar */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 18px 20px' }}>
         <button
           onClick={handleContinue}
           disabled={!canContinue || saving || uploading}
@@ -247,6 +185,7 @@ export default function PhotosSetup() {
             cursor: canContinue && !saving && !uploading ? 'pointer' : 'not-allowed',
             background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.15)',
             color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.35)',
+            pointerEvents: canContinue ? 'auto' : 'none',
           }}
         >
           {saving ? 'saving...' : 'next →'}

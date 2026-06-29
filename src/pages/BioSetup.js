@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import StepIndicator from '../components/StepIndicator';
 
 const PLACEHOLDERS = [
   'early bird who keeps things clean',
@@ -58,8 +59,8 @@ export default function BioSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          {!isEditMode && <span className="setup-step-label">step 4 of 5</span>}
         </div>
+        {!isEditMode && <StepIndicator currentStep={4} />}
 
         <h2 className="setup-title">say something</h2>
         <p className="setup-sub">a line about you · totally optional</p>

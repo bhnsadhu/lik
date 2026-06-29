@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import StepIndicator from '../components/StepIndicator';
 
 const YEARS = ['freshman', 'sophomore', 'junior', 'senior', 'grad'];
 
@@ -54,8 +55,8 @@ export default function BasicsSetup() {
       <div className="setup-inner">
         <div className="setup-header">
           <span className="wordmark-sm">lik</span>
-          {!isEditMode && <span className="setup-step-label">step 2 of 5</span>}
         </div>
+        {!isEditMode && <StepIndicator currentStep={2} />}
 
         <h2 className="setup-title">the basics</h2>
         <p className="setup-sub">who are you?</p>
