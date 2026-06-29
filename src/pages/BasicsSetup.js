@@ -340,10 +340,14 @@ export default function BasicsSetup() {
             <textarea
               className="lk-input"
               value={bio}
-              onChange={e => setBio(e.target.value.slice(0, 150))}
+              onChange={e => {
+                setBio(e.target.value.slice(0, 150));
+                e.target.style.height = 'auto';
+                e.target.style.height = e.target.scrollHeight + 'px';
+              }}
               placeholder="night owl, keeps things clean, loves to cook"
-              rows={2}
-              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', resize: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box' }}
+              rows={1}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', resize: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box', overflow: 'hidden', lineHeight: '1.5' }}
             />
             <div style={{ textAlign: 'right', fontSize: '8px', color: 'rgba(255,255,255,0.15)', marginTop: '4px', fontFamily: "'Outfit', sans-serif" }}>{bio.length} / 150</div>
           </div>
