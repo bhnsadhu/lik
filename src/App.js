@@ -52,7 +52,6 @@ function AppRouter() {
         <Route path="/setup/photos" element={<PhotosSetup />} />
         <Route path="/setup/basics" element={<BasicsSetup />} />
         <Route path="/setup/housing" element={<HousingSetup />} />
-
         <Route path="/setup/quiz" element={<Quiz />} />
         <Route path="/setup/preferences" element={<PreferencesSetup />} />
         <Route path="*" element={<Navigate to="/feed" replace />} />
@@ -66,7 +65,6 @@ function AppRouter() {
       <Route path="/setup/photos" element={<PhotosSetup />} />
       <Route path="/setup/basics" element={<BasicsSetup />} />
       <Route path="/setup/housing" element={<HousingSetup />} />
-      <Route path="/setup/bio" element={<BioSetup />} />
       <Route path="/setup/quiz" element={<Quiz />} />
       <Route path="/setup/preferences" element={<PreferencesSetup />} />
       <Route path="*" element={<Navigate to={redirectTo} replace />} />
