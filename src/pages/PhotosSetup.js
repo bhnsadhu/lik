@@ -34,27 +34,44 @@ export default function PhotosSetup() {
     setViewIdx(val);
   };
 
+  const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
+  const MAX_BYTES = 10 * 1024 * 1024;
+
   const handleFileAdd = async (e) => {
     const file = e.target.files[0];
     if (!file || photosRef.current.length >= 10) return;
-    setUploading(true);
-    setError('');
-    const ext = file.name.split('.').pop();
-    const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error: uploadErr } = await supabase.storage
-      .from('photos')
-      .upload(path, file, { upsert: false });
-    if (uploadErr) {
-      setError('upload failed · try again');
-      setUploading(false);
+    e.target.value = '';
+
+    if (file.size > MAX_BYTES) {
+      setError('photo too large · max 10mb');
       return;
     }
-    const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(path);
-    const next = [...photosRef.current, publicUrl];
-    updatePhotos(next);
-    updateViewIdx(next.length - 1);
+    if (file.type && !ACCEPTED_TYPES.includes(file.type)) {
+      setError('unsupported format · use jpg, png, or heic');
+      return;
+    }
+
+    setUploading(true);
+    setError('');
+    try {
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('photos')
+        .upload(path, file, { upsert: false });
+      if (uploadErr) {
+        setError('upload failed · try again');
+        setUploading(false);
+        return;
+      }
+      const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(path);
+      const next = [...photosRef.current, publicUrl];
+      updatePhotos(next);
+      updateViewIdx(next.length - 1);
+    } catch {
+      setError('upload failed · try again');
+    }
     setUploading(false);
-    e.target.value = '';
   };
 
   const removeCurrentPhoto = () => {
@@ -96,15 +113,19 @@ export default function PhotosSetup() {
   const handleContinue = async () => {
     if (!canContinue || saving || uploading) return;
     setSaving(true);
-    await supabase.from('profiles').update({
-      photos,
-      cover_photo_url: photos[0] || null,
-      updated_at: new Date().toISOString(),
-      ...(isEditMode || returnToProfile ? {} : { onboarding_step: 'basics' }),
-    }).eq('id', user.id);
-    await refreshProfile();
-    if (returnToProfile || isEditMode) navigate('/profile');
-    // else: router handles step='basics' → /setup/basics
+    try {
+      await supabase.from('profiles').update({
+        photos,
+        cover_photo_url: photos[0] || null,
+        updated_at: new Date().toISOString(),
+        ...(isEditMode || returnToProfile ? {} : { onboarding_step: 'basics' }),
+      }).eq('id', user.id);
+      await refreshProfile();
+      if (returnToProfile || isEditMode) navigate('/profile');
+    } catch {
+      setError('save failed · try again');
+      setSaving(false);
+    }
   };
 
   return (
