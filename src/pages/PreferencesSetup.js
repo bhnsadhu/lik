@@ -168,32 +168,36 @@ export default function PreferencesSetup() {
             monthly budget · your share
           </p>
           <div style={{ display: 'flex', gap: '16px', padding: '0 18px', marginBottom: '18px' }}>
-            <input
-              type="number"
-              placeholder="$ min"
-              value={budgetMin}
-              onChange={e => setBudgetMin(e.target.value)}
-              min={0}
-              max={5000}
-              style={{
-                flex: 1, border: 'none', borderBottom: '1px solid rgba(255,255,255,0.08)',
-                background: 'transparent', padding: '8px 0', fontSize: '12px',
-                color: '#fff', fontFamily: "'Outfit', sans-serif", fontWeight: 300, outline: 'none',
-              }}
-            />
-            <input
-              type="number"
-              placeholder="$ max"
-              value={budgetMax}
-              onChange={e => setBudgetMax(e.target.value)}
-              min={0}
-              max={5000}
-              style={{
-                flex: 1, border: 'none', borderBottom: '1px solid rgba(255,255,255,0.08)',
-                background: 'transparent', padding: '8px 0', fontSize: '12px',
-                color: '#fff', fontFamily: "'Outfit', sans-serif", fontWeight: 300, outline: 'none',
-              }}
-            />
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '8px 0' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontWeight: 300 }}>$</span>
+              <input
+                type="number"
+                placeholder="min"
+                value={budgetMin}
+                onChange={e => setBudgetMin(e.target.value)}
+                min={0}
+                max={5000}
+                style={{
+                  flex: 1, border: 'none', background: 'transparent', outline: 'none',
+                  fontSize: '12px', color: '#fff', fontFamily: "'Outfit', sans-serif", fontWeight: 300,
+                }}
+              />
+            </div>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '8px 0' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontWeight: 300 }}>$</span>
+              <input
+                type="number"
+                placeholder="max"
+                value={budgetMax}
+                onChange={e => setBudgetMax(e.target.value)}
+                min={0}
+                max={5000}
+                style={{
+                  flex: 1, border: 'none', background: 'transparent', outline: 'none',
+                  fontSize: '12px', color: '#fff', fontFamily: "'Outfit', sans-serif", fontWeight: 300,
+                }}
+              />
+            </div>
           </div>
         </>
       )}

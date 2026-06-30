@@ -3,6 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
+import useRotatingPlaceholder from '../hooks/useRotatingPlaceholder';
+
+const BIO_EXAMPLES = [
+  'night owl, keeps things clean, loves to cook',
+  'early riser, quiet most nights, always down for a movie',
+  'studious but social, clean kitchen is non-negotiable',
+  'chill, into gym and gaming, respectful of space',
+];
 
 const UIUC_MAJORS = [
   'Accountancy','Actuarial Science','Advertising','Aerospace Engineering',
@@ -97,6 +105,8 @@ export default function BasicsSetup() {
   const panStartRef = useRef({ x: 0, y: 0, px: 0, py: 0 });
   const pinchRef = useRef({ dist: 0, scale: 1 });
   const isDragging = useRef(false);
+
+  const bioPlaceholder = useRotatingPlaceholder(BIO_EXAMPLES);
 
   const filteredMajors = major.trim().length >= 1
     ? UIUC_MAJORS.filter(m => m.toLowerCase().includes(major.toLowerCase()))
@@ -341,7 +351,7 @@ export default function BasicsSetup() {
                 e.target.style.height = 'auto';
                 e.target.style.height = e.target.scrollHeight + 'px';
               }}
-              placeholder="night owl, keeps things clean, loves to cook"
+              placeholder={bioPlaceholder}
               rows={1}
               style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', resize: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box', overflow: 'hidden', lineHeight: '1.5' }}
             />
