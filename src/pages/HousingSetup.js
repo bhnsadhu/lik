@@ -14,27 +14,28 @@ export default function HousingSetup() {
   const [selected, setSelected] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const handleSelect = async (type) => {
+  const handleSelect = (type) => {
     if (saving) return;
     setSelected(type);
-    setSaving(true);
-
-    if (isEditMode) {
-      await supabase.from('profiles').update({
-        housing_type: type,
-        updated_at: new Date().toISOString(),
-      }).eq('id', user.id);
-      await refreshProfile();
-      navigate('/setup/preferences', { state: { returnTo: '/profile' } });
-    } else {
-      await supabase.from('profiles').update({
-        housing_type: type,
-        onboarding_step: 'bio',
-        updated_at: new Date().toISOString(),
-      }).eq('id', user.id);
-      await refreshProfile();
-      // router routes step='bio' → /setup/bio
-    }
+    setTimeout(async () => {
+      setSaving(true);
+      if (isEditMode) {
+        await supabase.from('profiles').update({
+          housing_type: type,
+          updated_at: new Date().toISOString(),
+        }).eq('id', user.id);
+        await refreshProfile();
+        navigate('/setup/preferences', { state: { returnTo: '/profile' } });
+      } else {
+        await supabase.from('profiles').update({
+          housing_type: type,
+          onboarding_step: 'bio',
+          updated_at: new Date().toISOString(),
+        }).eq('id', user.id);
+        await refreshProfile();
+        navigate('/setup/quiz');
+      }
+    }, 300);
   };
 
   return (
@@ -43,7 +44,7 @@ export default function HousingSetup() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
           <span onClick={() => navigate('/setup/basics')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, width: '24px' }}>←</span>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
-          <span style={{ width: '24px' }}></span>
+          <span style={{ width: '24px' }} />
         </div>
         {!isEditMode && <StepIndicator currentStep={3} />}
 
