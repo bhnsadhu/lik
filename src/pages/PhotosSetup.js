@@ -110,10 +110,8 @@ export default function PhotosSetup() {
   return (
     <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
-        <span style={{ width: '24px' }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
         <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
-        <span style={{ width: '24px' }} />
       </div>
 
       {!isEditMode && !returnToProfile && <StepIndicator currentStep={1} onStepClick={(route) => navigate(route)} />}
