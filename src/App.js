@@ -61,27 +61,16 @@ function AppRouter() {
     );
   }
 
-  const redirectTo = STEP_ROUTES[step];
-  if (redirectTo) {
-    return (
-      <Routes>
-        <Route path={redirectTo} element={
-          step === 'basics' ? <BasicsSetup /> :
-          step === 'housing' ? <HousingSetup /> :
-          step === 'bio' ? <BioSetup /> :
-          step === 'quiz' ? <Quiz /> :
-          <PreferencesSetup />
-        } />
-        <Route path="*" element={<Navigate to={redirectTo} replace />} />
-      </Routes>
-    );
-  }
-
-  // null / 'profile' / unknown → start new onboarding
+  const redirectTo = STEP_ROUTES[step] || '/setup/photos';
   return (
     <Routes>
       <Route path="/setup/photos" element={<PhotosSetup />} />
-      <Route path="*" element={<Navigate to="/setup/photos" replace />} />
+      <Route path="/setup/basics" element={<BasicsSetup />} />
+      <Route path="/setup/housing" element={<HousingSetup />} />
+      <Route path="/setup/bio" element={<BioSetup />} />
+      <Route path="/setup/quiz" element={<Quiz />} />
+      <Route path="/setup/preferences" element={<PreferencesSetup />} />
+      <Route path="*" element={<Navigate to={redirectTo} replace />} />
     </Routes>
   );
 }
