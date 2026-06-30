@@ -1,7 +1,7 @@
 import React from 'react';
 
-const steps = ['photos', 'profile', 'housing', 'vibe', 'details'];
-const stepRoutes = ['/setup/photos', '/setup/basics', '/setup/housing', '/setup/bio', '/setup/quiz'];
+const steps = ['photos', 'profile', 'housing', 'quiz', 'preferences'];
+const stepRoutes = ['/setup/photos', '/setup/basics', '/setup/housing', '/setup/quiz', '/setup/preferences'];
 
 export default function StepIndicator({ currentStep, onStepClick }) {
   return (

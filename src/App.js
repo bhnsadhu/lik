@@ -4,7 +4,6 @@ import Auth from './pages/Auth';
 import PhotosSetup from './pages/PhotosSetup';
 import BasicsSetup from './pages/BasicsSetup';
 import HousingSetup from './pages/HousingSetup';
-import BioSetup from './pages/BioSetup';
 import Quiz from './pages/Quiz';
 import PreferencesSetup from './pages/PreferencesSetup';
 import SwipeFeed from './pages/SwipeFeed';
@@ -16,7 +15,7 @@ import './App.css';
 const STEP_ROUTES = {
   basics: '/setup/basics',
   housing: '/setup/housing',
-  bio: '/setup/bio',
+  bio: '/setup/quiz',
   quiz: '/setup/quiz',
   budget: '/setup/preferences',
   preferences: '/setup/preferences',
@@ -53,7 +52,7 @@ function AppRouter() {
         <Route path="/setup/photos" element={<PhotosSetup />} />
         <Route path="/setup/basics" element={<BasicsSetup />} />
         <Route path="/setup/housing" element={<HousingSetup />} />
-        <Route path="/setup/bio" element={<BioSetup />} />
+
         <Route path="/setup/quiz" element={<Quiz />} />
         <Route path="/setup/preferences" element={<PreferencesSetup />} />
         <Route path="*" element={<Navigate to="/feed" replace />} />

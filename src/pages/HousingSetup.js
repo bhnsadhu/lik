@@ -29,7 +29,7 @@ export default function HousingSetup() {
       } else {
         await supabase.from('profiles').update({
           housing_type: type,
-          onboarding_step: 'bio',
+          onboarding_step: 'quiz',
           updated_at: new Date().toISOString(),
         }).eq('id', user.id);
         await refreshProfile();
