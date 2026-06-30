@@ -3,10 +3,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
+import useRotatingPlaceholder from '../hooks/useRotatingPlaceholder';
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
 const MAX_BYTES = 10 * 1024 * 1024;
 const UPLOAD_TIMEOUT_MS = 15000;
+
+const CAPTION_EXAMPLES = [
+  'these are my people',
+  'campus life, mostly',
+  'main character energy',
+  'just vibing through college',
+];
 
 function compressImage(file) {
   return new Promise((resolve) => {
@@ -38,11 +46,14 @@ export default function PhotosSetup() {
   const returnToProfile = location.state?.returnTo === '/profile';
 
   const [photos, setPhotos] = useState(profile?.photos || []);
+  const [caption, setCaption] = useState(profile?.photo_caption || '');
   const [viewIdx, setViewIdx] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  const captionPlaceholder = useRotatingPlaceholder(CAPTION_EXAMPLES);
 
   // Refs so handlers always see current values
   const photosRef = useRef(photos);
@@ -140,6 +151,7 @@ export default function PhotosSetup() {
     try {
       await supabase.from('profiles').update({
         photos,
+        photo_caption: caption.trim() || null,
         cover_photo_url: photos[0] || null,
         updated_at: new Date().toISOString(),
         ...(isEditMode || returnToProfile ? {} : { onboarding_step: 'basics' }),
@@ -246,6 +258,22 @@ export default function PhotosSetup() {
             )}
           </>
         )}
+      </div>
+
+      {/* Caption */}
+      <div style={{ padding: '10px 18px 0' }}>
+        <input
+          type="text"
+          value={caption}
+          onChange={e => setCaption(e.target.value.slice(0, 80))}
+          placeholder={captionPlaceholder}
+          maxLength={80}
+          style={{
+            width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.08)',
+            outline: 'none', padding: '8px 0', fontSize: '12px', color: '#fff',
+            fontFamily: "'Outfit', sans-serif", fontWeight: 300, boxSizing: 'border-box',
+          }}
+        />
       </div>
 
       {/* Hint */}
