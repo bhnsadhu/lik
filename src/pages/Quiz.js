@@ -158,7 +158,7 @@ export default function Quiz() {
       .update({ onboarding_step: 'preferences', updated_at: new Date().toISOString() })
       .eq('id', user.id);
 
-    await refreshProfile();
+    navigate('/setup/preferences');
   };
 
   const backHeader = (

@@ -25,7 +25,7 @@ export default function Chat() {
             user2:user2_id(id, name, photos)
           `)
           .eq('id', matchId)
-          .single(),
+          .maybeSingle(),
         supabase
           .from('messages')
           .select('*')

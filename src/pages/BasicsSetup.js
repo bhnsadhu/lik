@@ -209,7 +209,7 @@ export default function BasicsSetup() {
         navigate('/profile');
       } else {
         await supabase.from('profiles').update({ ...updates, onboarding_step: 'housing' }).eq('id', user.id);
-        await refreshProfile();
+        navigate('/setup/housing');
       }
     } catch {
       setError('something went wrong · try again');
