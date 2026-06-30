@@ -237,7 +237,10 @@ export default function BasicsSetup() {
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
         </div>
 
-        {!isEditMode && <StepIndicator currentStep={2} onStepClick={(route) => navigate(route)} />}
+        <StepIndicator currentStep={2} onStepClick={(route) => {
+          if (isEditMode) navigate(route, { state: { editMode: true } });
+          else navigate(route);
+        }} />
 
         <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: '#fff', padding: '0 18px 12px', margin: 0 }}>your profile</p>
 

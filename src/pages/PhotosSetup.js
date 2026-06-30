@@ -175,7 +175,10 @@ export default function PhotosSetup() {
         <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
       </div>
 
-      {!isEditMode && !returnToProfile && <StepIndicator currentStep={1} onStepClick={(route) => navigate(route)} />}
+      <StepIndicator currentStep={1} onStepClick={(route) => {
+        if (returnToProfile) navigate(route, { state: { returnTo: '/profile' } });
+        else navigate(route);
+      }} />
 
       {/* Title + subhead */}
       <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#fff', padding: '2px 18px 4px', margin: 0 }}>show yourself</p>

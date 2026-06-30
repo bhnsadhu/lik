@@ -58,8 +58,8 @@ export default function UserProfile() {
 
   const editOptions = [
     { label: 'edit photos', action: () => navigate('/setup/photos', { state: { returnTo: '/profile' } }) },
-    { label: 'edit basics', action: () => navigate('/setup/basics', { state: { editMode: true } }) },
-    { label: 'edit bio', action: () => navigate('/setup/bio', { state: { editMode: true } }) },
+    { label: 'edit profile', action: () => navigate('/setup/basics', { state: { editMode: true } }) },
+    { label: 'edit housing', action: () => navigate('/setup/housing', { state: { editMode: true } }) },
     { label: 'retake quiz', action: () => navigate('/setup/quiz', { state: { editMode: true } }) },
     { label: 'edit preferences', action: () => navigate('/setup/preferences', { state: { returnTo: '/profile' } }) },
   ];

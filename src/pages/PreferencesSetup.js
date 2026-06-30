@@ -85,7 +85,10 @@ export default function PreferencesSetup() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
         </div>
-        {!isEditMode && <StepIndicator currentStep={5} onStepClick={(route) => navigate(route)} />}
+        <StepIndicator currentStep={5} onStepClick={(route) => {
+        if (isEditMode) navigate(route, { state: { editMode: true, returnTo: '/profile' } });
+        else navigate(route);
+      }} />
       </div>
     );
   }
@@ -151,7 +154,10 @@ export default function PreferencesSetup() {
         <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
       </div>
 
-      {!isEditMode && <StepIndicator currentStep={5} onStepClick={(route) => navigate(route)} />}
+      <StepIndicator currentStep={5} onStepClick={(route) => {
+        if (isEditMode) navigate(route, { state: { editMode: true, returnTo: '/profile' } });
+        else navigate(route);
+      }} />
 
       {/* Title */}
       <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#fff', margin: 0, padding: '10px 18px 3px' }}>

@@ -43,7 +43,10 @@ export default function HousingSetup() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
         </div>
-        {!isEditMode && <StepIndicator currentStep={3} onStepClick={(route) => navigate(route)} />}
+        <StepIndicator currentStep={3} onStepClick={(route) => {
+          if (isEditMode) navigate(route, { state: { editMode: true } });
+          else navigate(route);
+        }} />
 
         <h2 className="setup-title">where are you living?</h2>
         <p className="setup-sub">tap to continue (you can change this later)</p>
