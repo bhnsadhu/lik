@@ -30,7 +30,9 @@ export default function Auth() {
     e.preventDefault();
     setError('');
 
-    if (!email.toLowerCase().endsWith('@illinois.edu')) {
+    // TEMP: testing exception — remove before public launch
+    const TESTING_EMAILS = ['bhnsadhu@gmail.com'];
+    if (!email.toLowerCase().endsWith('@illinois.edu') && !TESTING_EMAILS.includes(email.toLowerCase().trim())) {
       setError('illinois.edu email required');
       return;
     }
