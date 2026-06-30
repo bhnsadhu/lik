@@ -144,8 +144,12 @@ export default function PhotosSetup() {
         updated_at: new Date().toISOString(),
         ...(isEditMode || returnToProfile ? {} : { onboarding_step: 'basics' }),
       }).eq('id', user.id);
-      await refreshProfile();
-      if (returnToProfile || isEditMode) navigate('/profile');
+      if (returnToProfile || isEditMode) {
+        await refreshProfile();
+        navigate('/profile');
+      } else {
+        navigate('/setup/basics');
+      }
     } catch {
       setError('save failed · try again');
       setSaving(false);
