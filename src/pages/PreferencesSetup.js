@@ -120,7 +120,7 @@ export default function PreferencesSetup() {
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
           <span style={{ width: '24px' }} />
         </div>
-        {!isEditMode && <StepIndicator currentStep={5} />}
+        {!isEditMode && <StepIndicator currentStep={5} onStepClick={(route) => navigate(route)} />}
 
         <h2 className="setup-title">
           {housingType === 'dorm' ? 'dorm details' : 'your preferences'}

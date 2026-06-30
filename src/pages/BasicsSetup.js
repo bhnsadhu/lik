@@ -229,7 +229,7 @@ export default function BasicsSetup() {
           <span style={{ width: '24px' }} />
         </div>
 
-        {!isEditMode && <StepIndicator currentStep={2} />}
+        {!isEditMode && <StepIndicator currentStep={2} onStepClick={(route) => navigate(route)} />}
 
         <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: '#fff', padding: '0 18px 12px', margin: 0 }}>your profile</p>
 

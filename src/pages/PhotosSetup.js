@@ -116,7 +116,7 @@ export default function PhotosSetup() {
         <span style={{ width: '24px' }} />
       </div>
 
-      {!isEditMode && !returnToProfile && <StepIndicator currentStep={1} />}
+      {!isEditMode && !returnToProfile && <StepIndicator currentStep={1} onStepClick={(route) => navigate(route)} />}
 
       {/* Title + subhead */}
       <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#fff', padding: '2px 18px 4px', margin: 0 }}>show yourself</p>

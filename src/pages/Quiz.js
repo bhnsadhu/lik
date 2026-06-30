@@ -187,7 +187,7 @@ export default function Quiz() {
       <div className="quiz-page">
         <div className="quiz-inner">
           {backHeader}
-          {!isEditMode && <StepIndicator currentStep={4} />}
+          {!isEditMode && <StepIndicator currentStep={4} onStepClick={(route) => navigate(route)} />}
           <div className="quiz-saving">
             <p className="muted">{isEditMode ? 'saving changes...' : 'building your vibe...'}</p>
           </div>

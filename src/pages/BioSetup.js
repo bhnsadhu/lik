@@ -57,10 +57,12 @@ export default function BioSetup() {
   return (
     <div className="setup-page">
       <div className="setup-inner">
-        <div className="setup-header">
-          <span className="wordmark-sm">lik</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
+          <span onClick={() => navigate('/setup/housing')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, width: '24px' }}>←</span>
+          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ width: '24px' }} />
         </div>
-        {!isEditMode && <StepIndicator currentStep={4} />}
+        {!isEditMode && <StepIndicator currentStep={4} onStepClick={(route) => navigate(route)} />}
 
         <h2 className="setup-title">say something</h2>
         <p className="setup-sub">a line about you · totally optional</p>

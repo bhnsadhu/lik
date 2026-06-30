@@ -1,6 +1,7 @@
 import React from 'react';
 const steps = ['photos', 'profile', 'housing', 'vibe', 'details'];
-export default function StepIndicator({ currentStep }) {
+const stepRoutes = ['/setup/photos', '/setup/basics', '/setup/housing', '/setup/quiz', '/setup/budget'];
+export default function StepIndicator({ currentStep, onStepClick }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', padding: '0 18px', marginBottom: '14px' }}>
       {steps.map((step, i) => {
@@ -9,7 +10,10 @@ export default function StepIndicator({ currentStep }) {
         const active = num === currentStep;
         return (
           <React.Fragment key={step}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
+            <div
+              onClick={() => done && onStepClick && onStepClick(stepRoutes[i])}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', cursor: done ? 'pointer' : 'default' }}
+            >
               <div style={{
                 width: '7px', height: '7px', borderRadius: '50%',
                 background: done || active ? '#3DDCFF' : 'rgba(255,255,255,0.1)',
