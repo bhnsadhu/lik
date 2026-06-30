@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -39,6 +39,12 @@ export default function PreferencesSetup() {
 
   const housingType = profile?.housing_type;
 
+  useEffect(() => {
+    if (profile && !profile.housing_type) {
+      navigate('/setup/housing');
+    }
+  }, [profile, navigate]);
+
   const [semester, setSemester] = useState(profile?.move_in_semester || '');
   const [areas, setAreas] = useState(profile?.preferred_area || []);
   const [dormPrefs, setDormPrefs] = useState(profile?.dorm_preference || []);
@@ -73,7 +79,19 @@ export default function PreferencesSetup() {
     }
   };
 
-  const isApartment = housingType === 'apartment' || !housingType;
+  if (!profile || housingType === undefined) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
+          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+        </div>
+        {!isEditMode && <StepIndicator currentStep={5} onStepClick={(route) => navigate(route)} />}
+      </div>
+    );
+  }
+
+  const isApartment = housingType === 'apartment';
+  const isDorm = housingType === 'dorm';
 
   const budgetValid = isApartment ? (!!budgetMin && !!budgetMax) : true;
   const areaValid = isApartment ? areas.length > 0 : true;
@@ -99,7 +117,7 @@ export default function PreferencesSetup() {
       updated_at: new Date().toISOString(),
     };
 
-    if (housingType === 'dorm') {
+    if (isDorm) {
       updates.dorm_preference = dormPrefs;
     } else {
       updates.budget_min = parseInt(budgetMin, 10);
@@ -204,7 +222,7 @@ export default function PreferencesSetup() {
       </div>
 
       {/* Preferred dorm (dorm path) */}
-      {housingType === 'dorm' && (
+      {isDorm && (
         <>
           <p style={{ ...LABEL_STYLE, margin: 0, padding: '0 18px', marginBottom: '8px' }}>
             preferred dorm

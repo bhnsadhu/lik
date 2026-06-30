@@ -1,9 +1,22 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const steps = ['photos', 'profile', 'housing', 'quiz', 'preferences'];
 const stepRoutes = ['/setup/photos', '/setup/basics', '/setup/housing', '/setup/quiz', '/setup/preferences'];
 
 export default function StepIndicator({ currentStep, onStepClick }) {
+  const { profile } = useAuth();
+  const housingSet = !!profile?.housing_type;
+
+  const handleClick = (step, route) => {
+    if (!onStepClick) return;
+    if (step === 'preferences' && !housingSet) {
+      onStepClick('/setup/housing');
+      return;
+    }
+    onStepClick(route);
+  };
+
   return (
     <div style={{
       display: 'flex',
@@ -20,7 +33,7 @@ export default function StepIndicator({ currentStep, onStepClick }) {
         return (
           <div
             key={step}
-            onClick={() => onStepClick && onStepClick(stepRoutes[i])}
+            onClick={() => handleClick(step, stepRoutes[i])}
             style={{
               flex: 1,
               height: '40px',
