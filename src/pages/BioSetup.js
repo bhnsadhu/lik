@@ -58,7 +58,7 @@ export default function BioSetup() {
     <div className="setup-page">
       <div className="setup-inner">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 8px' }}>
-          <span onClick={() => navigate('/setup/housing')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, width: '24px' }}>←</span>
+          <span onClick={() => navigate('/setup/housing')} style={{ fontSize: '18px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 300, padding: '8px', margin: '-8px' }}>←</span>
           <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
           <span style={{ width: '24px' }} />
         </div>

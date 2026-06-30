@@ -12,7 +12,7 @@ export default function StepIndicator({ currentStep, onStepClick }) {
           <React.Fragment key={step}>
             <div
               onClick={() => done && onStepClick && onStepClick(stepRoutes[i])}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', cursor: done ? 'pointer' : 'default' }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', cursor: done ? 'pointer' : 'default', padding: '8px', margin: '-8px' }}
             >
               <div style={{
                 width: '7px', height: '7px', borderRadius: '50%',
