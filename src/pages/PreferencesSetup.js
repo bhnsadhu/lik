@@ -209,21 +209,27 @@ export default function PreferencesSetup() {
           <p style={{ ...LABEL_STYLE, margin: 0, padding: '0 18px', marginBottom: '8px' }}>
             preferred dorm
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', padding: '0 18px', marginBottom: '18px' }}>
+          <div>
             {DORMS.map(d => (
               <div
                 key={d}
                 onClick={() => toggleDorm(d)}
-                style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 0', cursor: 'pointer' }}
+                style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '10px 18px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer',
+                }}
               >
-                <div style={{
-                  width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0,
-                  background: dormPrefs.includes(d) ? '#3DDCFF' : 'rgba(255,255,255,0.15)',
-                }} />
                 <span style={{
-                  fontSize: '11px', fontWeight: 300, fontFamily: "'Outfit', sans-serif",
-                  color: dormPrefs.includes(d) ? '#3DDCFF' : 'rgba(255,255,255,0.3)',
+                  fontSize: '12px',
+                  fontWeight: dormPrefs.includes(d) ? 400 : 300,
+                  fontFamily: "'Outfit', sans-serif",
+                  color: dormPrefs.includes(d) ? '#3DDCFF' : 'rgba(255,255,255,0.35)',
                 }}>{d}</span>
+                <div style={{
+                  width: '14px', height: '14px', borderRadius: '3px', flexShrink: 0,
+                  border: dormPrefs.includes(d) ? '1px solid #3DDCFF' : '1px solid rgba(255,255,255,0.15)',
+                  background: dormPrefs.includes(d) ? '#3DDCFF' : 'transparent',
+                }} />
               </div>
             ))}
           </div>
