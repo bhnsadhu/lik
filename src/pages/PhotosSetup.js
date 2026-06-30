@@ -4,6 +4,32 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
 
+const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
+const MAX_BYTES = 10 * 1024 * 1024;
+const UPLOAD_TIMEOUT_MS = 15000;
+
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 1600;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => resolve(blob || file), 'image/jpeg', 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
 export default function PhotosSetup() {
   const { user, refreshProfile, profile } = useAuth();
   const navigate = useNavigate();
@@ -34,9 +60,6 @@ export default function PhotosSetup() {
     setViewIdx(val);
   };
 
-  const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
-  const MAX_BYTES = 10 * 1024 * 1024;
-
   const handleFileAdd = async (e) => {
     const file = e.target.files[0];
     if (!file || photosRef.current.length >= 10) return;
@@ -54,14 +77,14 @@ export default function PhotosSetup() {
     setUploading(true);
     setError('');
     try {
-      const ext = file.name.split('.').pop();
-      const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadErr } = await supabase.storage
-        .from('photos')
-        .upload(path, file, { upsert: false });
+      const blob = await compressImage(file);
+      const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+      const { error: uploadErr } = await Promise.race([
+        supabase.storage.from('photos').upload(path, blob, { upsert: false, contentType: 'image/jpeg' }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), UPLOAD_TIMEOUT_MS)),
+      ]);
       if (uploadErr) {
         setError('upload failed · try again');
-        setUploading(false);
         return;
       }
       const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(path);
@@ -70,8 +93,9 @@ export default function PhotosSetup() {
       updateViewIdx(next.length - 1);
     } catch {
       setError('upload failed · try again');
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
   };
 
   const removeCurrentPhoto = () => {
