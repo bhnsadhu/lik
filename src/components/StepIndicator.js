@@ -23,8 +23,10 @@ export default function StepIndicator({ currentStep, onStepClick }) {
             onClick={() => onStepClick && onStepClick(stepRoutes[i])}
             style={{
               flex: 1,
-              textAlign: 'center',
-              padding: '6px 0',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               borderRadius: '8px',
               background: active ? 'rgba(61,220,255,0.2)' : done ? 'rgba(61,220,255,0.12)' : 'transparent',
               cursor: 'pointer'
@@ -34,7 +36,8 @@ export default function StepIndicator({ currentStep, onStepClick }) {
               fontFamily: "'Outfit', sans-serif",
               fontSize: '9px',
               fontWeight: active ? 600 : done ? 500 : 300,
-              color: active || done ? '#3DDCFF' : 'rgba(255,255,255,0.2)'
+              color: active || done ? '#3DDCFF' : 'rgba(255,255,255,0.2)',
+              lineHeight: '1'
             }}>{step}</span>
           </div>
         );
