@@ -48,7 +48,7 @@ export default function HousingSetup() {
         {!isEditMode && <StepIndicator currentStep={3} />}
 
         <h2 className="setup-title">where are you living?</h2>
-        <p className="setup-sub">tap to continue · you can change this later</p>
+        <p className="setup-sub">tap to continue (you can change this later)</p>
 
         <div className="housing-cards">
           <button
