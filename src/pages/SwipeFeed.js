@@ -318,8 +318,9 @@ export default function SwipeFeed() {
 
   const flyCard = useCallback(async (dir, person) => {
     const target = dir === 'right' ? 800 : -800;
-    animate(topCardX, target, { duration: 0.28, ease: [0.4, 0, 0.6, 1] });
+    const controls = animate(topCardX, target, { duration: 0.28, ease: [0.4, 0, 0.6, 1] });
     await new Promise(r => setTimeout(r, 220));
+    controls.stop();
     topCardX.set(0);
     handleSwipe(dir, person);
     handleCardLeft(person.id);
