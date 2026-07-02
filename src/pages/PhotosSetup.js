@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
+import Wordmark from '../components/Wordmark';
 import useRotatingPlaceholder from '../hooks/useRotatingPlaceholder';
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
@@ -174,7 +175,7 @@ export default function PhotosSetup() {
     <div style={{ minHeight: '100vh', background: 'var(--cream)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-        <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
+        <Wordmark size={18} />
       </div>
 
       <StepIndicator currentStep={1} onStepClick={(route) => {

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import Wordmark from '../components/Wordmark';
 
 export default function Auth() {
   const { signIn, verifyOtp } = useAuth();
@@ -109,7 +110,7 @@ export default function Auth() {
     <div className="auth-page">
       {!sent ? (
         <div className="auth-inner">
-          <h1 className="wordmark">lik</h1>
+          <h1 style={{ margin: '0 0 8px' }}><Wordmark size={64} /></h1>
 
           <p className="auth-tagline">
             find a place you lik. with someone you lik.

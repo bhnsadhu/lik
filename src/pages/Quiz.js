@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
+import Wordmark from '../components/Wordmark';
 
 export const QUIZ_QUESTIONS = [
   {
@@ -164,7 +165,7 @@ export default function Quiz() {
 
   const backHeader = (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-      <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
+      <Wordmark size={18} />
     </div>
   );
 

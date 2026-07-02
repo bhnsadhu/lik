@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
+import Wordmark from '../components/Wordmark';
 
 const SEMESTERS = ['fall 2026', 'spring 2027', 'fall 2027', 'spring 2028'];
 
@@ -83,7 +84,7 @@ export default function PreferencesSetup() {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--cream)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-          <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
+          <Wordmark size={18} />
         </div>
         <StepIndicator currentStep={5} onStepClick={(route) => {
         if (isEditMode) navigate(route, { state: { editMode: true, returnTo: '/profile' } });
@@ -151,7 +152,7 @@ export default function PreferencesSetup() {
     <div style={{ minHeight: '100vh', background: 'var(--cream)', paddingBottom: '80px' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-        <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
+        <Wordmark size={18} />
       </div>
 
       <StepIndicator currentStep={5} onStepClick={(route) => {

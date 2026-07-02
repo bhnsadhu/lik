@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import StepIndicator from '../components/StepIndicator';
+import Wordmark from '../components/Wordmark';
 
 const PLACEHOLDERS = [
   'early bird who keeps things clean',
@@ -58,7 +59,7 @@ export default function BioSetup() {
     <div className="setup-page">
       <div className="setup-inner">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-          <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
+          <Wordmark size={18} />
         </div>
         {!isEditMode && <StepIndicator currentStep={4} onStepClick={(route) => navigate(route)} />}
 

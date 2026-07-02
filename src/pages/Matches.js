@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import BottomNav from '../components/BottomNav';
+import Wordmark from '../components/Wordmark';
 
 function timeSince(dateStr) {
   const ms = Date.now() - new Date(dateStr).getTime();
@@ -64,7 +65,7 @@ export default function Matches() {
   return (
     <div className="app-page">
       <div className="app-header">
-        <span className="wordmark">lik</span>
+        <Wordmark size={24} />
       </div>
 
       {loading ? (

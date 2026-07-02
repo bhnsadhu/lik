@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Wordmark from './components/Wordmark';
 import Auth from './pages/Auth';
 import PhotosSetup from './pages/PhotosSetup';
 import BasicsSetup from './pages/BasicsSetup';
@@ -27,7 +28,7 @@ function AppRouter() {
   if (loading) {
     return (
       <div className="splash">
-        <span className="wordmark">lik</span>
+        <Wordmark size={64} />
       </div>
     );
   }
