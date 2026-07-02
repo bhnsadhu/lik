@@ -229,12 +229,12 @@ export default function BasicsSetup() {
 
   return (
     <>
-      <style>{`.lk-input::placeholder { color: rgba(255,255,255,0.18); }`}</style>
+      <style>{`.lk-input::placeholder { color: var(--muted); }`}</style>
 
-      <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--cream)' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
         </div>
 
         <StepIndicator currentStep={2} onStepClick={(route) => {
@@ -242,45 +242,45 @@ export default function BasicsSetup() {
           else navigate(route);
         }} />
 
-        <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: '#fff', padding: '0 18px 12px', margin: 0 }}>your profile</p>
+        <p style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 20, color: 'var(--ink)', padding: '0 18px 12px', margin: 0 }}>your profile</p>
 
         {/* Cards */}
         <div style={{ padding: '0 14px' }}>
 
           {/* Profile pic card */}
           <div
-            style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', position: 'relative' }}
+            style={{ background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '16px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', position: 'relative' }}
             onClick={openCropModal}
           >
-            <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#131820', border: '1.5px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'var(--cream)', border: '1.5px solid var(--cream-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
               {profilePicDataUrl
                 ? <img src={profilePicDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>+</span>
+                : <span style={{ color: 'var(--muted)', fontSize: '16px' }}>+</span>
               }
             </div>
             <div>
-              <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>profile pic</div>
-              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.2)', fontWeight: 300, fontFamily: "'Outfit', sans-serif" }}>{profilePicDataUrl ? 'tap to change' : 'tap to set'}</div>
+              <div style={{ fontSize: '9px', color: 'var(--muted)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>profile pic</div>
+              <div style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 300, fontFamily: "'Outfit', sans-serif" }}>{profilePicDataUrl ? 'tap to change' : 'tap to set'}</div>
             </div>
           </div>
 
           {/* Name card */}
-          <div style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px' }}>
-            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>name</div>
+          <div style={{ background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '16px', marginBottom: '8px' }}>
+            <div style={{ fontSize: '9px', color: 'var(--muted)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>name</div>
             <input
               className="lk-input"
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="first and last name"
               maxLength={60}
-              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box' }}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: 'var(--ink)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box' }}
             />
           </div>
 
           {/* Age + year cards */}
           <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-            <div style={{ flex: 1, background: '#0d1117', borderRadius: '12px', padding: '12px' }}>
-              <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>age</div>
+            <div style={{ flex: 1, background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '16px' }}>
+              <div style={{ fontSize: '9px', color: 'var(--muted)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>age</div>
               <input
                 className="lk-input"
                 type="text"
@@ -290,53 +290,53 @@ export default function BasicsSetup() {
                 onChange={e => setAge(e.target.value.replace(/\D/g, '').slice(0, 2))}
                 placeholder="16+"
                 maxLength={2}
-                style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: ageError ? 'rgba(255,80,80,0.8)' : '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
+                style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: ageError ? 'var(--danger)' : 'var(--ink)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
                 onBlur={() => {
                   if (!age) { setAgeError(false); return; }
                   if (age.length !== 2 || parseInt(age, 10) < 16) setAgeError(true);
                   else setAgeError(false);
                 }}
               />
-              {ageError && <div style={{ fontSize: '9px', color: 'rgba(255,80,80,0.7)', marginTop: '3px', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>must be 2 digits, 16 or older</div>}
+              {ageError && <div style={{ fontSize: '9px', color: 'var(--danger)', marginTop: '3px', fontFamily: "'Outfit', sans-serif", fontWeight: 300 }}>must be 2 digits, 16 or older</div>}
             </div>
-            <div style={{ flex: 1, background: '#0d1117', borderRadius: '12px', padding: '12px', position: 'relative' }}>
-              <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>year</div>
+            <div style={{ flex: 1, background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '16px', position: 'relative' }}>
+              <div style={{ fontSize: '9px', color: 'var(--muted)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>year</div>
               <select
                 value={year}
                 onChange={e => setYear(e.target.value)}
-                style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: year ? '#fff' : 'rgba(255,255,255,0.2)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, appearance: 'none', WebkitAppearance: 'none', cursor: 'pointer' }}
+                style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: year ? 'var(--ink)' : 'var(--muted)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, appearance: 'none', WebkitAppearance: 'none', cursor: 'pointer' }}
               >
-                <option value="" disabled style={{ background: '#131820' }}>select</option>
-                <option value="freshman" style={{ background: '#131820' }}>freshman</option>
-                <option value="sophomore" style={{ background: '#131820' }}>sophomore</option>
-                <option value="junior" style={{ background: '#131820' }}>junior</option>
-                <option value="senior" style={{ background: '#131820' }}>senior</option>
-                <option value="masters student" style={{ background: '#131820' }}>masters student</option>
-                <option value="doctoral student" style={{ background: '#131820' }}>doctoral student</option>
-                <option value="other" style={{ background: '#131820' }}>other</option>
+                <option value="" disabled>select</option>
+                <option value="freshman">freshman</option>
+                <option value="sophomore">sophomore</option>
+                <option value="junior">junior</option>
+                <option value="senior">senior</option>
+                <option value="masters student">masters student</option>
+                <option value="doctoral student">doctoral student</option>
+                <option value="other">other</option>
               </select>
-              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', fontSize: '10px', pointerEvents: 'none' }}>▾</span>
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', fontSize: '10px', pointerEvents: 'none' }}>▾</span>
             </div>
           </div>
 
           {/* Major card with autocomplete */}
-          <div style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px', position: 'relative' }}>
-            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>major</div>
+          <div style={{ background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '16px', marginBottom: '8px', position: 'relative' }}>
+            <div style={{ fontSize: '9px', color: 'var(--muted)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>major</div>
             <input
               className="lk-input"
               value={major}
               onChange={e => { setMajor(e.target.value); setShowMajorDropdown(true); }}
               onBlur={() => setTimeout(() => setShowMajorDropdown(false), 150)}
               placeholder="start typing your major..."
-              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '12px', color: 'var(--ink)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0 }}
             />
             {showMajorDropdown && major && filteredMajors.length > 0 && (
-              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#131820', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', zIndex: 10, maxHeight: '160px', overflowY: 'auto', marginTop: '4px' }}>
+              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '8px', zIndex: 10, maxHeight: '160px', overflowY: 'auto', marginTop: '4px' }}>
                 {filteredMajors.slice(0, 6).map((m, i) => (
                   <div
                     key={i}
                     onMouseDown={() => { setMajor(m); setShowMajorDropdown(false); }}
-                    style={{ padding: '10px 14px', fontSize: '11px', color: i === 0 ? '#3DDCFF' : 'rgba(255,255,255,0.5)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer' }}
+                    style={{ padding: '10px 14px', fontSize: '11px', color: i === 0 ? 'var(--teal-dark)' : 'var(--muted)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", borderBottom: '1px solid var(--cream-2)', cursor: 'pointer' }}
                   >{m}</div>
                 ))}
               </div>
@@ -344,8 +344,8 @@ export default function BasicsSetup() {
           </div>
 
           {/* Bio card */}
-          <div style={{ background: '#0d1117', borderRadius: '12px', padding: '12px', marginBottom: '8px' }}>
-            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>bio</div>
+          <div style={{ background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '16px', marginBottom: '8px' }}>
+            <div style={{ fontSize: '9px', color: 'var(--muted)', fontWeight: 300, marginBottom: '3px', fontFamily: "'Outfit', sans-serif" }}>bio</div>
             <textarea
               className="lk-input"
               value={bio}
@@ -356,27 +356,27 @@ export default function BasicsSetup() {
               }}
               placeholder={bioPlaceholder}
               rows={1}
-              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', resize: 'none', fontSize: '12px', color: '#fff', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box', overflow: 'hidden', lineHeight: '1.5' }}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', resize: 'none', fontSize: '12px', color: 'var(--ink)', fontWeight: 300, fontFamily: "'Outfit', sans-serif", padding: 0, boxSizing: 'border-box', overflow: 'hidden', lineHeight: '1.5' }}
             />
-            <div style={{ textAlign: 'right', fontSize: '8px', color: 'rgba(255,255,255,0.15)', marginTop: '4px', fontFamily: "'Outfit', sans-serif" }}>{bio.length} / 150</div>
+            <div style={{ textAlign: 'right', fontSize: '8px', color: 'var(--muted)', marginTop: '4px', fontFamily: "'Outfit', sans-serif" }}>{bio.length} / 150</div>
           </div>
 
-          {error && <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '0 0 8px' }}>{error}</p>}
+          {error && <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'var(--danger)', textAlign: 'center', margin: '0 0 8px' }}>{error}</p>}
         </div>
 
         {/* Sticky bottom bar */}
-        <div style={{ position: 'sticky', bottom: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ position: 'sticky', bottom: 0, background: 'var(--cream)', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
           <button
             onClick={handleContinue}
             disabled={!canContinue}
             style={{
-              background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.12)',
-              color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.3)',
+              background: canContinue ? 'var(--teal)' : 'rgba(0,201,177,0.15)',
+              color: canContinue ? '#023d35' : 'rgba(2,61,53,0.35)',
               fontFamily: "'Outfit', sans-serif",
               fontSize: '12px',
               fontWeight: 600,
-              padding: '9px 20px',
-              borderRadius: '20px',
+              padding: '14px 22px',
+              borderRadius: '14px',
               border: 'none',
               cursor: canContinue && !saving ? 'pointer' : 'not-allowed',
             }}
@@ -386,18 +386,18 @@ export default function BasicsSetup() {
 
       {/* Crop modal */}
       {showCropModal && (
-        <div style={{ position: 'fixed', inset: 0, background: '#0A0E12', zIndex: 100, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--cream)', zIndex: 100, display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 18px', flexShrink: 0 }}>
-            <span onClick={() => setShowCropModal(false)} style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>cancel</span>
-            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 16, color: '#fff' }}>set profile pic</span>
-            <span onClick={handleDone} style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 600, color: rawPhotoDataUrl ? '#3DDCFF' : 'rgba(61,220,255,0.3)', cursor: rawPhotoDataUrl ? 'pointer' : 'default' }}>done</span>
+            <span onClick={() => setShowCropModal(false)} style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 300, color: 'var(--muted)', cursor: 'pointer' }}>cancel</span>
+            <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 15, color: 'var(--ink)' }}>set profile pic</span>
+            <span onClick={handleDone} style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 600, color: rawPhotoDataUrl ? 'var(--teal-dark)' : 'rgba(0,161,144,0.35)', cursor: rawPhotoDataUrl ? 'pointer' : 'default' }}>done</span>
           </div>
 
           {rawPhotoDataUrl ? (
             <>
               <div
                 ref={cropContainerRef}
-                style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, overflow: 'hidden', position: 'relative', background: '#0d1820', cursor: 'grab', flexShrink: 0, touchAction: 'none' }}
+                style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, overflow: 'hidden', position: 'relative', background: 'var(--cream-2)', cursor: 'grab', flexShrink: 0, touchAction: 'none' }}
                 onTouchStart={handleCropTouchStart}
                 onTouchMove={handleCropTouchMove}
                 onTouchEnd={handleCropTouchEnd}
@@ -413,22 +413,22 @@ export default function BasicsSetup() {
                   draggable={false}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none', transform: `translate(${panX}px, ${panY}px) scale(${scale})`, transformOrigin: 'center center' }}
                 />
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 220, height: 220, borderRadius: '50%', border: '2px solid #3DDCFF', boxShadow: '0 0 0 2000px rgba(0,0,0,0.55)', zIndex: 2, pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 220, height: 220, borderRadius: '50%', border: '2px solid var(--teal)', boxShadow: '0 0 0 2000px rgba(28,10,46,0.45)', zIndex: 2, pointerEvents: 'none' }} />
               </div>
-              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '10px 18px', margin: 0 }}>drag to reposition · pinch to zoom</p>
-              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'rgba(255,255,255,0.2)', textAlign: 'center', padding: '4px 18px', margin: 0 }}>shown next to your name in chats and matches</p>
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'var(--muted)', textAlign: 'center', padding: '10px 18px', margin: 0 }}>drag to reposition · pinch to zoom</p>
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 300, color: 'var(--muted)', textAlign: 'center', padding: '4px 18px', margin: 0 }}>shown next to your name in chats and matches</p>
               <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 18px' }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: '#3DDCFF' }}>change photo</span>
+                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'var(--teal-dark)' }}>change photo</span>
                   <input type="file" accept="image/*" onChange={handleCropFileSelect} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
                 </div>
               </div>
             </>
           ) : (
-            <div style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, background: '#0d1820', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', flexShrink: 0 }}>
+            <div style={{ margin: '0 18px', height: 'calc(100vh - 200px)', borderRadius: 12, background: '#ffffff', border: '1px solid var(--cream-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', flexShrink: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, pointerEvents: 'none' }}>
-                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 40, fontWeight: 300, lineHeight: 1 }}>+</span>
-                <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.3)' }}>tap to select a photo</span>
+                <span style={{ color: 'var(--muted)', fontSize: 40, fontWeight: 300, lineHeight: 1 }}>+</span>
+                <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 300, color: 'var(--muted)' }}>tap to select a photo</span>
               </div>
               <input type="file" accept="image/*" onChange={handleCropFileSelect} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', borderRadius: 12 }} />
             </div>
