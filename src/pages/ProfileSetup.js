@@ -110,7 +110,7 @@ export default function ProfileSetup() {
           <span className="wordmark-sm">lik</span>
           {!isEditMode && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-              <span style={{ fontSize: '0.72rem', color: 'var(--accent)', opacity: 0.8, letterSpacing: '0.05em' }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--teal-dark)', opacity: 0.8, letterSpacing: '0.05em' }}>
                 step 1 of 3
               </span>
               <div className="step-dots">
