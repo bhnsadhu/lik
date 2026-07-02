@@ -111,7 +111,7 @@ export default function Chat() {
         ) : messages.length === 0 ? (
           <div className="chat-empty">
             <div className="chat-empty-inner">
-              <p style={{ color: 'var(--text)', fontWeight: 500 }}>it's a lik!</p>
+              <p style={{ color: 'var(--ink)', fontFamily: "'Archivo Black', sans-serif", fontWeight: 400 }}>it's a lik</p>
               <p className="muted">say something to {otherUser?.name}</p>
             </div>
           </div>
