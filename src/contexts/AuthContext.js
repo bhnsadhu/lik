@@ -32,10 +32,13 @@ export function AuthProvider({ children }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const u = session?.user ?? null;
-      setUser(u);
       if (u) {
+        // Load the profile before exposing the user so the router never
+        // renders an authed state with a null profile (misroutes to /setup/photos)
         await fetchProfile(u.id);
+        setUser(u);
       } else {
+        setUser(null);
         setProfile(null);
       }
       setLoading(false);
