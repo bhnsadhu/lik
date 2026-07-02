@@ -26,7 +26,7 @@ const LABEL_STYLE = {
   fontFamily: "'Outfit', sans-serif",
   fontWeight: 300,
   fontSize: '9px',
-  color: 'rgba(255,255,255,0.28)',
+  color: 'var(--muted)',
   letterSpacing: '0.05em',
 };
 
@@ -81,9 +81,9 @@ export default function PreferencesSetup() {
 
   if (!profile || housingType === undefined) {
     return (
-      <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--cream)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
         </div>
         <StepIndicator currentStep={5} onStepClick={(route) => {
         if (isEditMode) navigate(route, { state: { editMode: true, returnTo: '/profile' } });
@@ -148,10 +148,10 @@ export default function PreferencesSetup() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0E12', paddingBottom: '80px' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--cream)', paddingBottom: '80px' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-        <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+        <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
       </div>
 
       <StepIndicator currentStep={5} onStepClick={(route) => {
@@ -160,10 +160,10 @@ export default function PreferencesSetup() {
       }} />
 
       {/* Title */}
-      <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#fff', margin: 0, padding: '10px 18px 3px' }}>
+      <p style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '20px', color: 'var(--ink)', margin: 0, padding: '10px 18px 3px' }}>
         your preferences
       </p>
-      <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 300, fontSize: '11px', color: 'rgba(255,255,255,0.3)', margin: 0, padding: '0 18px 16px' }}>
+      <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 300, fontSize: '11px', color: 'var(--muted)', margin: 0, padding: '0 18px 16px' }}>
         budget &amp; location
       </p>
 
@@ -174,8 +174,8 @@ export default function PreferencesSetup() {
             monthly budget · your share
           </p>
           <div style={{ display: 'flex', gap: '16px', padding: '0 18px', marginBottom: '18px' }}>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '8px 0' }}>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontWeight: 300 }}>$</span>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '14px 16px' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', color: 'var(--muted)', fontWeight: 300 }}>$</span>
               <input
                 type="number"
                 placeholder="min"
@@ -184,13 +184,13 @@ export default function PreferencesSetup() {
                 min={0}
                 max={5000}
                 style={{
-                  flex: 1, border: 'none', background: 'transparent', outline: 'none',
-                  fontSize: '12px', color: '#fff', fontFamily: "'Outfit', sans-serif", fontWeight: 300,
+                  flex: 1, width: '100%', border: 'none', background: 'transparent', outline: 'none',
+                  fontSize: '12px', color: 'var(--ink)', fontFamily: "'Outfit', sans-serif", fontWeight: 300,
                 }}
               />
             </div>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '8px 0' }}>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontWeight: 300 }}>$</span>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px', padding: '14px 16px' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '12px', color: 'var(--muted)', fontWeight: 300 }}>$</span>
               <input
                 type="number"
                 placeholder="max"
@@ -199,8 +199,8 @@ export default function PreferencesSetup() {
                 min={0}
                 max={5000}
                 style={{
-                  flex: 1, border: 'none', background: 'transparent', outline: 'none',
-                  fontSize: '12px', color: '#fff', fontFamily: "'Outfit', sans-serif", fontWeight: 300,
+                  flex: 1, width: '100%', border: 'none', background: 'transparent', outline: 'none',
+                  fontSize: '12px', color: 'var(--ink)', fontFamily: "'Outfit', sans-serif", fontWeight: 300,
                 }}
               />
             </div>
@@ -221,11 +221,11 @@ export default function PreferencesSetup() {
           >
             <div style={{
               width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0,
-              background: semester === sem ? '#3DDCFF' : 'rgba(255,255,255,0.15)',
+              background: semester === sem ? 'var(--teal-dark)' : 'var(--cream-2)',
             }} />
             <span style={{
-              fontSize: '11px', fontWeight: 300, fontFamily: "'Outfit', sans-serif",
-              color: semester === sem ? '#3DDCFF' : 'rgba(255,255,255,0.3)',
+              fontSize: '11px', fontWeight: semester === sem ? 400 : 300, fontFamily: "'Outfit', sans-serif",
+              color: semester === sem ? 'var(--teal-dark)' : 'var(--muted)',
             }}>{sem}</span>
           </div>
         ))}
@@ -244,19 +244,19 @@ export default function PreferencesSetup() {
                 onClick={() => toggleDorm(d)}
                 style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '10px 18px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer',
+                  padding: '10px 18px', borderBottom: '1px solid var(--cream-2)', cursor: 'pointer',
                 }}
               >
                 <span style={{
                   fontSize: '12px',
                   fontWeight: dormPrefs.includes(d) ? 400 : 300,
                   fontFamily: "'Outfit', sans-serif",
-                  color: dormPrefs.includes(d) ? '#3DDCFF' : 'rgba(255,255,255,0.35)',
+                  color: dormPrefs.includes(d) ? 'var(--teal-dark)' : 'var(--muted)',
                 }}>{d}</span>
                 <div style={{
                   width: '14px', height: '14px', borderRadius: '3px', flexShrink: 0,
-                  border: dormPrefs.includes(d) ? '1px solid #3DDCFF' : '1px solid rgba(255,255,255,0.15)',
-                  background: dormPrefs.includes(d) ? '#3DDCFF' : 'transparent',
+                  border: dormPrefs.includes(d) ? '1px solid var(--teal)' : '1px solid var(--cream-2)',
+                  background: dormPrefs.includes(d) ? 'var(--teal)' : '#ffffff',
                 }} />
               </div>
             ))}
@@ -277,19 +277,19 @@ export default function PreferencesSetup() {
                 onClick={() => toggleArea(area)}
                 style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '10px 18px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer',
+                  padding: '10px 18px', borderBottom: '1px solid var(--cream-2)', cursor: 'pointer',
                 }}
               >
                 <span style={{
                   fontSize: '12px',
                   fontWeight: areas.includes(area) ? 400 : 300,
                   fontFamily: "'Outfit', sans-serif",
-                  color: areas.includes(area) ? '#3DDCFF' : 'rgba(255,255,255,0.35)',
+                  color: areas.includes(area) ? 'var(--teal-dark)' : 'var(--muted)',
                 }}>{area}</span>
                 <div style={{
                   width: '14px', height: '14px', borderRadius: '3px', flexShrink: 0,
-                  border: areas.includes(area) ? '1px solid #3DDCFF' : '1px solid rgba(255,255,255,0.15)',
-                  background: areas.includes(area) ? '#3DDCFF' : 'transparent',
+                  border: areas.includes(area) ? '1px solid var(--teal)' : '1px solid var(--cream-2)',
+                  background: areas.includes(area) ? 'var(--teal)' : '#ffffff',
                 }} />
               </div>
             ))}
@@ -300,20 +300,20 @@ export default function PreferencesSetup() {
       {error && (
         <p style={{
           fontFamily: "'Outfit', sans-serif", fontWeight: 300, fontSize: '11px',
-          color: '#FF6B6B', textAlign: 'center', margin: '12px 0 0',
+          color: 'var(--danger)', textAlign: 'center', margin: '12px 0 0',
         }}>{error}</p>
       )}
 
       {/* Bottom bar */}
-      <div style={{ position: 'sticky', bottom: 0, background: '#0A0E12', display: 'flex', justifyContent: 'flex-end', padding: '12px 18px 28px' }}>
+      <div style={{ position: 'sticky', bottom: 0, background: 'var(--cream)', display: 'flex', justifyContent: 'flex-end', padding: '12px 18px 28px' }}>
         <button
           onClick={handleSubmit}
           disabled={!isValid}
           style={{
-            background: isValid ? '#3DDCFF' : 'rgba(61,220,255,0.15)',
-            color: isValid ? '#0A0E12' : 'rgba(61,220,255,0.35)',
+            background: isValid ? 'var(--teal)' : 'rgba(0,201,177,0.15)',
+            color: isValid ? '#023d35' : 'rgba(2,61,53,0.35)',
             fontFamily: "'Outfit', sans-serif", fontSize: '12px', fontWeight: 600,
-            padding: '9px 20px', borderRadius: '20px', border: 'none',
+            padding: '14px 22px', borderRadius: '14px', border: 'none',
             cursor: isValid ? 'pointer' : 'not-allowed',
           }}
         >{saving ? 'saving...' : isEditMode ? 'save changes' : "let's find your people →"}</button>
