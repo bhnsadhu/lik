@@ -25,8 +25,10 @@ export default function ReferralPrompt() {
 
   const share = async () => {
     const link = `https://getlik.com?ref=${user.id}`;
+    // native share sheet on phones, straight to clipboard on desktop
+    const onMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
     try {
-      if (navigator.share) {
+      if (onMobile && navigator.share) {
         await navigator.share({
           title: 'lik',
           text: 'find your roommate on lik',
