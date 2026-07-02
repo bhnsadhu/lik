@@ -169,10 +169,10 @@ export default function PhotosSetup() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0E12' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--cream)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-        <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+        <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
       </div>
 
       <StepIndicator currentStep={1} onStepClick={(route) => {
@@ -181,8 +181,8 @@ export default function PhotosSetup() {
       }} />
 
       {/* Title + subhead */}
-      <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#fff', padding: '2px 18px 4px', margin: 0 }}>show yourself</p>
-      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'rgba(255,255,255,0.3)', padding: '0 18px 12px', margin: 0 }}>add at least 5 photos</p>
+      <p style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '20px', color: 'var(--ink)', padding: '2px 18px 4px', margin: 0 }}>show yourself</p>
+      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'var(--muted)', padding: '0 18px 12px', margin: 0 }}>add at least 5 photos</p>
 
       {/* Photo viewer — full width, no side margins */}
       <div
@@ -191,7 +191,8 @@ export default function PhotosSetup() {
           borderRadius: '12px',
           overflow: 'hidden',
           position: 'relative',
-          background: '#0d1820',
+          background: '#ffffff',
+          border: '1px solid var(--cream-2)',
           userSelect: 'none',
         }}
         onTouchStart={photos.length > 0 ? handleTouchStart : undefined}
@@ -201,11 +202,11 @@ export default function PhotosSetup() {
           /* Empty state — file input overlaid over entire area */
           <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
             {uploading ? (
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'rgba(255,255,255,0.3)' }}>uploading...</span>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'var(--muted)' }}>uploading...</span>
             ) : (
               <>
-                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '40px', fontWeight: 300, lineHeight: 1 }}>+</span>
-                <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'rgba(255,255,255,0.18)' }}>tap to add a photo</span>
+                <span style={{ color: 'var(--muted)', fontSize: '40px', fontWeight: 300, lineHeight: 1 }}>+</span>
+                <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'var(--muted)' }}>tap to add a photo</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -224,7 +225,7 @@ export default function PhotosSetup() {
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
             />
             {/* X of Y counter */}
-            <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(0,0,0,0.45)', color: 'rgba(255,255,255,0.7)', fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, padding: '3px 8px', borderRadius: '10px', pointerEvents: 'none' }}>
+            <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(28,10,46,0.55)', color: 'rgba(255,255,255,0.85)', fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, padding: '3px 8px', borderRadius: '10px', pointerEvents: 'none' }}>
               {viewIdx + 1} of {photos.length}
             </span>
             {/* × remove */}
@@ -232,7 +233,7 @@ export default function PhotosSetup() {
               onTouchStart={e => e.stopPropagation()}
               onTouchEnd={e => { e.stopPropagation(); removeCurrentPhoto(); }}
               onClick={removeCurrentPhoto}
-              style={{ position: 'absolute', top: '10px', right: '10px', width: '22px', height: '22px', borderRadius: '50%', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, lineHeight: 1 }}
+              style={{ position: 'absolute', top: '10px', right: '10px', width: '22px', height: '22px', borderRadius: '50%', background: 'rgba(28,10,46,0.55)', color: 'white', border: 'none', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, lineHeight: 1 }}
             >×</button>
             {/* Dot indicators */}
             <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', alignItems: 'center', pointerEvents: 'none' }}>
@@ -247,7 +248,7 @@ export default function PhotosSetup() {
                 onTouchStart={e => e.stopPropagation()}
                 onTouchEnd={e => e.stopPropagation()}
               >
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)', fontSize: '16px' }}>+</div>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(28,10,46,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.85)', fontSize: '16px' }}>+</div>
                 <input
                   type="file"
                   accept="image/*"
@@ -257,7 +258,7 @@ export default function PhotosSetup() {
               </div>
             )}
             {photos.length < 10 && uploading && (
-              <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '16px' }}>·</div>
+              <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(28,10,46,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '16px' }}>·</div>
             )}
           </>
         )}
@@ -272,8 +273,8 @@ export default function PhotosSetup() {
           placeholder={captionPlaceholder}
           maxLength={80}
           style={{
-            width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.08)',
-            outline: 'none', padding: '8px 0', fontSize: '12px', color: '#fff',
+            width: '100%', background: '#ffffff', border: '1px solid var(--cream-2)', borderRadius: '14px',
+            outline: 'none', padding: '14px 16px', fontSize: '12px', color: 'var(--ink)',
             fontFamily: "'Outfit', sans-serif", fontWeight: 300, boxSizing: 'border-box',
           }}
         />
@@ -281,31 +282,31 @@ export default function PhotosSetup() {
 
       {/* Hint */}
       {hintText
-        ? <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.2)', textAlign: 'center', padding: '6px 18px', margin: 0 }}>{hintText}</p>
+        ? <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'var(--muted)', textAlign: 'center', padding: '6px 18px', margin: 0 }}>{hintText}</p>
         : <div style={{ height: '6px' }} />
       }
 
       {/* Status */}
-      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'rgba(255,255,255,0.25)', textAlign: 'center', padding: '2px 18px 4px', margin: 0 }}>{statusText}</p>
+      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 300, color: 'var(--muted)', textAlign: 'center', padding: '2px 18px 4px', margin: 0 }}>{statusText}</p>
 
       {error && (
-        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: '#FF6B6B', textAlign: 'center', margin: '4px 0 0 0' }}>{error}</p>
+        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 300, color: 'var(--danger)', textAlign: 'center', margin: '4px 0 0 0' }}>{error}</p>
       )}
 
       {/* Bottom bar */}
-      <div style={{ position: 'sticky', bottom: 0, background: '#0A0E12', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ position: 'sticky', bottom: 0, background: 'var(--cream)', padding: '12px 18px 28px', display: 'flex', justifyContent: 'flex-end' }}>
         <button
           onClick={handleContinue}
           style={{
             fontFamily: "'Outfit', sans-serif",
             fontSize: '12px',
             fontWeight: 600,
-            borderRadius: '20px',
-            padding: '9px 20px',
+            borderRadius: '14px',
+            padding: '14px 22px',
             border: 'none',
             cursor: canContinue && !saving ? 'pointer' : 'default',
-            background: canContinue ? '#3DDCFF' : 'rgba(61,220,255,0.12)',
-            color: canContinue ? '#0A0E12' : 'rgba(61,220,255,0.3)',
+            background: canContinue ? 'var(--teal)' : 'rgba(0,201,177,0.15)',
+            color: canContinue ? '#023d35' : 'rgba(2,61,53,0.35)',
             pointerEvents: canContinue && !saving ? 'auto' : 'none',
           }}
         >
