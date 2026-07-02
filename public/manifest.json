@@ -1,6 +1,6 @@
 {
   "short_name": "lik",
-  "name": "lik — find your roommate",
+  "name": "lik \u00b7 find your roommate",
   "icons": [
     {
       "src": "favicon.ico",
@@ -22,6 +22,6 @@
   ],
   "start_url": "/feed",
   "display": "standalone",
-  "theme_color": "#0A0E12",
-  "background_color": "#0A0E12"
+  "theme_color": "#F0EAE0",
+  "background_color": "#F0EAE0"
 }
