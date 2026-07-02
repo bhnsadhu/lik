@@ -22,6 +22,8 @@ export default function Matches() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const [lastMessages, setLastMessages] = useState({});
+
   useEffect(() => {
     async function load() {
       const { data } = await supabase
@@ -35,7 +37,22 @@ export default function Matches() {
         .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
         .order('created_at', { ascending: false });
 
-      setMatches(data ?? []);
+      const rows = data ?? [];
+      setMatches(rows);
+
+      if (rows.length > 0) {
+        const { data: msgs } = await supabase
+          .from('messages')
+          .select('match_id, content, created_at')
+          .in('match_id', rows.map(m => m.id))
+          .order('created_at', { ascending: false });
+        const latest = {};
+        (msgs ?? []).forEach(m => {
+          if (!latest[m.match_id]) latest[m.match_id] = m.content;
+        });
+        setLastMessages(latest);
+      }
+
       setLoading(false);
     }
     load();
@@ -82,7 +99,9 @@ export default function Matches() {
                 <div className="match-row-info">
                   <p className="match-row-name">{other.name}</p>
                   <p className="match-row-meta">
-                    {other.age} · {other.year} · {timeSince(match.created_at)}
+                    {lastMessages[match.id]
+                      ? lastMessages[match.id]
+                      : `${other.age} · ${other.year} · ${timeSince(match.created_at)}`}
                   </p>
                 </div>
                 <span className="match-row-arrow">→</span>
