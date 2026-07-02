@@ -61,6 +61,7 @@ export default function UserProfile() {
     { label: 'edit profile', action: () => navigate('/setup/basics', { state: { editMode: true } }) },
     { label: 'edit housing', action: () => navigate('/setup/housing', { state: { editMode: true } }) },
     { label: 'retake quiz', action: () => navigate('/setup/quiz', { state: { editMode: true } }) },
+    { label: 'edit nonnegotiables', action: () => navigate('/setup/nonnegotiables', { state: { editMode: true } }) },
     { label: 'edit preferences', action: () => navigate('/setup/preferences', { state: { returnTo: '/profile' } }) },
   ];
 
@@ -132,6 +133,17 @@ export default function UserProfile() {
             <div className="profile-chips">
               {vibeChips.map((c, i) => (
                 <span key={i} className="profile-chip">{c}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {Array.isArray(profile.nonnegotiables) && profile.nonnegotiables.length > 0 && (
+          <div className="profile-section">
+            <p className="label">nonnegotiables</p>
+            <div className="profile-chips">
+              {profile.nonnegotiables.map((n, i) => (
+                <span key={i} className="profile-chip">{n}</span>
               ))}
             </div>
           </div>

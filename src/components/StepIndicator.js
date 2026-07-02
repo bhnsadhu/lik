@@ -1,8 +1,8 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-const steps = ['photos', 'profile', 'housing', 'quiz', 'preferences'];
-const stepRoutes = ['/setup/photos', '/setup/basics', '/setup/housing', '/setup/quiz', '/setup/preferences'];
+const steps = ['photos', 'profile', 'housing', 'quiz', 'limits', 'prefs'];
+const stepRoutes = ['/setup/photos', '/setup/basics', '/setup/housing', '/setup/quiz', '/setup/nonnegotiables', '/setup/preferences'];
 
 export default function StepIndicator({ currentStep, onStepClick }) {
   const { profile } = useAuth();
@@ -10,7 +10,7 @@ export default function StepIndicator({ currentStep, onStepClick }) {
 
   const handleClick = (step, route) => {
     if (!onStepClick) return;
-    if (step === 'preferences' && !housingSet) {
+    if (step === 'prefs' && !housingSet) {
       onStepClick('/setup/housing');
       return;
     }

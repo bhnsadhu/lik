@@ -156,11 +156,11 @@ export default function Quiz() {
 
     await supabase
       .from('profiles')
-      .update({ onboarding_step: 'preferences', updated_at: new Date().toISOString() })
+      .update({ onboarding_step: 'nonnegotiables', updated_at: new Date().toISOString() })
       .eq('id', user.id);
 
     refreshProfile();
-    navigate('/setup/preferences');
+    navigate('/setup/nonnegotiables');
   };
 
   const backHeader = (

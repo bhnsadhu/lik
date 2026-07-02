@@ -86,7 +86,7 @@ export default function PreferencesSetup() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
           <Wordmark size={18} />
         </div>
-        <StepIndicator currentStep={5} onStepClick={(route) => {
+        <StepIndicator currentStep={6} onStepClick={(route) => {
         if (isEditMode) navigate(route, { state: { editMode: true, returnTo: '/profile' } });
         else navigate(route);
       }} />
@@ -155,7 +155,7 @@ export default function PreferencesSetup() {
         <Wordmark size={18} />
       </div>
 
-      <StepIndicator currentStep={5} onStepClick={(route) => {
+      <StepIndicator currentStep={6} onStepClick={(route) => {
         if (isEditMode) navigate(route, { state: { editMode: true, returnTo: '/profile' } });
         else navigate(route);
       }} />

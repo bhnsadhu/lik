@@ -6,6 +6,7 @@ import PhotosSetup from './pages/PhotosSetup';
 import BasicsSetup from './pages/BasicsSetup';
 import HousingSetup from './pages/HousingSetup';
 import Quiz from './pages/Quiz';
+import NonnegotiablesSetup from './pages/NonnegotiablesSetup';
 import PreferencesSetup from './pages/PreferencesSetup';
 import SwipeFeed from './pages/SwipeFeed';
 import Matches from './pages/Matches';
@@ -18,6 +19,7 @@ const STEP_ROUTES = {
   housing: '/setup/housing',
   bio: '/setup/quiz',
   quiz: '/setup/quiz',
+  nonnegotiables: '/setup/nonnegotiables',
   budget: '/setup/preferences',
   preferences: '/setup/preferences',
 };
@@ -54,6 +56,7 @@ function AppRouter() {
         <Route path="/setup/basics" element={<BasicsSetup />} />
         <Route path="/setup/housing" element={<HousingSetup />} />
         <Route path="/setup/quiz" element={<Quiz />} />
+        <Route path="/setup/nonnegotiables" element={<NonnegotiablesSetup />} />
         <Route path="/setup/preferences" element={<PreferencesSetup />} />
         <Route path="*" element={<Navigate to="/feed" replace />} />
       </Routes>
@@ -67,6 +70,7 @@ function AppRouter() {
       <Route path="/setup/basics" element={<BasicsSetup />} />
       <Route path="/setup/housing" element={<HousingSetup />} />
       <Route path="/setup/quiz" element={<Quiz />} />
+      <Route path="/setup/nonnegotiables" element={<NonnegotiablesSetup />} />
       <Route path="/setup/preferences" element={<PreferencesSetup />} />
       <Route path="*" element={<Navigate to={redirectTo} replace />} />
     </Routes>
