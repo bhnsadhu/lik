@@ -30,18 +30,24 @@ export function AuthProvider({ children }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null;
-      if (u) {
-        // Load the profile before exposing the user so the router never
-        // renders an authed state with a null profile (misroutes to /setup/photos)
-        await fetchProfile(u.id);
-        setUser(u);
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-      setLoading(false);
+      // No awaited supabase calls inside this callback: it runs while the
+      // auth lock is held, and fetchProfile needs that lock to attach the
+      // access token, which deadlocks the whole client on token refresh.
+      // setTimeout defers the work until after the lock is released.
+      setTimeout(async () => {
+        if (u) {
+          // profile loads before the user is exposed so the router never
+          // renders an authed state with a null profile
+          await fetchProfile(u.id);
+          setUser(u);
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+        setLoading(false);
+      }, 0);
     });
 
     return () => subscription.unsubscribe();
