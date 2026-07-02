@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform, useMotionValueEvent, animate } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { computeCompatibility } from '../lib/compatibility';
 import BottomNav from '../components/BottomNav';
 
 // ─── Match Moment ────────────────────────────────────────────
@@ -66,11 +67,12 @@ function MatchMoment({ theirProfile, matchId, myProfile, onDismiss, onMessage })
 
 // ─── Detail View ─────────────────────────────────────────────
 
-function DetailView({ person, onClose }) {
+function DetailView({ person, compat, onClose }) {
   const [photoIdx, setPhotoIdx] = useState(0);
   const photos = person.photos || [];
   const areas = Array.isArray(person.preferred_area) ? person.preferred_area : [];
   const dorms = Array.isArray(person.dorm_preference) ? person.dorm_preference : [];
+  const nn = Array.isArray(person.nonnegotiables) ? person.nonnegotiables : [];
 
   return (
     <motion.div
@@ -120,6 +122,22 @@ function DetailView({ person, onClose }) {
               <p className="detail-bio">"{person.bio}"</p>
             </div>
           )}
+          {compat && compat.commons.length > 0 && (
+            <div className="detail-section">
+              <p className="label">what you share · {compat.percent}% fit</p>
+              <div className="detail-chips">
+                {compat.commons.slice(0, 3).map(c => <span key={c} className="profile-chip">{c}</span>)}
+              </div>
+            </div>
+          )}
+          {nn.length > 0 && (
+            <div className="detail-section">
+              <p className="label">their nonnegotiables</p>
+              <div className="detail-chips">
+                {nn.map(n => <span key={n} className="profile-chip">{n}</span>)}
+              </div>
+            </div>
+          )}
           {person.housing_type && (
             <div className="detail-section">
               <p className="label">looking for</p>
@@ -164,9 +182,10 @@ function DetailView({ person, onClose }) {
 
 // ─── Swipe Card Content ───────────────────────────────────────
 
-function SwipeCardContent({ person, overlay, isTop, depth, onOpenDetail }) {
+function SwipeCardContent({ person, compat, isFriend, overlay, isTop, depth, onOpenDetail }) {
   const [photoIdx, setPhotoIdx] = useState(0);
   const photos = person.photos || [];
+  const nn = Array.isArray(person.nonnegotiables) ? person.nonnegotiables : [];
 
   const handlePhotoTap = (e) => {
     if (!isTop) return;
@@ -201,10 +220,11 @@ function SwipeCardContent({ person, overlay, isTop, depth, onOpenDetail }) {
         </div>
       )}
 
-      {person.housing_type && (
-        <div className={`card-housing-badge ${person.housing_type}`}>
-          {person.housing_type === 'dorm' ? 'dorm' : 'apt'}
-        </div>
+      {compat && (
+        <div className="card-compat-badge">{compat.percent}% fit</div>
+      )}
+      {isFriend && (
+        <div className="card-friend-badge">friend connection</div>
       )}
 
       {isTop && overlay === 'right' && (
@@ -221,6 +241,12 @@ function SwipeCardContent({ person, overlay, isTop, depth, onOpenDetail }) {
         <p className="swipe-meta">
           {person.year}{person.major ? ` · ${person.major}` : ''}
         </p>
+        {nn.length > 0 && (
+          <div className="card-nn-row">
+            {nn.slice(0, 2).map(n => <span key={n} className="card-nn-chip">{n}</span>)}
+            {nn.length > 2 && <span className="card-nn-chip">+{nn.length - 2}</span>}
+          </div>
+        )}
         {person.bio && <p className="swipe-bio">{person.bio}</p>}
         {isTop && (
           <button className="card-info-toggle" onClick={onOpenDetail}>
@@ -248,7 +274,9 @@ export default function SwipeFeed() {
   const [matchedProfile, setMatchedProfile] = useState(null);
   const [matchId, setMatchId] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
-  const [housingFilter, setHousingFilter] = useState(null);
+  const [myQuiz, setMyQuiz] = useState(null);
+  const [quizMap, setQuizMap] = useState({});
+  const [friendIds, setFriendIds] = useState(() => new Set());
 
   const topCardX = useMotionValue(0);
   const topCardRotate = useTransform(topCardX, [-200, 200], [-15, 15]);
@@ -259,7 +287,9 @@ export default function SwipeFeed() {
     else setOverlay(null);
   });
 
-  const loadDeck = useCallback(async (filter) => {
+  // filtering is invisible: dorm people see dorm people, apartment people
+  // see apartment people. nobody toggles anything.
+  const loadDeck = useCallback(async () => {
     setLoading(true);
     const { data: swiped } = await supabase
       .from('swipes')
@@ -273,19 +303,51 @@ export default function SwipeFeed() {
       .neq('id', user.id)
       .eq('onboarding_step', 'done');
 
-    if (filter) query = query.eq('housing_type', filter);
+    if (profile?.housing_type) query = query.eq('housing_type', profile.housing_type);
     if (swipedIds.length > 0) {
       query = query.not('id', 'in', `(${swipedIds.join(',')})`);
     }
 
     const { data } = await query.limit(40);
-    setDeck(data || []);
+    const people = data || [];
+    setDeck(people);
+
+    if (people.length > 0) {
+      const { data: quizzes } = await supabase
+        .from('quiz_responses')
+        .select('*')
+        .in('user_id', people.map(p => p.id));
+      setQuizMap(Object.fromEntries((quizzes || []).map(q => [q.user_id, q])));
+    }
     setLoading(false);
-  }, [user.id]);
+  }, [user.id, profile?.housing_type]);
 
   useEffect(() => {
-    loadDeck(housingFilter);
-  }, [housingFilter, loadDeck]);
+    loadDeck();
+  }, [loadDeck]);
+
+  useEffect(() => {
+    async function loadMine() {
+      const [{ data: quiz }, { data: refs }] = await Promise.all([
+        supabase.from('quiz_responses').select('*').eq('user_id', user.id).maybeSingle(),
+        supabase.from('referrals').select('referrer_id, referred_id')
+          .or(`referrer_id.eq.${user.id},referred_id.eq.${user.id}`),
+      ]);
+      setMyQuiz(quiz ?? null);
+      setFriendIds(new Set((refs || []).map(r => r.referrer_id === user.id ? r.referred_id : r.referrer_id)));
+    }
+    loadMine();
+  }, [user.id]);
+
+  const compatMap = useMemo(() => {
+    const map = {};
+    for (const person of deck) {
+      map[person.id] = computeCompatibility(
+        myQuiz, quizMap[person.id], profile?.nonnegotiables, person.nonnegotiables
+      );
+    }
+    return map;
+  }, [deck, myQuiz, quizMap, profile?.nonnegotiables]);
 
   const handleSwipe = useCallback(async (dir, person) => {
     await supabase.from('swipes').insert({
@@ -348,20 +410,8 @@ export default function SwipeFeed() {
 
   return (
     <div className="feed-page">
-      <div className="feed-filter-bar">
-        {[
-          { key: null, label: 'all' },
-          { key: 'dorm', label: 'dorm' },
-          { key: 'apartment', label: 'apt' },
-        ].map(({ key, label }) => (
-          <button
-            key={String(key)}
-            className={`feed-filter-btn${housingFilter === key ? ' active' : ''}`}
-            onClick={() => setHousingFilter(key)}
-          >
-            {label}
-          </button>
-        ))}
+      <div className="feed-header">
+        <span className="feed-header-title">discover</span>
       </div>
 
       <div className="feed-area">
@@ -397,6 +447,8 @@ export default function SwipeFeed() {
                 >
                   <SwipeCardContent
                     person={person}
+                    compat={compatMap[person.id]}
+                    isFriend={friendIds.has(person.id)}
                     overlay={isTop ? overlay : null}
                     isTop={isTop}
                     depth={depth}
@@ -434,6 +486,7 @@ export default function SwipeFeed() {
           <DetailView
             key={deck[0].id}
             person={deck[0]}
+            compat={compatMap[deck[0].id]}
             onClose={() => setShowDetail(false)}
           />
         )}
