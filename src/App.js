@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { supabase } from './lib/supabase';
 import Wordmark from './components/Wordmark';
 import Auth from './pages/Auth';
 import PhotosSetup from './pages/PhotosSetup';
@@ -24,8 +26,28 @@ const STEP_ROUTES = {
   preferences: '/setup/preferences',
 };
 
+// referral links look like getlik.com?ref=<userId>. we stash the ref before
+// auth so it survives the OTP round trip, then log it once the user exists.
+const REF_KEY = 'lik-ref';
+const params = new URLSearchParams(window.location.search);
+if (params.get('ref')) localStorage.setItem(REF_KEY, params.get('ref'));
+
 function AppRouter() {
   const { user, profile, loading } = useAuth();
+
+  useEffect(() => {
+    if (!user) return;
+    const ref = localStorage.getItem(REF_KEY);
+    if (!ref) return;
+    if (ref === user.id) {
+      localStorage.removeItem(REF_KEY);
+      return;
+    }
+    supabase
+      .from('referrals')
+      .insert({ referrer_id: ref, referred_id: user.id })
+      .then(() => localStorage.removeItem(REF_KEY));
+  }, [user]);
 
   if (loading) {
     return (

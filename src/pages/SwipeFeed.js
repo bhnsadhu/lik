@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { computeCompatibility } from '../lib/compatibility';
 import BottomNav from '../components/BottomNav';
+import ReferralPrompt from '../components/ReferralPrompt';
 
 // ─── Match Moment ────────────────────────────────────────────
 
@@ -467,6 +468,8 @@ export default function SwipeFeed() {
       </div>
 
       <BottomNav active="feed" />
+
+      <ReferralPrompt />
 
       <AnimatePresence>
         {matchedProfile && (
