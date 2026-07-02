@@ -21,7 +21,7 @@ export default function StepIndicator({ currentStep, onStepClick }) {
     <div style={{
       display: 'flex',
       gap: '4px',
-      background: 'rgba(255,255,255,0.03)',
+      background: 'rgba(0,0,0,0.05)',
       borderRadius: '10px',
       padding: '3px',
       margin: '0 18px 16px'
@@ -41,15 +41,15 @@ export default function StepIndicator({ currentStep, onStepClick }) {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: '8px',
-              background: active ? 'rgba(61,220,255,0.2)' : done ? 'rgba(61,220,255,0.12)' : 'transparent',
+              background: active ? 'rgba(0,201,177,0.3)' : done ? 'rgba(0,201,177,0.15)' : 'transparent',
               cursor: 'pointer'
             }}
           >
             <span style={{
               fontFamily: "'Outfit', sans-serif",
               fontSize: '9px',
-              fontWeight: active ? 600 : done ? 500 : 300,
-              color: active || done ? '#3DDCFF' : 'rgba(255,255,255,0.2)',
+              fontWeight: active ? 600 : 300,
+              color: active ? '#1C0A2E' : done ? '#00A190' : 'rgba(28,10,46,0.25)',
               lineHeight: '1'
             }}>{step}</span>
           </div>
