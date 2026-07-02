@@ -7,20 +7,53 @@ import Wordmark from '../components/Wordmark';
 
 const SEMESTERS = ['fall 2026', 'spring 2027', 'fall 2027', 'spring 2028'];
 
+// every area students actually live in around Champaign-Urbana
 const AREAS = [
-  'campustown',
-  'green street area',
+  'campustown (green street)',
+  'west campustown',
   'downtown champaign',
+  'midtown champaign',
   'north champaign',
   'south champaign',
-  'urbana',
+  'southwest champaign',
+  'downtown urbana',
+  'west urbana',
+  'east urbana (philo road)',
+  'north urbana',
+  'research park',
   'savoy',
+  'orchard downs (university apartments)',
   'anywhere works',
 ];
 
+// every UIUC residence hall: university housing (undergrad + grad)
+// plus the big private certified halls
 const DORMS = [
-  'ISR', 'PAR', 'FAR', 'Allen', 'iHotel', 'LAR',
-  'Wardall', 'Snyder', 'Lundgren', 'Barton', 'no preference',
+  'Allen',
+  'Armory House',
+  'Barton',
+  'Bousfield',
+  'Bromley',
+  'Busey-Evans',
+  'Daniels',
+  'FAR (Oglesby, Trelease)',
+  'Hendrick House',
+  'Hopkins',
+  'Illini Tower',
+  'ISR (Townsend, Wardall)',
+  'LAR',
+  'Lundgren',
+  'Newman',
+  'Nugent',
+  'PAR (Babcock, Blaisdell, Carr, Saunders)',
+  'Scott',
+  'Sherman',
+  'Snyder',
+  'Taft',
+  'Van Doren',
+  'Wassaja',
+  'Weston',
+  'no preference',
 ];
 
 const LABEL_STYLE = {
