@@ -160,6 +160,8 @@ export default function PhotosSetup() {
         await refreshProfile();
         navigate('/profile');
       } else {
+        // non-blocking: keep context fresh for back-nav prefill without delaying nav
+        refreshProfile();
         navigate('/setup/basics');
       }
     } catch {

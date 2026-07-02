@@ -219,6 +219,7 @@ export default function BasicsSetup() {
         navigate('/profile');
       } else {
         await supabase.from('profiles').update({ ...updates, onboarding_step: 'housing' }).eq('id', user.id);
+        refreshProfile();
         navigate('/setup/housing');
       }
     } catch {

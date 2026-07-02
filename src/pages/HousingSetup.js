@@ -32,6 +32,7 @@ export default function HousingSetup() {
           onboarding_step: 'quiz',
           updated_at: new Date().toISOString(),
         }).eq('id', user.id);
+        refreshProfile();
         navigate('/setup/quiz');
       }
     }, 300);
