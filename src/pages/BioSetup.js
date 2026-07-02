@@ -58,7 +58,7 @@ export default function BioSetup() {
     <div className="setup-page">
       <div className="setup-inner">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
         </div>
         {!isEditMode && <StepIndicator currentStep={4} onStepClick={(route) => navigate(route)} />}
 

@@ -41,7 +41,7 @@ export default function HousingSetup() {
     <div className="setup-page">
       <div className="setup-inner">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 18px 8px' }}>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '18px', color: '#fff' }}>lik</span>
+          <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '18px', color: 'var(--ink)' }}>lik</span>
         </div>
         <StepIndicator currentStep={3} onStepClick={(route) => {
           if (isEditMode) navigate(route, { state: { editMode: true } });
@@ -66,7 +66,7 @@ export default function HousingSetup() {
             disabled={saving}
           >
             <span className="housing-card-label">apartment</span>
-            <span className="housing-card-sub">off-campus housing</span>
+            <span className="housing-card-sub">off campus housing</span>
           </button>
         </div>
       </div>
