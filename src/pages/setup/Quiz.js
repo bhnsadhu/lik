@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import StepDots from '../../components/StepDots'
 import Wordmark from '../../components/Wordmark'
@@ -11,15 +11,23 @@ export default function Quiz() {
   const [idx, setIdx] = useState(0)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const transRef = useRef(false)
 
-  const q = QUIZ[idx]
-  const last = idx === QUIZ.length - 1
+  const q = QUIZ[Math.min(idx, QUIZ.length - 1)]
+  const last = idx >= QUIZ.length - 1
 
   async function pick(choice) {
+    // ignore taps during the card transition, else a fast tap lands on the
+    // exiting question and advances twice
+    if (busy || transRef.current) return
     const next = { ...answers, [q.key]: choice }
     setAnswers(next)
     if (!last) {
-      setTimeout(() => setIdx((i) => i + 1), 180)
+      transRef.current = true
+      setTimeout(() => {
+        setIdx((i) => Math.min(i + 1, QUIZ.length - 1))
+        transRef.current = false
+      }, 180)
       return
     }
     setBusy(true)
