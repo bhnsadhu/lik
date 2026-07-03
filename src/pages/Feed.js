@@ -10,12 +10,13 @@ import Wordmark from '../components/Wordmark'
 
 const FLY = 1.25
 
-function Card({ person, fit, friend, top, onSwipe, onOpen }) {
+function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
   const x = useMotionValue(0)
   const rotate = useTransform(x, [-260, 260], [-14, 14])
   const likOpacity = useTransform(x, [30, 130], [0, 1])
   const passOpacity = useTransform(x, [-130, -30], [1, 0])
   const flying = useRef(false)
+  const flyRef = useRef(null)
 
   function release(_, info) {
     if (flying.current) return
@@ -32,16 +33,14 @@ function Card({ person, fit, friend, top, onSwipe, onOpen }) {
       onSwipe(dir > 0)
     )
   }
+  flyRef.current = fly
 
-  // expose button-driven swipes on the top card
+  // let the pass/lik buttons drive the top card
   useEffect(() => {
-    if (!top) return
-    person._fly = fly
-    return () => {
-      delete person._fly
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [top])
+    if (!top || !registerFly) return
+    registerFly((dir) => flyRef.current?.(dir))
+    return () => registerFly(null)
+  }, [top, registerFly])
 
   return (
     <motion.div
@@ -261,6 +260,10 @@ export default function Feed() {
   const [match, setMatch] = useState(null)
   const [showReferral, setShowReferral] = useState(false)
   const busyRef = useRef(false)
+  const topFlyRef = useRef(null)
+  const registerFly = useCallback((fn) => {
+    topFlyRef.current = fn
+  }, [])
 
   const load = useCallback(async () => {
     // claim a pending ?ref referral first so the friend badge is right on first paint
@@ -405,14 +408,15 @@ export default function Feed() {
                 top
                 onSwipe={onSwipe}
                 onOpen={() => setDetail(true)}
+                registerFly={registerFly}
               />
             )}
           </div>
           <div className="deck-actions">
-            <button className="deck-btn deck-btn--pass" aria-label="pass" onClick={() => current?.person._fly?.(-1)}>
+            <button className="deck-btn deck-btn--pass" aria-label="pass" onClick={() => topFlyRef.current?.(-1)}>
               pass
             </button>
-            <button className="deck-btn deck-btn--lik" aria-label="lik" onClick={() => current?.person._fly?.(1)}>
+            <button className="deck-btn deck-btn--lik" aria-label="lik" onClick={() => topFlyRef.current?.(1)}>
               lik
             </button>
           </div>
