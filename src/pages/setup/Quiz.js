@@ -11,23 +11,23 @@ export default function Quiz() {
   const [idx, setIdx] = useState(0)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
-  const transRef = useRef(false)
+  // refs are the source of truth: the exiting AnimatePresence card keeps a
+  // stale closure alive, and taps on it must not wipe answers or advance twice
+  const answersRef = useRef(profile?.quiz || {})
+  const idxRef = useRef(0)
 
   const q = QUIZ[Math.min(idx, QUIZ.length - 1)]
-  const last = idx >= QUIZ.length - 1
 
-  async function pick(choice) {
-    // ignore taps during the card transition, else a fast tap lands on the
-    // exiting question and advances twice
-    if (busy || transRef.current) return
-    const next = { ...answers, [q.key]: choice }
+  async function pick(choice, key) {
+    if (busy) return
+    if (key !== QUIZ[idxRef.current].key) return
+    const next = { ...answersRef.current, [key]: choice }
+    answersRef.current = next
     setAnswers(next)
-    if (!last) {
-      transRef.current = true
-      setTimeout(() => {
-        setIdx((i) => Math.min(i + 1, QUIZ.length - 1))
-        transRef.current = false
-      }, 180)
+    if (idxRef.current < QUIZ.length - 1) {
+      idxRef.current += 1
+      const target = idxRef.current
+      setTimeout(() => setIdx(target), 180)
       return
     }
     setBusy(true)
@@ -38,6 +38,12 @@ export default function Quiz() {
       setErr('could not save. try again.')
       setBusy(false)
     }
+  }
+
+  function goBack() {
+    if (idxRef.current === 0) return
+    idxRef.current -= 1
+    setIdx(idxRef.current)
   }
 
   return (
@@ -58,10 +64,10 @@ export default function Quiz() {
         >
           <h2 className="screen-title" style={{ minHeight: 76 }}>{q.q}</h2>
           <div style={{ marginTop: 18 }}>
-            <button className={`quiz-option ${answers[q.key] === 'a' ? 'on' : ''}`} disabled={busy} onClick={() => pick('a')}>
+            <button className={`quiz-option ${answers[q.key] === 'a' ? 'on' : ''}`} disabled={busy} onClick={() => pick('a', q.key)}>
               {q.a}
             </button>
-            <button className={`quiz-option ${answers[q.key] === 'b' ? 'on' : ''}`} disabled={busy} onClick={() => pick('b')}>
+            <button className={`quiz-option ${answers[q.key] === 'b' ? 'on' : ''}`} disabled={busy} onClick={() => pick('b', q.key)}>
               {q.b}
             </button>
           </div>
@@ -71,7 +77,7 @@ export default function Quiz() {
       {err && <p className="err">{err}</p>}
       <div style={{ flex: 1 }} />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button className="btn-text" style={{ visibility: idx > 0 ? 'visible' : 'hidden' }} onClick={() => setIdx((i) => i - 1)}>
+        <button className="btn-text" style={{ visibility: idx > 0 ? 'visible' : 'hidden' }} onClick={goBack}>
           back
         </button>
         {busy && <div className="spin" />}

@@ -263,6 +263,26 @@ export default function Feed() {
   const busyRef = useRef(false)
 
   const load = useCallback(async () => {
+    // claim a pending ?ref referral first so the friend badge is right on first paint
+    const code = localStorage.getItem('lik-ref')
+    if (code) {
+      try {
+        if (code !== profile.referral_code) {
+          const { data: mine } = await supabase.from('referrals').select('id').eq('referred', user.id).maybeSingle()
+          if (!mine) {
+            const { data: referrer } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('referral_code', code)
+              .maybeSingle()
+            if (referrer) await supabase.from('referrals').insert({ referrer: referrer.id, referred: user.id })
+          }
+        }
+      } finally {
+        localStorage.removeItem('lik-ref')
+      }
+    }
+
     const [{ data: swipes }, { data: refs }, { data: people }] = await Promise.all([
       supabase.from('swipes').select('target').eq('swiper', user.id),
       supabase.from('referrals').select('referrer, referred'),
@@ -290,30 +310,6 @@ export default function Feed() {
   useEffect(() => {
     load()
   }, [load])
-
-  // claim pending referral captured from a ?ref link
-  useEffect(() => {
-    const code = localStorage.getItem('lik-ref')
-    if (!code) return
-    ;(async () => {
-      if (code === profile.referral_code) {
-        localStorage.removeItem('lik-ref')
-        return
-      }
-      const { data: mine } = await supabase.from('referrals').select('id').eq('referred', user.id).maybeSingle()
-      if (!mine) {
-        const { data: referrer } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('referral_code', code)
-          .maybeSingle()
-        if (referrer) {
-          await supabase.from('referrals').insert({ referrer: referrer.id, referred: user.id })
-        }
-      }
-      localStorage.removeItem('lik-ref')
-    })()
-  }, [user.id, profile.referral_code])
 
   // one-time invite prompt right after onboarding
   useEffect(() => {
