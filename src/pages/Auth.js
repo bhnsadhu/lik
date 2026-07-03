@@ -1,0 +1,167 @@
+import { useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import { supabase } from '../lib/supabase'
+import { WHITELIST } from '../lib/constants'
+
+const CODE_LEN = 6
+
+function validEmail(email) {
+  const e = email.trim().toLowerCase()
+  if (WHITELIST.includes(e)) return e
+  if (/^[^@\s]+@illinois\.edu$/.test(e)) return e
+  return null
+}
+
+export default function Auth() {
+  const [stage, setStage] = useState('email')
+  const [email, setEmail] = useState('')
+  const [code, setCode] = useState(Array(CODE_LEN).fill(''))
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const boxRefs = useRef([])
+
+  async function sendCode(e) {
+    e.preventDefault()
+    setErr('')
+    const clean = validEmail(email)
+    if (!clean) {
+      setErr('lik is for uiuc students. use your illinois.edu email.')
+      return
+    }
+    setBusy(true)
+    const { error } = await supabase.auth.signInWithOtp({
+      email: clean,
+      options: { shouldCreateUser: true },
+    })
+    setBusy(false)
+    if (error) {
+      setErr(error.message.toLowerCase())
+      return
+    }
+    setStage('code')
+    setTimeout(() => boxRefs.current[0]?.focus(), 50)
+  }
+
+  async function verify(fullCode) {
+    setErr('')
+    setBusy(true)
+    const { error } = await supabase.auth.verifyOtp({
+      email: validEmail(email),
+      token: fullCode,
+      type: 'email',
+    })
+    setBusy(false)
+    if (error) {
+      setErr('that code did not work. check it and try again.')
+      setCode(Array(CODE_LEN).fill(''))
+      boxRefs.current[0]?.focus()
+    }
+    // success: onAuthStateChange routes us
+  }
+
+  function onBox(i, val) {
+    const digits = val.replace(/\D/g, '')
+    if (!digits) {
+      const next = [...code]
+      next[i] = ''
+      setCode(next)
+      return
+    }
+    const next = [...code]
+    // support pasting the whole code into one box
+    for (let j = 0; j < digits.length && i + j < CODE_LEN; j++) {
+      next[i + j] = digits[j]
+    }
+    setCode(next)
+    const filled = next.findIndex((c) => !c)
+    if (filled === -1) {
+      verify(next.join(''))
+    } else {
+      boxRefs.current[Math.min(i + digits.length, CODE_LEN - 1)]?.focus()
+    }
+  }
+
+  function onKey(i, e) {
+    if (e.key === 'Backspace' && !code[i] && i > 0) {
+      boxRefs.current[i - 1]?.focus()
+    }
+  }
+
+  return (
+    <div className="screen screen--bare" style={{ justifyContent: 'center' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+      >
+        <h1 className="wordmark" style={{ fontSize: 'clamp(88px, 30vw, 140px)', display: 'block' }}>
+          lik
+        </h1>
+        <p style={{ fontSize: 19, fontWeight: 500, margin: '6px 0 40px', color: 'var(--paper)' }}>
+          find your uiuc roommate.
+        </p>
+
+        {stage === 'email' && (
+          <form onSubmit={sendCode}>
+            <div className="field">
+              <label className="field-label" htmlFor="email">illinois email</label>
+              <input
+                id="email"
+                className="input"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="netid@illinois.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoFocus
+              />
+            </div>
+            {err && <p className="err">{err}</p>}
+            <button className="btn btn-volt" type="submit" disabled={busy || !email} style={{ marginTop: 8 }}>
+              {busy ? 'sending...' : 'send my code'}
+            </button>
+            <p style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', marginTop: 18 }}>
+              illinois students only. no exceptions.
+            </p>
+          </form>
+        )}
+
+        {stage === 'code' && (
+          <div>
+            <p style={{ color: 'var(--muted)', fontSize: 14.5, marginBottom: 16 }}>
+              we sent a {CODE_LEN} digit code to {email.trim().toLowerCase()}
+            </p>
+            <div className="otp-row">
+              {code.map((c, i) => (
+                <input
+                  key={i}
+                  ref={(el) => (boxRefs.current[i] = el)}
+                  className="otp-box"
+                  inputMode="numeric"
+                  autoComplete={i === 0 ? 'one-time-code' : 'off'}
+                  value={c}
+                  onChange={(e) => onBox(i, e.target.value)}
+                  onKeyDown={(e) => onKey(i, e)}
+                />
+              ))}
+            </div>
+            {err && <p className="err" style={{ textAlign: 'center' }}>{err}</p>}
+            {busy && <div className="spin" style={{ marginTop: 18 }} />}
+            <button
+              className="btn-text"
+              style={{ display: 'block', marginTop: 16 }}
+              onClick={() => {
+                setStage('email')
+                setCode(Array(CODE_LEN).fill(''))
+                setErr('')
+              }}
+            >
+              wrong email? go back
+            </button>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  )
+}

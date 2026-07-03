@@ -1,0 +1,118 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
+
+export default function Chat() {
+  const { matchId } = useParams()
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const [other, setOther] = useState(null)
+  const [msgs, setMsgs] = useState(null)
+  const [draft, setDraft] = useState('')
+  const [sending, setSending] = useState(false)
+  const scrollRef = useRef(null)
+
+  const appendUnique = useCallback((msg) => {
+    setMsgs((cur) => {
+      if (!cur || cur.some((m) => m.id === msg.id)) return cur
+      return [...cur, msg]
+    })
+  }, [])
+
+  useEffect(() => {
+    ;(async () => {
+      const { data: match } = await supabase.from('matches').select('*').eq('id', matchId).maybeSingle()
+      if (!match) {
+        navigate('/matches')
+        return
+      }
+      const otherId = match.user_a === user.id ? match.user_b : match.user_a
+      const [{ data: person }, { data: messages }] = await Promise.all([
+        supabase.from('profiles').select('id, name, photos').eq('id', otherId).single(),
+        supabase.from('messages').select('*').eq('match_id', matchId).order('created_at'),
+      ])
+      setOther(person)
+      setMsgs(messages || [])
+    })()
+  }, [matchId, user.id, navigate])
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`chat-${matchId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${matchId}` },
+        (payload) => appendUnique(payload.new)
+      )
+      .subscribe()
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [matchId, appendUnique])
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
+  }, [msgs])
+
+  async function send(e) {
+    e.preventDefault()
+    const body = draft.trim()
+    if (!body || sending) return
+    setSending(true)
+    setDraft('')
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({ match_id: Number(matchId), sender: user.id, body })
+      .select()
+      .single()
+    if (error) {
+      setDraft(body)
+    } else {
+      appendUnique(data)
+    }
+    setSending(false)
+  }
+
+  return (
+    <div className="chat-screen">
+      <div className="chat-head">
+        <button aria-label="back" onClick={() => navigate('/matches')} style={{ fontSize: 22, color: 'var(--muted)', padding: '0 4px' }}>
+          &#8249;
+        </button>
+        {other?.photos?.[0] && <img src={other.photos[0]} alt={other.name} />}
+        <span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 17 }}>{other?.name || ''}</span>
+      </div>
+
+      <div className="chat-scroll" ref={scrollRef}>
+        {!msgs ? (
+          <div className="empty"><div className="spin" /></div>
+        ) : msgs.length === 0 ? (
+          <div className="empty">
+            <h2>you matched. now what.</h2>
+            <p>open strong. ask about their thermostat stance. mention the quiz answer you share. anything beats hey.</p>
+          </div>
+        ) : (
+          msgs.map((m) => (
+            <div key={m.id} className={`bubble ${m.sender === user.id ? 'bubble--me' : 'bubble--them'}`}>
+              {m.body}
+            </div>
+          ))
+        )}
+      </div>
+
+      <form className="chat-input-row" onSubmit={send}>
+        <input
+          className="input"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder={other ? `message ${other.name}` : 'message'}
+          maxLength={2000}
+        />
+        <button className="chat-send" type="submit" disabled={!draft.trim() || sending}>
+          send
+        </button>
+      </form>
+    </div>
+  )
+}

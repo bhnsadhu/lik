@@ -1,0 +1,176 @@
+export const WHITELIST = ['bhnsadhu@gmail.com', 'sadhubhanu07@gmail.com']
+
+export const YEARS = ['freshman', 'sophomore', 'junior', 'senior', 'grad student']
+
+export const MOVE_IN = ['fall 2026', 'spring 2027', 'fall 2027']
+
+export const DORMS = [
+  'allen hall',
+  'barton hall',
+  'bousfield hall',
+  'busey evans hall',
+  'carr hall',
+  'hopkins hall',
+  'illinois street (isr)',
+  'lincoln avenue (lar)',
+  'nugent hall',
+  'oglesby hall',
+  'pennsylvania avenue (par)',
+  'scott hall',
+  'snyder hall',
+  'taft van doren',
+  'trelease hall',
+  'wassaja hall',
+  'weston hall',
+  'daniels hall (grad)',
+  'sherman hall (grad)',
+  'bromley hall',
+  'hendrick house',
+  'illini tower',
+  'newman hall',
+  'armory house',
+]
+
+export const AREAS = [
+  'campustown',
+  'green street',
+  'west campustown',
+  'downtown champaign',
+  'midtown champaign',
+  'downtown urbana',
+  'west urbana',
+  'east urbana',
+  'south campus · research park',
+  'orchard downs',
+  'north champaign',
+  'west champaign',
+  'southwest champaign',
+  'east champaign',
+  'savoy',
+]
+
+export const QUIZ = [
+  {
+    key: 'sleep',
+    q: 'when do you actually sleep',
+    a: 'in bed by midnight',
+    b: '3am is a lifestyle',
+    shareA: 'you both sleep early',
+    shareB: 'you are both night owls',
+  },
+  {
+    key: 'tidy',
+    q: 'your side of the room is',
+    a: 'labeled and spotless',
+    b: 'organized chaos',
+    shareA: 'you are both neat freaks',
+    shareB: 'you both survive the mess',
+  },
+  {
+    key: 'noise',
+    q: 'background noise while you study',
+    a: 'silence or nothing',
+    b: 'music always on',
+    shareA: 'you both need quiet',
+    shareB: 'you both live with a soundtrack',
+  },
+  {
+    key: 'guests',
+    q: 'friends coming over',
+    a: 'text me first',
+    b: 'door is always open',
+    shareA: 'you both like a heads up',
+    shareB: 'you both run an open door',
+  },
+  {
+    key: 'weekend',
+    q: 'friday night looks like',
+    a: 'in by ten, phone off',
+    b: 'green street till late',
+    shareA: 'you both stay in',
+    shareB: 'you both go out',
+  },
+  {
+    key: 'temp',
+    q: 'thermostat wars',
+    a: 'keep it cold',
+    b: 'keep it cozy',
+    shareA: 'you both run cold',
+    shareB: 'you both run warm',
+  },
+  {
+    key: 'kitchen',
+    q: 'dinner most nights',
+    a: 'i cook',
+    b: 'i order',
+    shareA: 'you both cook',
+    shareB: 'you both order in',
+  },
+  {
+    key: 'sharing',
+    q: 'your snacks',
+    a: 'ask first',
+    b: 'what is mine is yours',
+    shareA: 'you both respect the shelf',
+    shareB: 'you both share everything',
+  },
+  {
+    key: 'conflict',
+    q: 'when something bugs you',
+    a: 'say it same day',
+    b: 'cool off first',
+    shareA: 'you both talk it out fast',
+    shareB: 'you both take space first',
+  },
+  {
+    key: 'alarm',
+    q: 'morning alarms',
+    a: 'one and up',
+    b: 'snooze times five',
+    shareA: 'you both get up fast',
+    shareB: 'you both snooze hard',
+  },
+  {
+    key: 'study',
+    q: 'grind spot',
+    a: 'my own desk',
+    b: 'grainger till 2am',
+    shareA: 'you both study at home',
+    shareB: 'you both live at the library',
+  },
+  {
+    key: 'vibe',
+    q: 'ideal roommate is',
+    a: 'built in best friend',
+    b: 'peaceful coexistence',
+    shareA: 'you both want a friend',
+    shareB: 'you both want peace',
+  },
+]
+
+export const DEALBREAKERS = [
+  { key: 'smoke_free', label: 'smoke free space', conflicts: ['smoking_ok'] },
+  { key: 'smoking_ok', label: 'smoking is fine with me', conflicts: ['smoke_free', 'substance_free'] },
+  { key: 'substance_free', label: 'substance free space', conflicts: ['four20_friendly', 'smoking_ok'] },
+  { key: 'four20_friendly', label: '420 friendly', conflicts: ['substance_free'] },
+  { key: 'no_pets', label: 'no pets in the space', conflicts: ['pet_home'] },
+  { key: 'pet_home', label: 'i have or want a pet', conflicts: ['no_pets', 'pet_allergy'] },
+  { key: 'pet_allergy', label: 'allergic to pets', conflicts: ['pet_home'] },
+  { key: 'quiet_after_midnight', label: 'quiet after midnight', conflicts: ['night_noise_ok'] },
+  { key: 'night_noise_ok', label: 'late night noise is fine', conflicts: ['quiet_after_midnight'] },
+  { key: 'no_overnight_guests', label: 'no overnight guests', conflicts: ['guests_anytime'] },
+  { key: 'guests_anytime', label: 'overnight guests welcome', conflicts: ['no_overnight_guests'] },
+  { key: 'veg_kitchen', label: 'vegetarian kitchen', conflicts: [] },
+]
+
+export const DB_BY_KEY = Object.fromEntries(DEALBREAKERS.map((d) => [d.key, d]))
+
+export const BIO_PLACEHOLDERS = [
+  'cs major who actually does the dishes',
+  'i will fight you for the window side',
+  'my toxic trait is 7am lectures on purpose',
+  'looking for someone to split papa dels with',
+  'quiet during finals, loud during march madness',
+  'i keep the fridge stocked and the thermostat honest',
+  'green street regular seeking grocery run partner',
+]
