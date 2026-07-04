@@ -177,10 +177,18 @@ function DetailSheet({ person, fit, friend, onClose }) {
   )
 }
 
+const TICKER_HALF = `${Array(10).fill("it's a lik").join(' · ')} · `
+
 function MatchTakeover({ me, them, matchId, onClose }) {
   const navigate = useNavigate()
   return (
     <motion.div className="takeover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <div className="ticker ticker--top" aria-hidden="true">
+        <div className="ticker__track">{TICKER_HALF + TICKER_HALF}</div>
+      </div>
+      <div className="ticker ticker--bottom" aria-hidden="true">
+        <div className="ticker__track">{TICKER_HALF + TICKER_HALF}</div>
+      </div>
       <motion.div
         initial={{ scale: 0.7, y: 24, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -191,9 +199,14 @@ function MatchTakeover({ me, them, matchId, onClose }) {
           {me.photos?.[0] && <img src={me.photos[0]} alt="you" />}
           {them.photos?.[0] && <img src={them.photos[0]} alt={them.name} />}
         </div>
-        <h1>
+        <p className="overline">claim approved</p>
+        <motion.h1
+          initial={{ scale: 1.35, rotate: -4, opacity: 0 }}
+          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 17, delay: 0.16 }}
+        >
           it's a<br />lik.
-        </h1>
+        </motion.h1>
         <p className="takeover-sub">
           you and {them.name} both said yes. go say something before it gets weird.
         </p>

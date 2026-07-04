@@ -629,6 +629,62 @@ a {
   line-height: 0.92;
 }
 
+.takeover .overline {
+  color: var(--ink);
+  opacity: 0.72;
+  margin-bottom: 14px;
+}
+
+/* the poster's ring-of-text device, flattened into ticker strips */
+.ticker {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ticker--top {
+  top: max(20px, env(safe-area-inset-top));
+  transform: rotate(-2.5deg);
+}
+
+.ticker--bottom {
+  bottom: max(20px, env(safe-area-inset-bottom));
+  transform: rotate(2.5deg);
+}
+
+.ticker__track {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--display);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  opacity: 0.8;
+  animation: ticker-run 18s linear infinite;
+}
+
+.ticker--bottom .ticker__track {
+  animation-direction: reverse;
+}
+
+@keyframes ticker-run {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker__track {
+    animation: none;
+  }
+}
+
 .takeover-sub {
   font-size: 17px;
   font-weight: 500;
