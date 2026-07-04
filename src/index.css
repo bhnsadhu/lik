@@ -137,6 +137,68 @@ a {
   user-select: none;
 }
 
+.wordmark-i {
+  position: relative;
+  display: inline-block;
+}
+
+.wordmark-heart {
+  position: absolute;
+  width: 0.28em;
+  height: 0.28em;
+  left: 50%;
+  transform: translateX(-46%);
+  top: 0.015em;
+  fill: currentColor;
+}
+
+/* ---------- night city ambience (auth + takeover only) ---------- */
+
+.glow-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.3;
+  animation: glow-drift 9s ease-in-out infinite alternate;
+}
+
+.glow--neon {
+  background: var(--neon);
+  top: -80px;
+  left: -110px;
+}
+
+.glow--sky {
+  background: var(--sky);
+  bottom: -120px;
+  right: -130px;
+  animation-delay: -4.5s;
+}
+
+@keyframes glow-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(36px, 28px) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
+  }
+}
+
 /* ---------- buttons ---------- */
 
 .btn {

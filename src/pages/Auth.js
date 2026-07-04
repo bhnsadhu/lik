@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { WHITELIST } from '../lib/constants'
+import Wordmark from '../components/Wordmark'
 
 const CODE_LEN = 6
 
@@ -88,16 +89,24 @@ export default function Auth() {
   }
 
   return (
-    <div className="screen screen--bare" style={{ justifyContent: 'center' }}>
+    <div className="screen screen--bare" style={{ justifyContent: 'center', position: 'relative' }}>
+      <div className="glow-field">
+        <div className="glow glow--neon" />
+        <div className="glow glow--sky" />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+        style={{ position: 'relative' }}
       >
-        <h1 className="wordmark" style={{ fontSize: 'clamp(88px, 30vw, 140px)', display: 'block' }}>
-          lik
+        <h1 style={{ lineHeight: 1 }}>
+          <Wordmark size="clamp(88px, 30vw, 140px)" style={{ display: 'block' }} />
         </h1>
-        <p style={{ fontSize: 19, fontWeight: 500, margin: '6px 0 40px', color: 'var(--paper)' }}>
+        <p className="overline" style={{ color: 'var(--muted)', margin: '14px 0 10px' }}>
+          roommate insurance kompany
+        </p>
+        <p style={{ fontSize: 19, fontWeight: 500, margin: '0 0 36px', color: 'var(--paper)' }}>
           find your uiuc roommate.
         </p>
 
