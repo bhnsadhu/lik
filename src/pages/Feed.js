@@ -250,9 +250,9 @@ function ReferralPrompt({ profile, onClose }) {
         transition={{ type: 'spring', stiffness: 300, damping: 32 }}
       >
         <div className="sheet-handle" />
-        <h2 style={{ fontSize: 26 }}>you're in.</h2>
+        <h2 style={{ fontSize: 26 }}>you're covered.</h2>
         <p style={{ color: 'var(--muted)', fontSize: 15, margin: '8px 0 18px' }}>
-          lik works better when your people are on it. friends you bring show up with a friend badge in feeds.
+          roommate insurance works better in a group. friends who join through your link get a friend badge in your feed, and you in theirs.
         </p>
         <button className="btn btn-volt" onClick={share}>
           {copied ? 'link copied' : 'invite a friend'}
@@ -381,7 +381,7 @@ export default function Feed() {
     <div className="screen">
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
         <Wordmark />
-        <span style={{ color: 'var(--muted)', fontSize: 13, fontWeight: 600 }}>
+        <span className="chip-tag chip-tag--outline" style={{ color: 'var(--muted)' }}>
           {profile.housing_type === 'dorm' ? 'dorm pool' : 'apartment pool'}
         </span>
       </div>

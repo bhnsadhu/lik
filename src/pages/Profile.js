@@ -81,7 +81,7 @@ export default function Profile() {
 
       <p className="section-label">bring your people</p>
       <p style={{ color: 'var(--muted)', fontSize: 14, marginBottom: 12 }}>
-        friends who join through your link show up with a friend badge. your pool gets better when you grow it.
+        friends who join through your link get a friend badge in your feed, and you in theirs. your pool gets better when you grow it.
       </p>
       <button className="btn btn-ghost" onClick={copyInvite}>
         {copied ? 'link copied' : 'share your invite link'}

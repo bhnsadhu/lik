@@ -173,4 +173,5 @@ export const BIO_PLACEHOLDERS = [
   'quiet during finals, loud during march madness',
   'i keep the fridge stocked and the thermostat honest',
   'green street regular seeking grocery run partner',
+  'low risk roommate. quiet, clean, rent on day one',
 ]
