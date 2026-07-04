@@ -72,7 +72,7 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <span className="fit-badge">{fit.score}% fit</span>
-          {friend && <span className="chip-tag chip-tag--volt">{friend}</span>}
+          {friend && <span className="chip-tag chip-tag--sky">{friend}</span>}
           {(person.dealbreakers || []).slice(0, 2).map((k) =>
             DB_BY_KEY[k] ? (
               <span key={k} className="chip-tag">
@@ -159,7 +159,7 @@ function DetailSheet({ person, fit, friend, onClose }) {
         {friend && (
           <>
             <p className="section-label">connection</p>
-            <span className="chip-tag chip-tag--volt">{friend}</span>
+            <span className="chip-tag chip-tag--sky">{friend}</span>
           </>
         )}
 
@@ -200,7 +200,7 @@ function MatchTakeover({ me, them, matchId, onClose }) {
         <button className="btn btn-ink" onClick={() => navigate(`/chat/${matchId}`)}>
           say hey to {them.name}
         </button>
-        <button className="btn-text" style={{ color: 'rgba(19,16,7,0.7)', marginTop: 10 }} onClick={onClose}>
+        <button className="btn-text" style={{ color: 'rgba(16,13,28,0.7)', marginTop: 10 }} onClick={onClose}>
           keep swiping
         </button>
       </motion.div>

@@ -1,13 +1,16 @@
 :root {
-  --ink: #131007;
-  --ink-2: #1c1810;
-  --ink-3: #272113;
-  --line: #352d19;
+  /* night city: deep indigo dark, volt yellow hero, neon billboard accents */
+  --ink: #100d1c;
+  --ink-2: #18142a;
+  --ink-3: #221d3a;
+  --line: #322b4f;
   --volt: #f2e900;
-  --volt-deep: #cfc700;
+  --volt-deep: #d8cf00;
   --paper: #faf6ea;
-  --muted: #97907c;
+  --muted: #9a92b8;
   --coral: #ff5a48;
+  --neon: #ff3da6;
+  --sky: #4ed9e8;
   --r: 16px;
   --r-s: 12px;
   --nav-h: 64px;
@@ -56,6 +59,25 @@ h3 {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.05;
+}
+
+/* poster voice: condensed caps for the moments that shout */
+.shout {
+  font-family: var(--display);
+  font-stretch: 75%;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.95;
+}
+
+/* spaced caps overline, the "love insurance kompany" lockup device */
+.overline {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
 }
 
 button {
@@ -125,8 +147,10 @@ a {
   width: 100%;
   padding: 16px 20px;
   border-radius: var(--r-s);
-  font-weight: 600;
-  font-size: 16px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: -0.01em;
   transition: transform 0.06s ease, opacity 0.15s ease, background 0.15s ease;
 }
 
@@ -142,6 +166,7 @@ a {
 .btn-volt {
   background: var(--volt);
   color: var(--ink);
+  box-shadow: 0 0 28px rgba(242, 233, 0, 0.18);
 }
 
 .btn-volt:hover {
@@ -297,6 +322,12 @@ a {
   border-color: var(--volt);
 }
 
+.chip-tag--sky {
+  background: var(--sky);
+  color: var(--ink);
+  border-color: var(--sky);
+}
+
 .chip-tag--outline {
   background: transparent;
 }
@@ -365,7 +396,7 @@ a {
 .person-card__fade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(19, 16, 7, 0) 40%, rgba(19, 16, 7, 0.92) 82%);
+  background: linear-gradient(180deg, rgba(16, 13, 28, 0) 40%, rgba(16, 13, 28, 0.92) 82%);
 }
 
 .person-card__body {
@@ -406,12 +437,15 @@ a {
   position: absolute;
   top: 26px;
   font-family: var(--display);
+  font-stretch: 75%;
   font-weight: 800;
-  font-size: 34px;
-  letter-spacing: -0.02em;
-  padding: 6px 18px;
-  border-radius: 12px;
-  border: 3px solid;
+  font-size: 44px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 8px 16px 10px;
+  border-radius: 10px;
+  border: 4px solid;
   pointer-events: none;
 }
 
@@ -419,16 +453,16 @@ a {
   left: 20px;
   color: var(--volt);
   border-color: var(--volt);
-  transform: rotate(-12deg);
-  background: rgba(19, 16, 7, 0.55);
+  transform: rotate(-14deg);
+  background: rgba(16, 13, 28, 0.55);
 }
 
 .stamp--pass {
   right: 20px;
   color: var(--coral);
   border-color: var(--coral);
-  transform: rotate(12deg);
-  background: rgba(19, 16, 7, 0.55);
+  transform: rotate(14deg);
+  background: rgba(16, 13, 28, 0.55);
 }
 
 .deck-actions {
@@ -579,7 +613,7 @@ a {
   margin: 0 auto;
   height: calc(var(--nav-h) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(19, 16, 7, 0.92);
+  background: rgba(16, 13, 28, 0.92);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
   display: flex;
@@ -680,7 +714,7 @@ a {
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: rgba(19, 16, 7, 0.8);
+  background: rgba(16, 13, 28, 0.8);
   color: var(--paper);
   font-size: 14px;
   display: flex;
