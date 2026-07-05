@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { scoreProfiles, friendSignal } from '../lib/compatibility'
+import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
 import { DB_BY_KEY } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
@@ -258,6 +258,7 @@ export default function Feed() {
     const allRefs = refs || []
     const scored = (people || [])
       .filter((p) => !seen.has(p.id))
+      .filter((p) => gendersCompatible(profile.gender, p.gender))
       .map((p) => ({
         person: p,
         fit: scoreProfiles(profile, p),

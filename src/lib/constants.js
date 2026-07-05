@@ -2,6 +2,8 @@ export const WHITELIST = ['bhnsadhu@gmail.com', 'sadhubhanu07@gmail.com']
 
 export const YEARS = ['freshman', 'sophomore', 'junior', 'senior', 'grad student']
 
+export const GENDERS = ['girl', 'guy', 'nonbinary']
+
 export const MOVE_IN = ['fall 2026', 'spring 2027', 'fall 2027']
 
 export const UIUC_MAJORS = [

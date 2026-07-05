@@ -1,5 +1,14 @@
 import { QUIZ, DB_BY_KEY } from './constants'
 
+// Same-gender pools by default, kept symmetric so a like can always be
+// answered: girl<->girl, guy<->guy, nonbinary sees and is seen by everyone.
+// Accounts from before gender existed (null) also match everyone.
+export function gendersCompatible(a, b) {
+  if (!a || !b) return true
+  if (a === 'nonbinary' || b === 'nonbinary') return true
+  return a === b
+}
+
 // Compatibility between two profiles.
 // Quiz agreement sets the base, dealbreaker conflicts dominate everything else.
 export function scoreProfiles(me, them) {

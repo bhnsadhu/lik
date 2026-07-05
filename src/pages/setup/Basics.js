@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import StepDots from '../../components/StepDots'
 import Wordmark from '../../components/Wordmark'
 import useSetupSave from './useSetupSave'
-import { YEARS, BIO_PLACEHOLDERS, UIUC_MAJORS } from '../../lib/constants'
+import { YEARS, GENDERS, BIO_PLACEHOLDERS, UIUC_MAJORS } from '../../lib/constants'
 
 export default function Basics() {
   const { save, editing, profile } = useSetupSave('basics')
   const [name, setName] = useState(profile?.name || '')
   const [age, setAge] = useState(profile?.age || '')
+  const [gender, setGender] = useState(profile?.gender || '')
   const [year, setYear] = useState(profile?.year || '')
   const [major, setMajor] = useState(profile?.major || '')
   const [bio, setBio] = useState(profile?.bio || '')
@@ -25,7 +26,7 @@ export default function Basics() {
     ? UIUC_MAJORS.filter((m) => m.includes(major.trim().toLowerCase())).slice(0, 6)
     : []
 
-  const ready = name.trim() && age && year && major.trim()
+  const ready = name.trim() && age && gender && year && major.trim()
 
   async function next() {
     setBusy(true)
@@ -34,6 +35,7 @@ export default function Basics() {
       await save({
         name: name.trim(),
         age: Number(age),
+        gender,
         year,
         major: major.trim(),
         bio: bio.trim(),
@@ -88,6 +90,20 @@ export default function Basics() {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="field">
+        <span className="field-label">you are</span>
+        <div className="chip-wrap">
+          {GENDERS.map((g) => (
+            <button key={g} className={`chip ${gender === g ? 'on' : ''}`} onClick={() => setGender(g)}>
+              {g}
+            </button>
+          ))}
+        </div>
+        <p style={{ color: 'var(--muted)', fontSize: 12.5, marginTop: 8 }}>
+          you'll see roommates of the same gender. nonbinary folks see everyone.
+        </p>
       </div>
 
       <div className="field">
