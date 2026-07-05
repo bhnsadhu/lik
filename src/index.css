@@ -129,10 +129,29 @@ a {
 /* ---------- wordmark ---------- */
 
 .wordmark {
+  font-family: var(--display);
+  font-weight: 800;
   color: var(--volt);
-  fill: currentColor;
-  flex-shrink: 0;
+  letter-spacing: -0.04em;
+  line-height: 1;
   user-select: none;
+}
+
+.wordmark-i {
+  position: relative;
+  display: inline-block;
+}
+
+/* square tittle: top sits on the ink top of l and k (0.13em below the em box
+   top at weight 800), centered on the ı stem. slightly narrower than the stem
+   so it reads as a separate dot at header sizes instead of fusing. */
+.wordmark-dot {
+  position: absolute;
+  width: 0.14em;
+  height: 0.14em;
+  left: 0.047em;
+  top: 0.13em;
+  background: currentColor;
 }
 
 /* ---------- night city ambience (auth + takeover only) ---------- */

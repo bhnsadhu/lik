@@ -205,8 +205,7 @@ function MatchTakeover({ me, them, matchId, onClose }) {
           animate={{ scale: 1, rotate: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 17, delay: 0.16 }}
         >
-          it's a<br />
-          <Wordmark size="0.8em" style={{ color: 'inherit' }} />.
+          it's a<br />lik.
         </motion.h1>
         <p className="takeover-sub">
           you and {them.name} both said yes. go say something before it gets weird.
