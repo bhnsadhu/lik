@@ -9,10 +9,20 @@ export default function Profile() {
   const { profile, signOut } = useAuth()
   const navigate = useNavigate()
   const [copied, setCopied] = useState(false)
+  const [photoIdx, setPhotoIdx] = useState(0)
 
   const link = `${window.location.origin}/?ref=${profile.referral_code}`
   const quizDone = Object.keys(profile.quiz || {}).length
   const limits = (profile.dealbreakers || []).map((k) => DB_BY_KEY[k]?.label).filter(Boolean)
+  const photos = profile.photos || []
+
+  function onPhotoTap(e) {
+    if (photos.length < 2) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const frac = (e.clientX - rect.left) / rect.width
+    if (frac < 0.33) setPhotoIdx((i) => Math.max(0, i - 1))
+    else setPhotoIdx((i) => Math.min(photos.length - 1, i + 1))
+  }
 
   async function copyInvite() {
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
@@ -50,11 +60,18 @@ export default function Profile() {
       <h2 className="screen-title">this is you</h2>
       <p className="screen-sub">exactly how you show up in other feeds. tap anything to change it.</p>
 
-      <div className="profile-card">
-        {profile.photos?.[0] ? (
-          <img className="person-card__photo" src={profile.photos[0]} alt={profile.name} />
+      <div className="profile-card" onClick={onPhotoTap}>
+        {photos.length > 0 ? (
+          <img className="person-card__photo" src={photos[photoIdx]} alt={profile.name} />
         ) : (
           <div className="person-card__photo" style={{ background: 'var(--ink-3)' }} />
+        )}
+        {photos.length > 1 && (
+          <div className="person-card__bars">
+            {photos.map((_, i) => (
+              <div key={i} className={`person-card__bar ${i === photoIdx ? 'active' : ''}`} />
+            ))}
+          </div>
         )}
         <div className="person-card__fade" />
         <div className="person-card__body">
