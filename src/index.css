@@ -142,31 +142,16 @@ a {
   display: inline-block;
 }
 
-/* square tittle: top sits on the ink top of l and k (0.13em below the em box
-   top at weight 800), exactly as wide as the ı stem ink (x 0.036-0.198em) so
-   dot and stem share the same horizontal length. */
+/* squared-off tittle: top sits on the ink top of l and k (0.13em below the
+   em box top at weight 800) and it spans exactly the ı stem ink
+   (x 0.036-0.198em) so tittle and stem share the same horizontal length.
+   slightly squat so a real gap stays above the stem's x-height top. */
 .wordmark-dot {
   position: absolute;
   width: 0.162em;
-  height: 0.162em;
+  height: 0.13em;
   left: 0.036em;
   top: 0.13em;
-  background: currentColor;
-}
-
-/* the glyph only reserves advance width; the visible stem is this box. it
-   starts below the font's x-height so the tittle gets a real gap (a third of
-   the stroke) and its bottom sits exactly on the baseline (0.83em). */
-.wordmark-glyph {
-  color: transparent;
-}
-
-.wordmark-stem {
-  position: absolute;
-  left: 0.036em;
-  width: 0.162em;
-  top: 0.347em;
-  height: 0.483em;
   background: currentColor;
 }
 
