@@ -15,8 +15,15 @@ export default function Logistics() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
 
-  function toggleIn(list, setList, val) {
-    setList(list.includes(val) ? list.filter((v) => v !== val) : [...list, val])
+  // "no preference" / "anywhere works" are mutually exclusive with every real
+  // option: picking one clears the rest, picking a real option clears it.
+  function toggleExclusive(list, setList, val, noneVal) {
+    if (val === noneVal) {
+      setList(list.includes(noneVal) ? [] : [noneVal])
+      return
+    }
+    const without = list.filter((x) => x !== noneVal)
+    setList(without.includes(val) ? without.filter((x) => x !== val) : [...without, val])
   }
 
   const ready = moveIn && (isDorm ? dorms.length > 0 : areas.length > 0 && budgetMax)
@@ -67,8 +74,8 @@ export default function Logistics() {
         <div className="field">
           <span className="field-label">dorms you are considering</span>
           <div className="chip-wrap">
-            {DORMS.map((d) => (
-              <button key={d} className={`chip ${dorms.includes(d) ? 'on' : ''}`} onClick={() => toggleIn(dorms, setDorms, d)}>
+            {[...DORMS, 'no preference'].map((d) => (
+              <button key={d} className={`chip ${dorms.includes(d) ? 'on' : ''}`} onClick={() => toggleExclusive(dorms, setDorms, d, 'no preference')}>
                 {d}
               </button>
             ))}
@@ -100,8 +107,8 @@ export default function Logistics() {
           <div className="field">
             <span className="field-label">areas you are considering</span>
             <div className="chip-wrap">
-              {AREAS.map((a) => (
-                <button key={a} className={`chip ${areas.includes(a) ? 'on' : ''}`} onClick={() => toggleIn(areas, setAreas, a)}>
+              {[...AREAS, 'anywhere works'].map((a) => (
+                <button key={a} className={`chip ${areas.includes(a) ? 'on' : ''}`} onClick={() => toggleExclusive(areas, setAreas, a, 'anywhere works')}>
                   {a}
                 </button>
               ))}
