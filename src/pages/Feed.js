@@ -17,6 +17,16 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
   const passOpacity = useTransform(x, [-130, -30], [1, 0])
   const flying = useRef(false)
   const flyRef = useRef(null)
+  const [photoIdx, setPhotoIdx] = useState(0)
+  const photos = person.photos || []
+
+  function onPhotoTap(e) {
+    if (photos.length < 2) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const frac = (e.clientX - rect.left) / rect.width
+    if (frac < 0.33) setPhotoIdx((i) => Math.max(0, i - 1))
+    else setPhotoIdx((i) => Math.min(photos.length - 1, i + 1))
+  }
 
   function release(_, info) {
     if (flying.current) return
@@ -52,17 +62,41 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
       initial={top ? false : { scale: 0.95, opacity: 0.7 }}
       animate={top ? { scale: 1, opacity: 1 } : { scale: 0.95, opacity: 0.7 }}
       onTap={(e, info) => {
-        if (top && Math.abs(x.get()) < 8) onOpen()
+        if (top && Math.abs(x.get()) < 8) onPhotoTap(e)
       }}
     >
-      {person.photos?.[0] ? (
-        <img className="person-card__photo" src={person.photos[0]} alt={person.name} draggable={false} />
+      {photos.length > 0 ? (
+        <img className="person-card__photo" src={photos[photoIdx]} alt={person.name} draggable={false} />
       ) : (
         <div className="person-card__photo" style={{ background: 'var(--ink-3)' }} />
+      )}
+      {top && photos.length > 1 && (
+        <div className="person-card__bars">
+          {photos.map((_, i) => (
+            <div key={i} className={`person-card__bar ${i === photoIdx ? 'active' : ''}`} />
+          ))}
+        </div>
       )}
       <div className="person-card__fade" />
       <motion.span className="stamp stamp--lik" style={{ opacity: likOpacity }}>lik</motion.span>
       <motion.span className="stamp stamp--pass" style={{ opacity: passOpacity }}>pass</motion.span>
+      {top && (
+        <button
+          className="person-card__info"
+          aria-label="more info"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation()
+            onOpen()
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+            <circle cx="9" cy="9" r="7.3" />
+            <line x1="9" y1="8.2" x2="9" y2="12.6" />
+            <circle cx="9" cy="5.6" r="0.9" fill="currentColor" stroke="none" />
+          </svg>
+        </button>
+      )}
       <div className="person-card__body">
         <div className="person-card__name">
           {person.name}, {person.age}

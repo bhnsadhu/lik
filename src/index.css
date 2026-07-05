@@ -492,6 +492,46 @@ a {
   -webkit-user-drag: none;
 }
 
+.person-card__bars {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.person-card__bar {
+  flex: 1;
+  height: 2.5px;
+  border-radius: 2px;
+  background: rgba(250, 246, 234, 0.35);
+  transition: background 0.2s ease;
+}
+
+.person-card__bar.active {
+  background: rgba(250, 246, 234, 0.9);
+}
+
+.person-card__info {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 13, 28, 0.55);
+  border: 1px solid rgba(250, 246, 234, 0.22);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  z-index: 3;
+}
+
 .person-card__fade {
   position: absolute;
   inset: 0;
