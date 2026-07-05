@@ -1,16 +1,22 @@
-// the lik wordmark: lowercase volt with a heart standing in for the i's dot,
-// same trick as the movie logo. uses dotless i so the heart owns the space.
+// the lik wordmark: geometric letters cut from a 12-unit stroke. the i's dot
+// is a square, one stroke wide, its top flush with the tops of l and k so all
+// three letters share the same cap line. bottom edge of the viewBox is the
+// baseline, so the svg sits on the text baseline when used inline.
 export default function Wordmark({ size = 28, style }) {
   return (
-    <span className="wordmark" style={{ fontSize: size, ...style }}>
-      l
-      <span className="wordmark-i">
-        {'ı'}
-        <svg className="wordmark-heart" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-        </svg>
-      </span>
-      k
-    </span>
+    <svg
+      className="wordmark"
+      viewBox="0 0 74 64"
+      style={{ height: size, ...style }}
+      role="img"
+      aria-label="lik"
+    >
+      <rect x="0" y="0" width="12" height="64" />
+      <rect x="22" y="0" width="12" height="12" />
+      <rect x="22" y="24" width="12" height="40" />
+      <rect x="44" y="0" width="12" height="64" />
+      <polygon points="56,42 74,24 74,38 56,56" />
+      <polygon points="56,46 74,64 60,64 56,60" />
+    </svg>
   )
 }

@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { WHITELIST } from '../lib/constants'
 import Wordmark from '../components/Wordmark'
 
-const CODE_LEN = 6
+const CODE_LEN = 8
 
 function validEmail(email) {
   const e = email.trim().toLowerCase()
@@ -139,7 +139,7 @@ export default function Auth() {
         {stage === 'code' && (
           <div>
             <p style={{ color: 'var(--muted)', fontSize: 14.5, marginBottom: 16 }}>
-              we sent a {CODE_LEN} digit code to {email.trim().toLowerCase()}
+              we sent an {CODE_LEN} digit code to {email.trim().toLowerCase()}
             </p>
             <div className="otp-row">
               {code.map((c, i) => (

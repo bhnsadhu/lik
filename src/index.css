@@ -129,27 +129,10 @@ a {
 /* ---------- wordmark ---------- */
 
 .wordmark {
-  font-family: var(--display);
-  font-weight: 800;
   color: var(--volt);
-  letter-spacing: -0.04em;
-  line-height: 1;
-  user-select: none;
-}
-
-.wordmark-i {
-  position: relative;
-  display: inline-block;
-}
-
-.wordmark-heart {
-  position: absolute;
-  width: 0.28em;
-  height: 0.28em;
-  left: 50%;
-  transform: translateX(-46%);
-  top: 0.015em;
   fill: currentColor;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 /* ---------- night city ambience (auth + takeover only) ---------- */
@@ -314,12 +297,14 @@ a {
 /* otp boxes */
 .otp-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
 }
 
 .otp-box {
-  width: 44px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 40px;
   height: 56px;
   background: var(--ink-2);
   border: 1px solid var(--line);
