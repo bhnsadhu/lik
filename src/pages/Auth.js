@@ -125,7 +125,7 @@ export default function Auth() {
           better than random
         </p>
         <p style={{ fontSize: 19, fontWeight: 500, margin: '0 0 36px', color: 'var(--paper)' }}>
-          find your uiuc roommate.
+          find a place you lik.<br />with someone you lik.
         </p>
 
         {stage === 'email' && (
@@ -156,6 +156,7 @@ export default function Auth() {
 
         {stage === 'code' && (
           <div>
+            <h2 style={{ fontSize: 24, marginBottom: 8 }}>check your inbox</h2>
             <p style={{ color: 'var(--muted)', fontSize: 14.5, marginBottom: 16 }}>
               we sent an {CODE_LEN} digit code to {email.trim().toLowerCase()}
             </p>
