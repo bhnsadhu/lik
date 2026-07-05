@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react'
+import { supabase } from '../../lib/supabase'
 import StepDots from '../../components/StepDots'
 import Wordmark from '../../components/Wordmark'
+import AvatarCropper from '../../components/AvatarCropper'
 import useSetupSave from './useSetupSave'
+import { dataUrlToBlob } from '../../lib/avatar'
 import { YEARS, GENDERS, BIO_PLACEHOLDERS, UIUC_MAJORS } from '../../lib/constants'
 
 export default function Basics() {
-  const { save, editing, profile } = useSetupSave('basics')
+  const { save, editing, profile, user } = useSetupSave('basics')
   const [name, setName] = useState(profile?.name || '')
   const [age, setAge] = useState(profile?.age || '')
   const [gender, setGender] = useState(profile?.gender || '')
   const [year, setYear] = useState(profile?.year || '')
   const [major, setMajor] = useState(profile?.major || '')
   const [bio, setBio] = useState(profile?.bio || '')
+  const [avatar, setAvatar] = useState(profile?.profile_pic_url || null)
+  const [cropping, setCropping] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [phIdx, setPhIdx] = useState(0)
@@ -26,12 +31,24 @@ export default function Basics() {
     ? UIUC_MAJORS.filter((m) => m.includes(major.trim().toLowerCase())).slice(0, 6)
     : []
 
-  const ready = name.trim() && age && gender && year && major.trim()
+  const ready = name.trim() && age && gender && year && major.trim() && avatar
 
   async function next() {
     setBusy(true)
     setErr('')
     try {
+      let picUrl = avatar
+      // freshly cropped pics are data urls; upload once, store the public url
+      if (avatar?.startsWith('data:')) {
+        const path = `${user.id}/avatar_${Date.now()}.jpg`
+        const { error } = await supabase.storage.from('photos').upload(path, dataUrlToBlob(avatar), {
+          cacheControl: '31536000',
+          contentType: 'image/jpeg',
+          upsert: false,
+        })
+        if (error) throw error
+        picUrl = supabase.storage.from('photos').getPublicUrl(path).data.publicUrl
+      }
       await save({
         name: name.trim(),
         age: Number(age),
@@ -39,6 +56,7 @@ export default function Basics() {
         year,
         major: major.trim(),
         bio: bio.trim(),
+        profile_pic_url: picUrl,
       })
     } catch {
       setErr('could not save. try again.')
@@ -52,6 +70,16 @@ export default function Basics() {
       {!editing && <StepDots current="basics" />}
       <h2 className="screen-title">the basics</h2>
       <p className="screen-sub">what future roommates see first.</p>
+
+      <button className="avatar-row" onClick={() => setCropping(true)}>
+        <span className="avatar-row__pic">
+          {avatar ? <img src={avatar} alt="you" /> : '+'}
+        </span>
+        <span>
+          <span style={{ display: 'block', fontSize: 13, color: 'var(--muted)', fontWeight: 600 }}>profile pic</span>
+          <span style={{ fontSize: 14.5 }}>{avatar ? 'tap to change' : 'tap to set'}</span>
+        </span>
+      </button>
 
       <div className="field">
         <label className="field-label" htmlFor="name">first name</label>
@@ -134,6 +162,16 @@ export default function Basics() {
       <button className="btn btn-volt" disabled={busy || !ready} onClick={next}>
         {busy ? 'saving...' : editing ? 'save' : 'next'}
       </button>
+
+      {cropping && (
+        <AvatarCropper
+          onDone={(dataUrl) => {
+            setAvatar(dataUrl)
+            setCropping(false)
+          }}
+          onClose={() => setCropping(false)}
+        />
+      )}
     </div>
   )
 }

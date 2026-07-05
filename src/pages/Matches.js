@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
+import { avatarUrl } from '../lib/avatar'
 
 export default function Matches() {
   const { user } = useAuth()
@@ -25,7 +26,7 @@ export default function Matches() {
     const otherIds = matches.map((m) => (m.user_a === user.id ? m.user_b : m.user_a))
     const matchIds = matches.map((m) => m.id)
     const [{ data: people }, { data: msgs }] = await Promise.all([
-      supabase.from('profiles').select('id, name, photos').in('id', otherIds),
+      supabase.from('profiles').select('id, name, photos, profile_pic_url').in('id', otherIds),
       supabase
         .from('messages')
         .select('match_id, sender, body, created_at')
@@ -84,8 +85,8 @@ export default function Matches() {
         <div>
           {rows.map((r) => (
             <button key={r.id} className="match-row" onClick={() => navigate(`/chat/${r.id}`)}>
-              {r.person.photos?.[0] ? (
-                <img src={r.person.photos[0]} alt={r.person.name} />
+              {avatarUrl(r.person) ? (
+                <img src={avatarUrl(r.person)} alt={r.person.name} />
               ) : (
                 <div style={{ width: 58, height: 58, borderRadius: 18, background: 'var(--ink-3)' }} />
               )}

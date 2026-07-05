@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles } from '../lib/compatibility'
+import { avatarUrl } from '../lib/avatar'
 import PersonSheet from '../components/PersonSheet'
 
 export default function Chat() {
@@ -90,7 +91,7 @@ export default function Chat() {
           disabled={!other}
           onClick={() => setShowProfile(true)}
         >
-          {other?.photos?.[0] && <img src={other.photos[0]} alt={other.name} />}
+          {avatarUrl(other) && <img src={avatarUrl(other)} alt={other.name} />}
           <span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 17 }}>{other?.name || ''}</span>
         </button>
       </div>

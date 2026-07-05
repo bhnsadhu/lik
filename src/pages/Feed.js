@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useMotionValue, useTransform, animate } from '
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
+import { avatarUrl } from '../lib/avatar'
 import { DB_BY_KEY } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
@@ -141,8 +142,8 @@ function MatchTakeover({ me, them, matchId, onClose }) {
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <div className="takeover-avatars">
-          {me.photos?.[0] && <img src={me.photos[0]} alt="you" />}
-          {them.photos?.[0] && <img src={them.photos[0]} alt={them.name} />}
+          {avatarUrl(me) && <img src={avatarUrl(me)} alt="you" />}
+          {avatarUrl(them) && <img src={avatarUrl(them)} alt={them.name} />}
         </div>
         <p className="overline">claim approved</p>
         <motion.h1

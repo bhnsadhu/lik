@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
+import { avatarUrl } from '../lib/avatar'
 import { QUIZ, DB_BY_KEY } from '../lib/constants'
 
 export default function Profile() {
@@ -57,7 +58,16 @@ export default function Profile() {
   return (
     <div className="screen">
       <Wordmark />
-      <h2 className="screen-title">this is you</h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h2 className="screen-title">this is you</h2>
+        {avatarUrl(profile) && (
+          <img
+            src={avatarUrl(profile)}
+            alt={profile.name}
+            style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--line)', marginTop: 14 }}
+          />
+        )}
+      </div>
       <p className="screen-sub">exactly how you show up in other feeds. tap anything to change it.</p>
 
       <div className="profile-card" onClick={onPhotoTap}>
