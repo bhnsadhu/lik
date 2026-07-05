@@ -89,7 +89,7 @@ export default function Chat() {
           <div className="empty"><div className="spin" /></div>
         ) : msgs.length === 0 ? (
           <div className="empty">
-            <h2>you matched. now what.</h2>
+            <h2>it's a lik. now what.</h2>
             <p>open strong. ask about their thermostat stance. mention the quiz answer you share. anything beats hey.</p>
           </div>
         ) : (

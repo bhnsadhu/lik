@@ -27,7 +27,7 @@ export default function BottomNav({ unread }) {
       <NavLink to="/matches">
         {unread ? <span className="nav-dot" /> : null}
         {Spark}
-        <span>matches</span>
+        <span>liks</span>
       </NavLink>
       <NavLink to="/profile">{Person}<span>you</span></NavLink>
     </nav>
