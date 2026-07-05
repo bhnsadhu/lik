@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import StepDots from '../../components/StepDots'
 import Wordmark from '../../components/Wordmark'
@@ -6,12 +6,27 @@ import useSetupSave from './useSetupSave'
 
 const SLOTS = 6
 
+const CAPTION_PLACEHOLDERS = [
+  'these are my people',
+  'campus life, mostly',
+  'green street at 1am',
+  'me and whoever was around',
+  'proof i go outside',
+]
+
 export default function Photos() {
   const { save, editing, profile, user } = useSetupSave('photos')
   const [photos, setPhotos] = useState(profile?.photos || [])
+  const [caption, setCaption] = useState(profile?.photo_caption || '')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const [phIdx, setPhIdx] = useState(0)
   const fileRef = useRef(null)
+
+  useEffect(() => {
+    const t = setInterval(() => setPhIdx((i) => (i + 1) % CAPTION_PLACEHOLDERS.length), 3200)
+    return () => clearInterval(t)
+  }, [])
 
   async function onFile(e) {
     const file = e.target.files?.[0]
@@ -42,7 +57,7 @@ export default function Photos() {
   async function next() {
     setBusy(true)
     try {
-      await save({ photos })
+      await save({ photos, photo_caption: caption.trim() || null })
     } catch {
       setErr('could not save. try again.')
       setBusy(false)
@@ -83,6 +98,18 @@ export default function Photos() {
         })}
       </div>
       <input ref={fileRef} type="file" accept="image/*" hidden onChange={onFile} />
+
+      <div className="field" style={{ marginTop: 16 }}>
+        <label className="field-label" htmlFor="caption">caption your photo set · optional</label>
+        <input
+          id="caption"
+          className="input"
+          value={caption}
+          maxLength={80}
+          onChange={(e) => setCaption(e.target.value)}
+          placeholder={CAPTION_PLACEHOLDERS[phIdx]}
+        />
+      </div>
 
       {err && <p className="err">{err}</p>}
       <div style={{ flex: 1 }} />

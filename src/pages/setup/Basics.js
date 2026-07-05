@@ -31,7 +31,7 @@ export default function Basics() {
     ? UIUC_MAJORS.filter((m) => m.includes(major.trim().toLowerCase())).slice(0, 6)
     : []
 
-  const ready = name.trim() && age && gender && year && major.trim() && avatar
+  const ready = name.trim() && age && gender && year && major.trim() && avatar && bio.trim()
 
   async function next() {
     setBusy(true)
@@ -146,7 +146,7 @@ export default function Basics() {
       </div>
 
       <div className="field">
-        <label className="field-label" htmlFor="bio">bio</label>
+        <label className="field-label" htmlFor="bio">bio · you as a roommate, in a line or two</label>
         <textarea
           id="bio"
           className="textarea"

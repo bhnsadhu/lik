@@ -590,6 +590,23 @@ a {
   margin: 3px 0 10px;
 }
 
+/* bio on the first photo, the set's caption while browsing the rest */
+.person-card__bio {
+  color: rgba(250, 246, 234, 0.8);
+  font-size: 14px;
+  line-height: 1.4;
+  margin: -4px 0 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.person-card__bio--caption {
+  font-style: italic;
+  color: rgba(250, 246, 234, 0.65);
+}
+
 .fit-badge {
   display: inline-flex;
   align-items: center;

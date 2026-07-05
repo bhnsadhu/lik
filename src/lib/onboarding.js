@@ -12,7 +12,7 @@ export function isStepComplete(step, profile) {
     case 'housing':
       return !!profile.housing_type
     case 'basics':
-      return !!(profile.name && profile.age && profile.gender && profile.year && profile.major && profile.profile_pic_url)
+      return !!(profile.name && profile.age && profile.gender && profile.year && profile.major && profile.profile_pic_url && profile.bio)
     case 'photos':
       return (profile.photos?.length || 0) > 0
     case 'quiz':

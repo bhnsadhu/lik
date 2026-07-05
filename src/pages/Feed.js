@@ -106,6 +106,9 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
         <div className="person-card__meta">
           {person.year} · {person.major}
         </div>
+        {photoIdx === 0
+          ? person.bio && <p className="person-card__bio">{person.bio}</p>
+          : person.photo_caption && <p className="person-card__bio person-card__bio--caption">"{person.photo_caption}"</p>}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <span className="fit-badge">{fit.score}% fit</span>
           {friend && <span className="chip-tag chip-tag--sky">{friend}</span>}
