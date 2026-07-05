@@ -143,13 +143,13 @@ a {
 }
 
 /* square tittle: top sits on the ink top of l and k (0.13em below the em box
-   top at weight 800), centered on the ı stem. slightly narrower than the stem
-   so it reads as a separate dot at header sizes instead of fusing. */
+   top at weight 800), exactly as wide as the ı stem ink (x 0.036-0.198em) so
+   dot and stem share the same horizontal length. */
 .wordmark-dot {
   position: absolute;
-  width: 0.14em;
-  height: 0.14em;
-  left: 0.047em;
+  width: 0.162em;
+  height: 0.162em;
+  left: 0.036em;
   top: 0.13em;
   background: currentColor;
 }
