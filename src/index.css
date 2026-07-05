@@ -329,6 +329,37 @@ a {
   flex: 1;
 }
 
+.major-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-s);
+  max-height: 190px;
+  overflow-y: auto;
+  z-index: 5;
+}
+
+.major-dropdown__item {
+  padding: 11px 14px;
+  font-size: 14px;
+  color: var(--paper);
+  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+}
+
+.major-dropdown__item:last-child {
+  border-bottom: none;
+}
+
+.major-dropdown__item:hover {
+  background: rgba(242, 233, 0, 0.08);
+  color: var(--volt);
+}
+
 /* otp boxes */
 .otp-row {
   display: flex;
