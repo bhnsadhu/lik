@@ -140,31 +140,6 @@ a {
 .wordmark-i {
   position: relative;
   display: inline-block;
-  /* side room for the slab bars so they don't crowd l and k */
-  margin: 0 0.045em;
-}
-
-/* asymmetric slab bars on the i: a wide flag at the x-height top, a narrow
-   foot sitting on the baseline. the imbalance is the point — top reads first.
-   offsets derive from the font's ink metrics at weight 800: stem ink spans
-   x 0.036-0.198em, x-height top at 0.302em, baseline at 0.83em from box top. */
-.wordmark-bar {
-  position: absolute;
-  background: currentColor;
-}
-
-.wordmark-bar--top {
-  left: -0.018em;
-  width: 0.27em;
-  top: 0.302em;
-  height: 0.072em;
-}
-
-.wordmark-bar--foot {
-  left: 0.014em;
-  width: 0.206em;
-  top: 0.772em;
-  height: 0.058em;
 }
 
 /* square tittle: top sits on the ink top of l and k (0.13em below the em box
