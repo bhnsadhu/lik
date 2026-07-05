@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
-import { STEPS } from '../../components/StepDots'
+import { STEPS } from '../../lib/onboarding'
 
 // Saves fields for the current setup step, then advances the flow.
 // When the user is editing from their profile (?edit=1), save returns them there.
@@ -20,7 +20,13 @@ export default function useSetupSave(step) {
         : STEPS[idx + 1]
 
     const payload = { ...fields }
-    if (!editing || profile.onboarding_step !== 'done') payload.onboarding_step = nextStep
+    if (!editing || profile.onboarding_step !== 'done') {
+      // the step tabs let you go back and re-save an earlier step after
+      // already progressing further - never let that regress the pointer
+      const curIdx = profile.onboarding_step === 'done' ? STEPS.length : STEPS.indexOf(profile.onboarding_step)
+      const nextIdx = nextStep === 'done' ? STEPS.length : STEPS.indexOf(nextStep)
+      payload.onboarding_step = nextIdx > curIdx ? nextStep : profile.onboarding_step
+    }
 
     const { data, error } = await supabase
       .from('profiles')

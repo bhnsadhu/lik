@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import StepDots from '../../components/StepDots'
 import Wordmark from '../../components/Wordmark'
 import useSetupSave from './useSetupSave'
@@ -6,7 +7,14 @@ import { MOVE_IN, DORMS, AREAS } from '../../lib/constants'
 
 export default function Logistics() {
   const { save, editing, profile } = useSetupSave('logistics')
+  const navigate = useNavigate()
   const isDorm = profile?.housing_type === 'dorm'
+
+  // preferences depends entirely on housing type (dorm fields vs apartment
+  // fields) - if it's somehow missing, this page can't render meaningfully
+  useEffect(() => {
+    if (profile && !profile.housing_type) navigate('/setup/housing', { replace: true })
+  }, [profile, navigate])
   const [moveIn, setMoveIn] = useState(profile?.move_in || '')
   const [dorms, setDorms] = useState(profile?.dorm_prefs || [])
   const [areas, setAreas] = useState(profile?.areas || [])
