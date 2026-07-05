@@ -1050,6 +1050,15 @@ a {
   border-bottom: 1px solid var(--ink-3);
 }
 
+.chat-head__person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+}
+
 .chat-head img {
   width: 38px;
   height: 38px;

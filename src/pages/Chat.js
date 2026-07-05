@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { scoreProfiles } from '../lib/compatibility'
+import PersonSheet from '../components/PersonSheet'
 
 export default function Chat() {
   const { matchId } = useParams()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const navigate = useNavigate()
   const [other, setOther] = useState(null)
   const [msgs, setMsgs] = useState(null)
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
   const scrollRef = useRef(null)
 
   const appendUnique = useCallback((msg) => {
@@ -29,7 +33,7 @@ export default function Chat() {
       }
       const otherId = match.user_a === user.id ? match.user_b : match.user_a
       const [{ data: person }, { data: messages }] = await Promise.all([
-        supabase.from('profiles').select('id, name, photos').eq('id', otherId).single(),
+        supabase.from('profiles').select('*').eq('id', otherId).single(),
         supabase.from('messages').select('*').eq('match_id', matchId).order('created_at'),
       ])
       setOther(person)
@@ -80,8 +84,15 @@ export default function Chat() {
         <button aria-label="back" onClick={() => navigate('/matches')} style={{ fontSize: 22, color: 'var(--muted)', padding: '0 4px' }}>
           &#8249;
         </button>
-        {other?.photos?.[0] && <img src={other.photos[0]} alt={other.name} />}
-        <span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 17 }}>{other?.name || ''}</span>
+        <button
+          className="chat-head__person"
+          aria-label={other ? `view ${other.name}'s profile` : 'view profile'}
+          disabled={!other}
+          onClick={() => setShowProfile(true)}
+        >
+          {other?.photos?.[0] && <img src={other.photos[0]} alt={other.name} />}
+          <span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 17 }}>{other?.name || ''}</span>
+        </button>
       </div>
 
       <div className="chat-scroll" ref={scrollRef}>
@@ -100,6 +111,17 @@ export default function Chat() {
           ))
         )}
       </div>
+
+      <AnimatePresence>
+        {showProfile && other && profile && (
+          <PersonSheet
+            person={other}
+            fit={scoreProfiles(profile, other)}
+            friend={null}
+            onClose={() => setShowProfile(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <form className="chat-input-row" onSubmit={send}>
         <input
