@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { WHITELIST } from '../lib/constants'
 import Wordmark from '../components/Wordmark'
@@ -19,7 +19,11 @@ export default function Auth() {
   const [code, setCode] = useState(Array(CODE_LEN).fill(''))
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const [resendState, setResendState] = useState('idle') // 'idle' | 'sent'
   const boxRefs = useRef([])
+  const resendTimerRef = useRef(null)
+
+  useEffect(() => () => clearTimeout(resendTimerRef.current), [])
 
   async function sendCode(e) {
     e.preventDefault()
@@ -32,7 +36,7 @@ export default function Auth() {
     setBusy(true)
     const { error } = await supabase.auth.signInWithOtp({
       email: clean,
-      options: { shouldCreateUser: true },
+      options: { shouldCreateUser: true, emailRedirectTo: undefined },
     })
     setBusy(false)
     if (error) {
@@ -41,6 +45,20 @@ export default function Auth() {
     }
     setStage('code')
     setTimeout(() => boxRefs.current[0]?.focus(), 50)
+  }
+
+  async function resendCode() {
+    clearTimeout(resendTimerRef.current)
+    setResendState('sent')
+    resendTimerRef.current = setTimeout(() => setResendState('idle'), 2000)
+    setErr('')
+    setCode(Array(CODE_LEN).fill(''))
+    boxRefs.current[0]?.focus()
+    const { error } = await supabase.auth.signInWithOtp({
+      email: validEmail(email),
+      options: { shouldCreateUser: true, emailRedirectTo: undefined },
+    })
+    if (error) setErr(error.message.toLowerCase())
   }
 
   async function verify(fullCode) {
@@ -104,7 +122,7 @@ export default function Auth() {
           <Wordmark size="clamp(88px, 30vw, 140px)" style={{ display: 'block' }} />
         </h1>
         <p className="overline" style={{ color: 'var(--muted)', margin: '14px 0 10px' }}>
-          roommate insurance kompany
+          better than random
         </p>
         <p style={{ fontSize: 19, fontWeight: 500, margin: '0 0 36px', color: 'var(--paper)' }}>
           find your uiuc roommate.
@@ -158,12 +176,49 @@ export default function Auth() {
             {err && <p className="err" style={{ textAlign: 'center' }}>{err}</p>}
             {busy && <div className="spin" style={{ marginTop: 18 }} />}
             <button
+              type="button"
+              className={`btn-text resend-btn ${resendState === 'sent' ? 'is-sent' : ''}`}
+              style={{ display: 'flex', marginTop: 16 }}
+              onClick={resendCode}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {resendState === 'sent' ? (
+                  <motion.span
+                    key="sent"
+                    className="resend-btn__label"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 12l6 6L20 6" />
+                    </svg>
+                    sent
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="idle"
+                    className="resend-btn__label"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                  >
+                    resend code
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </button>
+            <button
               className="btn-text"
-              style={{ display: 'block', marginTop: 16 }}
+              style={{ display: 'block', marginTop: 4 }}
               onClick={() => {
                 setStage('email')
                 setCode(Array(CODE_LEN).fill(''))
                 setErr('')
+                setResendState('idle')
+                clearTimeout(resendTimerRef.current)
               }}
             >
               wrong email? go back

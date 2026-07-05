@@ -252,7 +252,7 @@ function ReferralPrompt({ profile, onClose }) {
         <div className="sheet-handle" />
         <h2 style={{ fontSize: 26 }}>you're covered.</h2>
         <p style={{ color: 'var(--muted)', fontSize: 15, margin: '8px 0 18px' }}>
-          roommate insurance works better in a group. friends who join through your link get a friend badge in your feed, and you in theirs.
+          your pool gets better with more people in it. friends who join through your link get a friend badge in your feed, and you in theirs.
         </p>
         <button className="btn btn-volt" onClick={share}>
           {copied ? 'link copied' : 'invite a friend'}

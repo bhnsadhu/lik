@@ -71,7 +71,7 @@ h3 {
   line-height: 0.95;
 }
 
-/* spaced caps overline, the "love insurance kompany" lockup device */
+/* spaced caps overline, the eyebrow lockup device under the wordmark */
 .overline {
   font-family: var(--display);
   font-weight: 700;
@@ -354,6 +354,23 @@ a {
 
 .otp-box:focus {
   border-color: var(--volt);
+}
+
+.resend-btn {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.resend-btn.is-sent {
+  color: var(--volt);
+}
+
+.resend-btn__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* ---------- chips ---------- */
