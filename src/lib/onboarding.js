@@ -21,7 +21,7 @@ export function isStepComplete(step, profile) {
       if (!profile.move_in) return false
       return profile.housing_type === 'dorm'
         ? (profile.dorm_prefs?.length || 0) > 0
-        : (profile.areas?.length || 0) > 0 && profile.budget_max != null
+        : (profile.areas?.length || 0) > 0 && profile.budget_min != null && profile.budget_max != null
     case 'limits':
       // dealbreakers can legitimately be an empty array ("no hard limits"),
       // so field presence alone can't tell "never visited" from "chose none" -
