@@ -7,6 +7,16 @@ import useSetupSave from './useSetupSave'
 import { dataUrlToBlob } from '../../lib/avatar'
 import { YEARS, GENDERS, BIO_PLACEHOLDERS, UIUC_MAJORS } from '../../lib/constants'
 
+function ageError(value) {
+  const s = String(value).trim()
+  if (!s) return "age can't be empty"
+  if (!/^\d+$/.test(s)) return 'age needs to be a number'
+  if (s.length === 1) return 'age needs two digits'
+  if (s.length > 2) return "age can't be more than two digits"
+  if (Number(s) < 16) return 'age must be 16 or older'
+  return null
+}
+
 export default function Basics() {
   const { save, editing, profile, user } = useSetupSave('basics')
   const [name, setName] = useState(profile?.name || '')
@@ -21,6 +31,8 @@ export default function Basics() {
   const [err, setErr] = useState('')
   const [phIdx, setPhIdx] = useState(0)
   const [showMajors, setShowMajors] = useState(false)
+  const [touched, setTouched] = useState({})
+  const [attempted, setAttempted] = useState(false)
 
   useEffect(() => {
     const t = setInterval(() => setPhIdx((i) => (i + 1) % BIO_PLACEHOLDERS.length), 3200)
@@ -31,7 +43,32 @@ export default function Basics() {
     ? UIUC_MAJORS.filter((m) => m.includes(major.trim().toLowerCase())).slice(0, 6)
     : []
 
-  const ready = name.trim() && age && gender && year && major.trim() && avatar && bio.trim()
+  // major must be a real list entry, not free text; store the canonical form
+  const canonicalMajor = UIUC_MAJORS.includes(major.trim().toLowerCase())
+    ? major.trim().toLowerCase()
+    : null
+
+  const errors = {
+    avatar: !avatar ? 'add a profile pic' : null,
+    name: !name.trim() ? "name can't be empty" : null,
+    age: ageError(age),
+    major: !major.trim() ? "major can't be empty" : !canonicalMajor ? 'pick your major from the list' : null,
+    gender: !gender ? 'pick whichever fits' : null,
+    year: !year ? 'pick your year' : null,
+    bio: !bio.trim() ? "bio can't be empty" : null,
+  }
+  const ready = Object.values(errors).every((e) => !e)
+  const show = (k) => (touched[k] || attempted ? errors[k] : null)
+  const touch = (k) => setTouched((t) => ({ ...t, [k]: true }))
+
+  function onNextTap() {
+    if (!ready) {
+      setAttempted(true)
+      setTimeout(() => document.querySelector('.field-err')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80)
+      return
+    }
+    next()
+  }
 
   async function next() {
     setBusy(true)
@@ -54,12 +91,12 @@ export default function Basics() {
         age: Number(age),
         gender,
         year,
-        major: major.trim(),
+        major: canonicalMajor,
         bio: bio.trim(),
         profile_pic_url: picUrl,
       })
     } catch {
-      setErr('could not save. try again.')
+      setErr('could not save. try again')
       setBusy(false)
     }
   }
@@ -71,37 +108,61 @@ export default function Basics() {
       <h2 className="screen-title">the basics</h2>
       <p className="screen-sub">what future roommates see first.</p>
 
-      <button className="avatar-row" onClick={() => setCropping(true)}>
-        <span className="avatar-row__pic">
-          {avatar ? <img src={avatar} alt="you" /> : '+'}
-        </span>
-        <span>
-          <span style={{ display: 'block', fontSize: 13, color: 'var(--muted)', fontWeight: 600 }}>profile pic</span>
-          <span style={{ fontSize: 14.5 }}>{avatar ? 'tap to change' : 'tap to set'}</span>
-        </span>
-      </button>
+      <div className="field" style={{ marginBottom: 0 }}>
+        <button className="avatar-row" onClick={() => setCropping(true)}>
+          <span className="avatar-row__pic">
+            {avatar ? <img src={avatar} alt="you" /> : '+'}
+          </span>
+          <span>
+            <span style={{ display: 'block', fontSize: 13, color: 'var(--muted)', fontWeight: 600 }}>profile pic</span>
+            <span style={{ fontSize: 14.5 }}>{avatar ? 'tap to change' : 'tap to set'}</span>
+          </span>
+        </button>
+        {show('avatar') && <p className="field-err" style={{ marginTop: -8, marginBottom: 16 }}>{errors.avatar}</p>}
+      </div>
 
       <div className="field">
         <label className="field-label" htmlFor="name">first name</label>
-        <input id="name" className="input" value={name} maxLength={30} onChange={(e) => setName(e.target.value)} placeholder="what people call you" />
+        <input
+          id="name"
+          className={`input ${show('name') ? 'is-err' : ''}`}
+          value={name}
+          maxLength={30}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={() => touch('name')}
+          placeholder="what people call you"
+        />
+        {show('name') && <p className="field-err">{errors.name}</p>}
       </div>
 
-      <div className="input-row">
+      <div className="input-row" style={{ alignItems: 'flex-start' }}>
         <div className="field">
           <label className="field-label" htmlFor="age">age</label>
-          <input id="age" className="input" type="number" inputMode="numeric" min={16} max={99} value={age} onChange={(e) => setAge(e.target.value)} placeholder="19" />
+          <input
+            id="age"
+            className={`input ${show('age') ? 'is-err' : ''}`}
+            type="number"
+            inputMode="numeric"
+            min={16}
+            max={99}
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            onBlur={() => touch('age')}
+            placeholder="19"
+          />
+          {show('age') && <p className="field-err">{errors.age}</p>}
         </div>
         <div className="field" style={{ flex: 2, position: 'relative' }}>
           <label className="field-label" htmlFor="major">major</label>
           <input
             id="major"
-            className="input"
+            className={`input ${show('major') ? 'is-err' : ''}`}
             value={major}
             maxLength={60}
             autoComplete="off"
             onChange={(e) => { setMajor(e.target.value); setShowMajors(true) }}
             onFocus={() => setShowMajors(true)}
-            onBlur={() => setTimeout(() => setShowMajors(false), 150)}
+            onBlur={() => { setTimeout(() => setShowMajors(false), 150); touch('major') }}
             placeholder="undeclared counts"
           />
           {showMajors && majorMatches.length > 0 && (
@@ -117,6 +178,7 @@ export default function Basics() {
               ))}
             </div>
           )}
+          {show('major') && <p className="field-err">{errors.major}</p>}
         </div>
       </div>
 
@@ -124,11 +186,12 @@ export default function Basics() {
         <span className="field-label">you are</span>
         <div className="chip-wrap">
           {GENDERS.map((g) => (
-            <button key={g} className={`chip ${gender === g ? 'on' : ''}`} onClick={() => setGender(g)}>
+            <button key={g} className={`chip ${gender === g ? 'on' : ''}`} aria-pressed={gender === g} onClick={() => setGender(g)}>
               {g}
             </button>
           ))}
         </div>
+        {show('gender') && <p className="field-err">{errors.gender}</p>}
         <p style={{ color: 'var(--muted)', fontSize: 12.5, marginTop: 8 }}>
           you'll see roommates of the same gender. nonbinary folks see everyone.
         </p>
@@ -138,28 +201,36 @@ export default function Basics() {
         <span className="field-label">year</span>
         <div className="chip-wrap">
           {YEARS.map((y) => (
-            <button key={y} className={`chip ${year === y ? 'on' : ''}`} onClick={() => setYear(y)}>
+            <button key={y} className={`chip ${year === y ? 'on' : ''}`} aria-pressed={year === y} onClick={() => setYear(y)}>
               {y}
             </button>
           ))}
         </div>
+        {show('year') && <p className="field-err">{errors.year}</p>}
       </div>
 
       <div className="field">
         <label className="field-label" htmlFor="bio">bio · you as a roommate, in a line or two</label>
         <textarea
           id="bio"
-          className="textarea"
+          className={`textarea ${show('bio') ? 'is-err' : ''}`}
           value={bio}
           maxLength={240}
           onChange={(e) => setBio(e.target.value)}
+          onBlur={() => touch('bio')}
           placeholder={BIO_PLACEHOLDERS[phIdx]}
         />
+        {show('bio') && <p className="field-err">{errors.bio}</p>}
       </div>
 
       {err && <p className="err">{err}</p>}
       <div style={{ flex: 1 }} />
-      <button className="btn btn-volt" disabled={busy || !ready} onClick={next}>
+      <button
+        className={`btn btn-volt ${!ready ? 'btn--locked' : ''}`}
+        aria-disabled={!ready || busy}
+        disabled={busy}
+        onClick={onNextTap}
+      >
         {busy ? 'saving...' : editing ? 'save' : 'next'}
       </button>
 
