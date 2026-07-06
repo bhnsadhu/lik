@@ -1,5 +1,7 @@
 export const WHITELIST = ['bhnsadhu@gmail.com', 'sadhubhanu07@gmail.com']
 
+export const MIN_PHOTOS = 5
+
 export const YEARS = ['freshman', 'sophomore', 'junior', 'senior', 'grad student']
 
 export const GENDERS = ['girl', 'guy', 'nonbinary']

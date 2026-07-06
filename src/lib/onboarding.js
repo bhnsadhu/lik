@@ -1,4 +1,4 @@
-import { QUIZ } from './constants'
+import { MIN_PHOTOS, QUIZ } from './constants'
 
 export const STEPS = ['housing', 'basics', 'photos', 'quiz', 'logistics', 'limits']
 
@@ -14,7 +14,7 @@ export function isStepComplete(step, profile) {
     case 'basics':
       return !!(profile.name && profile.age && profile.gender && profile.year && profile.major && profile.profile_pic_url && profile.bio)
     case 'photos':
-      return (profile.photos?.length || 0) > 0
+      return (profile.photos?.length || 0) >= MIN_PHOTOS && !!profile.photo_caption
     case 'quiz':
       return Object.keys(profile.quiz || {}).length >= QUIZ.length
     case 'logistics':
