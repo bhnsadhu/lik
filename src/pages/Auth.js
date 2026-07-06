@@ -122,7 +122,7 @@ export default function Auth() {
           <Wordmark size="clamp(88px, 30vw, 140px)" style={{ display: 'block' }} />
         </h1>
         <p className="overline" style={{ color: 'var(--muted)', margin: '14px 0 10px' }}>
-          better than random
+          a friend who happens to split rent
         </p>
         <p style={{ fontSize: 19, fontWeight: 500, margin: '0 0 36px', color: 'var(--paper)' }}>
           find a place you lik.<br />with someone you lik.
