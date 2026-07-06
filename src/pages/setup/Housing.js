@@ -22,7 +22,7 @@ export default function Housing() {
       }
       await save(fields)
     } catch {
-      setErr('could not save. try again.')
+      setErr('could not save. try again')
       setBusy(false)
     }
   }

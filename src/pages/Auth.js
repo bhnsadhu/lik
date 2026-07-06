@@ -30,7 +30,7 @@ export default function Auth() {
     setErr('')
     const clean = validEmail(email)
     if (!clean) {
-      setErr('lik is for uiuc students. use your illinois.edu email.')
+      setErr('lik is for uiuc students. use your illinois.edu email')
       return
     }
     setBusy(true)
@@ -40,7 +40,7 @@ export default function Auth() {
     })
     setBusy(false)
     if (error) {
-      setErr(error.message.toLowerCase())
+      setErr(error.message.toLowerCase().replace(/\.$/, ''))
       return
     }
     setStage('code')
@@ -58,7 +58,7 @@ export default function Auth() {
       email: validEmail(email),
       options: { shouldCreateUser: true, emailRedirectTo: undefined },
     })
-    if (error) setErr(error.message.toLowerCase())
+    if (error) setErr(error.message.toLowerCase().replace(/\.$/, ''))
   }
 
   async function verify(fullCode) {
@@ -71,7 +71,7 @@ export default function Auth() {
     })
     setBusy(false)
     if (error) {
-      setErr('that code did not work. check it and try again.')
+      setErr('that code did not work. check it and try again')
       setCode(Array(CODE_LEN).fill(''))
       boxRefs.current[0]?.focus()
     }
@@ -140,12 +140,16 @@ export default function Auth() {
                 autoComplete="email"
                 placeholder="netid@illinois.edu"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  // the moment the address becomes valid, the complaint goes
+                  if (err && validEmail(e.target.value)) setErr('')
+                }}
                 autoFocus
               />
             </div>
             {err && <p className="err">{err}</p>}
-            <button className="btn btn-volt" type="submit" disabled={busy || !email} style={{ marginTop: 8 }}>
+            <button className="btn btn-volt" type="submit" disabled={busy || !email.trim()} style={{ marginTop: 8 }}>
               {busy ? 'sending...' : 'send my code'}
             </button>
             <p style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', marginTop: 18 }}>
