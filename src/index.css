@@ -1321,6 +1321,56 @@ a {
   margin-top: 8px;
 }
 
+/* ---------- inline field validation ---------- */
+
+.field-err {
+  color: var(--coral);
+  font-size: 12.5px;
+  line-height: 1.35;
+  margin-top: 6px;
+  animation: field-err-in 0.16s ease;
+}
+
+@keyframes field-err-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-err {
+    animation: none;
+  }
+}
+
+.input.is-err,
+.textarea.is-err {
+  border-color: var(--coral);
+}
+
+.input.is-err:focus,
+.textarea.is-err:focus {
+  border-color: var(--coral);
+}
+
+/* looks disabled but stays tappable: a tap reveals what's still missing */
+.btn--locked {
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+/* progress line under the photo grid */
+.photo-status {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.photo-status.ok {
+  color: var(--volt);
+}
+
 .center-load {
   min-height: 100dvh;
   display: flex;
