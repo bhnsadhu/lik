@@ -24,18 +24,28 @@ export default function Quiz() {
     const next = { ...answersRef.current, [key]: choice }
     answersRef.current = next
     setAnswers(next)
+    setErr('')
     if (idxRef.current < QUIZ.length - 1) {
       idxRef.current += 1
       const target = idxRef.current
       setTimeout(() => setIdx(target), 180)
       return
     }
+    // last card: every question must have an answer before anything saves.
+    // unreachable through normal taps, but back-nav or a dropped state
+    // update should land you on the missed question, not a broken save
+    const missed = QUIZ.findIndex((item) => !next[item.key])
+    if (missed !== -1) {
+      idxRef.current = missed
+      setIdx(missed)
+      setErr('this one still needs an answer')
+      return
+    }
     setBusy(true)
-    setErr('')
     try {
       await save({ quiz: next })
     } catch {
-      setErr('could not save. try again.')
+      setErr('could not save. try again')
       setBusy(false)
     }
   }
@@ -64,10 +74,10 @@ export default function Quiz() {
         >
           <h2 className="screen-title" style={{ minHeight: 76 }}>{q.q}</h2>
           <div style={{ marginTop: 18 }}>
-            <button className={`quiz-option ${answers[q.key] === 'a' ? 'on' : ''}`} disabled={busy} onClick={() => pick('a', q.key)}>
+            <button className={`quiz-option ${answers[q.key] === 'a' ? 'on' : ''}`} aria-pressed={answers[q.key] === 'a'} disabled={busy} onClick={() => pick('a', q.key)}>
               {q.a}
             </button>
-            <button className={`quiz-option ${answers[q.key] === 'b' ? 'on' : ''}`} disabled={busy} onClick={() => pick('b', q.key)}>
+            <button className={`quiz-option ${answers[q.key] === 'b' ? 'on' : ''}`} aria-pressed={answers[q.key] === 'b'} disabled={busy} onClick={() => pick('b', q.key)}>
               {q.b}
             </button>
           </div>

@@ -25,7 +25,7 @@ export default function Limits() {
     try {
       await save({ dealbreakers: picked })
     } catch {
-      setErr('could not save. try again.')
+      setErr('could not save. try again')
       setBusy(false)
     }
   }
@@ -41,7 +41,12 @@ export default function Limits() {
 
       <div className="chip-wrap">
         {DEALBREAKERS.map((d) => (
-          <button key={d.key} className={`chip ${picked.includes(d.key) ? 'on' : ''}`} onClick={() => toggle(d.key)}>
+          <button
+            key={d.key}
+            className={`chip ${picked.includes(d.key) ? 'on' : ''}`}
+            aria-pressed={picked.includes(d.key)}
+            onClick={() => toggle(d.key)}
+          >
             {d.label}
           </button>
         ))}
