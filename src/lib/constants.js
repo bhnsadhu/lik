@@ -74,7 +74,8 @@ export const UIUC_MAJORS = [
   'Strategy Innovation and Entrepreneurship', 'Studio Art',
   'Supply Chain Management',
   'Sustainability in Food and Environmental Systems', 'Sustainable Design',
-  'Systems Engineering and Design', 'Theatre', 'Urban Studies and Planning', 'Voice',
+  'Systems Engineering and Design', 'Theatre', 'Undeclared',
+  'Urban Studies and Planning', 'Voice',
 ]
 
 export const DORMS = [
