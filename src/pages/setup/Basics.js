@@ -48,7 +48,7 @@ export default function Basics() {
 
   const errors = {
     avatar: !avatar ? 'Add a profile pic' : null,
-    name: !name.trim() ? "Name can't be empty" : null,
+    name: !name.trim() ? "Full name can't be empty" : null,
     age: ageError(age),
     major: !major.trim() ? "Major can't be empty" : !canonicalMajor ? 'Pick your major from the list' : null,
     gender: !gender ? 'Pick whichever fits' : null,
@@ -120,15 +120,15 @@ export default function Basics() {
       </div>
 
       <div className="field">
-        <label className="field-label" htmlFor="name">First Name</label>
+        <label className="field-label" htmlFor="name">Full Name</label>
         <input
           id="name"
           className={`input ${show('name') ? 'is-err' : ''}`}
           value={name}
-          maxLength={30}
+          maxLength={40}
           onChange={(e) => setName(e.target.value)}
           onBlur={() => touch('name')}
-          placeholder="What people call you"
+          placeholder="First and last name"
         />
         {show('name') && <p className="field-err">{errors.name}</p>}
       </div>
