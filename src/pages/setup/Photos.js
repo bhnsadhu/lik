@@ -91,7 +91,7 @@ export default function Photos() {
       <Wordmark />
       {!editing && <StepDots current="photos" />}
       <h2 className="screen-title">Show your face</h2>
-      <p className="screen-sub">First photo is your card. Make it count. Add at least five.</p>
+      <p className="screen-sub">First photo is your card. Make it count. All six required.</p>
 
       <div className="photo-grid">
         {Array.from({ length: SLOTS }).map((_, i) => {
