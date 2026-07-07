@@ -8,11 +8,11 @@ import { MIN_PHOTOS } from '../../lib/constants'
 const SLOTS = 6
 
 const CAPTION_PLACEHOLDERS = [
-  'these are my people',
-  'campus life, mostly',
-  'green street at 1am',
-  'me and whoever was around',
-  'proof i go outside',
+  'These are my people',
+  'Campus life, mostly',
+  'Green Street at 1am',
+  'Me and whoever was around',
+  'Proof I go outside',
 ]
 
 export default function Photos() {
@@ -34,24 +34,24 @@ export default function Photos() {
   const needed = Math.max(0, MIN_PHOTOS - photos.length)
   const captionMissing = !caption.trim()
   const ready = needed === 0 && !captionMissing
-  const captionErr = (captionTouched || attempted) && captionMissing ? "caption can't be empty" : ''
+  const captionErr = (captionTouched || attempted) && captionMissing ? "Caption can't be empty" : ''
 
   const status = busy
-    ? 'uploading...'
+    ? 'Uploading...'
     : needed > 0 && captionMissing
       ? `${needed} more photo${needed > 1 ? 's' : ''} and a caption to go`
       : needed > 0
         ? `${needed} more photo${needed > 1 ? 's' : ''} to go`
         : captionMissing
-          ? 'photos look good. just add a caption below'
-          : 'all set'
+          ? 'Photos look good. Just add a caption below'
+          : 'All set'
 
   async function onFile(e) {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
     if (file.size > 8 * 1024 * 1024) {
-      setErr('that photo is over 8mb. pick a smaller one')
+      setErr('That photo is over 8MB. Pick a smaller one')
       return
     }
     setErr('')
@@ -64,7 +64,7 @@ export default function Photos() {
     })
     if (error) {
       setBusy(false)
-      setErr('upload failed. try again')
+      setErr('Upload failed. Try again')
       return
     }
     const { data } = supabase.storage.from('photos').getPublicUrl(path)
@@ -81,7 +81,7 @@ export default function Photos() {
     try {
       await save({ photos, photo_caption: caption.trim() })
     } catch {
-      setErr('could not save. try again')
+      setErr('Could not save. Try again')
       setBusy(false)
     }
   }
@@ -90,18 +90,18 @@ export default function Photos() {
     <div className="screen screen--bare">
       <Wordmark />
       {!editing && <StepDots current="photos" />}
-      <h2 className="screen-title">show your face</h2>
-      <p className="screen-sub">first photo is your card. make it count. add at least five.</p>
+      <h2 className="screen-title">Show your face</h2>
+      <p className="screen-sub">First photo is your card. Make it count. Add at least five.</p>
 
       <div className="photo-grid">
         {Array.from({ length: SLOTS }).map((_, i) => {
           const url = photos[i]
           return url ? (
             <div key={url} className={`photo-cell filled ${i === 0 ? 'primary' : ''}`}>
-              <img src={url} alt={`you ${i + 1}`} />
+              <img src={url} alt={`You ${i + 1}`} />
               <button
                 className="remove"
-                aria-label="remove photo"
+                aria-label="Remove photo"
                 onClick={() => setPhotos((p) => p.filter((u) => u !== url))}
               >
                 x
@@ -111,7 +111,7 @@ export default function Photos() {
             <button
               key={`empty-${i}`}
               className="photo-cell"
-              aria-label="add photo"
+              aria-label="Add photo"
               onClick={() => fileRef.current?.click()}
               disabled={busy || i !== photos.length}
             >
@@ -124,7 +124,7 @@ export default function Photos() {
       <input ref={fileRef} type="file" accept="image/*" hidden onChange={onFile} />
 
       <div className="field" style={{ marginTop: 16 }}>
-        <label className="field-label" htmlFor="caption">caption your photo set</label>
+        <label className="field-label" htmlFor="caption">Caption Your Photo Set</label>
         <input
           id="caption"
           className={`input ${captionErr ? 'is-err' : ''}`}
@@ -145,7 +145,7 @@ export default function Photos() {
         disabled={busy}
         onClick={next}
       >
-        {busy ? 'working...' : editing ? 'save' : 'next'}
+        {busy ? 'Working...' : editing ? 'Save' : 'Next'}
       </button>
     </div>
   )

@@ -85,7 +85,7 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
       {top && (
         <button
           className="person-card__info"
-          aria-label="more info"
+          aria-label="More info"
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation()
@@ -126,7 +126,7 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
 }
 
 
-const TICKER_HALF = `${Array(10).fill("it's a lik").join(' · ')} · `
+const TICKER_HALF = `${Array(10).fill("It's a lik").join(' · ')} · `
 
 function MatchTakeover({ me, them, matchId, onClose }) {
   const navigate = useNavigate()
@@ -145,25 +145,25 @@ function MatchTakeover({ me, them, matchId, onClose }) {
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <div className="takeover-avatars">
-          {avatarUrl(me) && <img src={avatarUrl(me)} alt="you" />}
+          {avatarUrl(me) && <img src={avatarUrl(me)} alt="You" />}
           {avatarUrl(them) && <img src={avatarUrl(them)} alt={them.name} />}
         </div>
-        <p className="overline">claim approved</p>
+        <p className="overline">Claim approved</p>
         <motion.h1
           initial={{ scale: 1.35, rotate: -4, opacity: 0 }}
           animate={{ scale: 1, rotate: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 17, delay: 0.16 }}
         >
-          it's a<br />lik.
+          It's a<br />lik.
         </motion.h1>
         <p className="takeover-sub">
-          you and {them.name} both said yes. go say something before it gets weird.
+          You and {them.name} both said yes. Go say something before it gets weird.
         </p>
         <button className="btn btn-ink" onClick={() => navigate(`/chat/${matchId}`)}>
-          say hey to {them.name}
+          Say hey to {them.name}
         </button>
         <button className="btn-text" style={{ color: 'rgba(16,13,28,0.7)', marginTop: 10 }} onClick={onClose}>
-          keep swiping
+          Keep Swiping
         </button>
       </motion.div>
     </motion.div>
@@ -177,7 +177,7 @@ function ReferralPrompt({ profile, onClose }) {
   async function share() {
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
       try {
-        await navigator.share({ title: 'lik', text: 'find your uiuc roommate on lik', url: link })
+        await navigator.share({ title: 'lik', text: 'Find your UIUC roommate on lik', url: link })
         return
       } catch {
         /* fall through to clipboard */
@@ -199,15 +199,15 @@ function ReferralPrompt({ profile, onClose }) {
         transition={{ type: 'spring', stiffness: 300, damping: 32 }}
       >
         <div className="sheet-handle" />
-        <h2 style={{ fontSize: 26 }}>you're covered.</h2>
+        <h2 style={{ fontSize: 26 }}>You're covered.</h2>
         <p style={{ color: 'var(--muted)', fontSize: 15, margin: '8px 0 18px' }}>
-          your pool gets better with more people in it. friends who join through your link get a friend badge in your feed, and you in theirs.
+          Your pool gets better with more people in it. Friends who join through your link get a friend badge in your feed, and you in theirs.
         </p>
         <button className="btn btn-volt" onClick={share}>
-          {copied ? 'link copied' : 'invite a friend'}
+          {copied ? 'Link copied' : 'Invite a Friend'}
         </button>
         <button className="btn-text" style={{ display: 'block', marginTop: 10 }} onClick={onClose}>
-          maybe later
+          Maybe Later
         </button>
       </motion.div>
     </>
@@ -332,7 +332,7 @@ export default function Feed() {
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
         <Wordmark />
         <span className="chip-tag chip-tag--outline" style={{ color: 'var(--muted)' }}>
-          {profile.housing_type === 'dorm' ? 'dorm pool' : 'apartment pool'}
+          {profile.housing_type === 'dorm' ? 'Dorm pool' : 'Apartment pool'}
         </span>
       </div>
 
@@ -340,12 +340,12 @@ export default function Feed() {
         <div className="empty"><div className="spin" /></div>
       ) : empty ? (
         <div className="empty">
-          <h2>that's everyone. for now.</h2>
+          <h2>That's everyone. For now.</h2>
           <p>
-            new people join every day, especially before move in. bring a friend and grow your own pool.
+            New people join every day, especially before move-in. Bring a friend and grow your own pool.
           </p>
           <button className="btn btn-line" style={{ marginTop: 22, width: 'auto', padding: '13px 24px' }} onClick={() => setShowReferral(true)}>
-            invite a friend
+            Invite a Friend
           </button>
         </div>
       ) : (
@@ -376,8 +376,8 @@ export default function Feed() {
             )}
           </div>
           <div className="deck-actions">
-            <button className="deck-btn deck-btn--pass" aria-label="pass" onClick={() => topFlyRef.current?.(-1)}>
-              pass
+            <button className="deck-btn deck-btn--pass" aria-label="Pass" onClick={() => topFlyRef.current?.(-1)}>
+              Pass
             </button>
             <button className="deck-btn deck-btn--lik" aria-label="lik" onClick={() => topFlyRef.current?.(1)}>
               lik

@@ -25,7 +25,7 @@ export default function Limits() {
     try {
       await save({ dealbreakers: picked })
     } catch {
-      setErr('could not save. try again')
+      setErr('Could not save. Try again')
       setBusy(false)
     }
   }
@@ -34,9 +34,9 @@ export default function Limits() {
     <div className="screen screen--bare">
       <Wordmark />
       {!editing && <StepDots current="limits" />}
-      <h2 className="screen-title">hard limits</h2>
+      <h2 className="screen-title">Hard limits</h2>
       <p className="screen-sub">
-        the stuff you will not budge on. these outweigh everything else in your matches. pick only what is real.
+        The stuff you will not budge on. These outweigh everything else in your matches. Pick only what is real.
       </p>
 
       <div className="chip-wrap">
@@ -55,7 +55,7 @@ export default function Limits() {
       {err && <p className="err">{err}</p>}
       <div style={{ flex: 1 }} />
       <button className="btn btn-volt" disabled={busy} onClick={next}>
-        {busy ? 'saving...' : editing ? 'save' : picked.length ? 'next' : 'no hard limits · next'}
+        {busy ? 'Saving...' : editing ? 'Save' : picked.length ? 'Next' : 'No Hard Limits · Next'}
       </button>
     </div>
   )

@@ -71,15 +71,15 @@ export default function Matches() {
   return (
     <div className="screen">
       <Wordmark />
-      <h2 className="screen-title">your liks</h2>
-      <p className="screen-sub">mutual only. everyone here already said yes to you.</p>
+      <h2 className="screen-title">Your liks</h2>
+      <p className="screen-sub">Mutual only. Everyone here already said yes to you.</p>
 
       {!rows ? (
         <div className="empty"><div className="spin" /></div>
       ) : rows.length === 0 ? (
         <div className="empty">
-          <h2>no liks yet.</h2>
-          <p>keep swiping. when someone liks you back, they land here and the conversation starts.</p>
+          <h2>No liks yet.</h2>
+          <p>Keep swiping. When someone liks you back, they land here and the conversation starts.</p>
         </div>
       ) : (
         <div>
@@ -94,8 +94,8 @@ export default function Matches() {
                 <div className="match-row__name">{r.person.name}</div>
                 <div className="match-row__preview">
                   {r.last
-                    ? `${r.last.sender === user.id ? 'you: ' : ''}${r.last.body}`
-                    : 'new lik · say something'}
+                    ? `${r.last.sender === user.id ? 'You: ' : ''}${r.last.body}`
+                    : 'New lik · Say something'}
                 </div>
               </div>
             </button>

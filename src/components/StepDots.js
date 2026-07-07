@@ -3,12 +3,12 @@ import { useAuth } from '../contexts/AuthContext'
 import { STEPS, firstIncompleteStep } from '../lib/onboarding'
 
 const LABELS = {
-  housing: 'housing',
-  basics: 'profile',
-  photos: 'photos',
-  quiz: 'quiz',
-  logistics: 'prefs',
-  limits: 'limits',
+  housing: 'Housing',
+  basics: 'Profile',
+  photos: 'Photos',
+  quiz: 'Quiz',
+  logistics: 'Prefs',
+  limits: 'Limits',
 }
 
 export default function StepDots({ current }) {

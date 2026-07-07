@@ -24,9 +24,9 @@ export default function PersonSheet({ person, fit, friend, onClose }) {
 
         {person.bio && <p style={{ marginTop: 14, fontSize: 15.5, lineHeight: 1.55 }}>{person.bio}</p>}
 
-        <p className="section-label">what you share · {fit.score}% fit</p>
+        <p className="section-label">What you share · {fit.score}% fit</p>
         {fit.sharedLimits.length + fit.shared.length === 0 ? (
-          <p style={{ color: 'var(--muted)', fontSize: 14.5 }}>not much overlap yet. opposites survive too.</p>
+          <p style={{ color: 'var(--muted)', fontSize: 14.5 }}>Not much overlap yet. Opposites survive too.</p>
         ) : (
           <div className="chip-wrap">
             {fit.sharedLimits.map((s) => (
@@ -40,10 +40,10 @@ export default function PersonSheet({ person, fit, friend, onClose }) {
 
         {fit.conflicts.length > 0 && (
           <>
-            <p className="section-label" style={{ color: 'var(--coral)' }}>heads up</p>
+            <p className="section-label" style={{ color: 'var(--coral)' }}>Heads up</p>
             {fit.conflicts.map((c, i) => (
               <p key={i} style={{ color: 'var(--coral)', fontSize: 14.5, marginBottom: 6 }}>
-                you need {c.mine} · they said {c.theirs}
+                You need {c.mine} · They said {c.theirs}
               </p>
             ))}
           </>
@@ -51,7 +51,7 @@ export default function PersonSheet({ person, fit, friend, onClose }) {
 
         {(person.dealbreakers || []).length > 0 && (
           <>
-            <p className="section-label">their hard limits</p>
+            <p className="section-label">Their hard limits</p>
             <div className="chip-wrap">
               {person.dealbreakers.map((k) =>
                 DB_BY_KEY[k] ? <span key={k} className="chip-tag chip-tag--outline">{DB_BY_KEY[k].label}</span> : null
@@ -60,7 +60,7 @@ export default function PersonSheet({ person, fit, friend, onClose }) {
           </>
         )}
 
-        <p className="section-label">logistics</p>
+        <p className="section-label">Logistics</p>
         <div className="chip-wrap">
           {person.move_in && <span className="chip-tag chip-tag--outline">{person.move_in}</span>}
           {person.housing_type === 'apartment' && person.budget_max && (
@@ -75,13 +75,13 @@ export default function PersonSheet({ person, fit, friend, onClose }) {
 
         {friend && (
           <>
-            <p className="section-label">connection</p>
+            <p className="section-label">Connection</p>
             <span className="chip-tag chip-tag--sky">{friend}</span>
           </>
         )}
 
         {person.photo_caption && person.photos?.length > 1 && (
-          <p className="section-label" style={{ marginBottom: 6 }}>their photos · "{person.photo_caption}"</p>
+          <p className="section-label" style={{ marginBottom: 6 }}>Their photos · "{person.photo_caption}"</p>
         )}
         {person.photos?.slice(1).map((url) => (
           <img

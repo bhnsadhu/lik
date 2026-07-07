@@ -109,15 +109,15 @@ export default function AvatarCropper({ onDone, onClose }) {
   return (
     <div className="cropper">
       <div className="cropper__bar">
-        <button className="btn-text" style={{ margin: 0 }} onClick={onClose}>cancel</button>
-        <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 16 }}>your profile pic</span>
+        <button className="btn-text" style={{ margin: 0 }} onClick={onClose}>Cancel</button>
+        <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 16 }}>Your profile pic</span>
         <button
           className="btn-text"
           style={{ margin: 0, color: raw ? 'var(--volt)' : 'var(--ink-3)', fontWeight: 700 }}
           disabled={!raw}
           onClick={confirm}
         >
-          done
+          Done
         </button>
       </div>
 
@@ -144,17 +144,17 @@ export default function AvatarCropper({ onDone, onClose }) {
             />
             <div className="cropper__ring" />
           </div>
-          <p className="cropper__hint">drag to reposition · pinch or scroll to zoom</p>
-          <p className="cropper__hint">shows next to your name in liks and chats</p>
+          <p className="cropper__hint">Drag to reposition · Pinch or scroll to zoom</p>
+          <p className="cropper__hint">Shows next to your name in liks and chats</p>
           <label className="cropper__swap">
-            change photo
+            Change photo
             <input type="file" accept="image/*" hidden onChange={onFile} />
           </label>
         </>
       ) : (
         <label className="cropper__stage cropper__stage--empty">
           <span style={{ fontSize: 40, fontWeight: 300, lineHeight: 1 }}>+</span>
-          <span style={{ fontSize: 14 }}>tap to pick a photo</span>
+          <span style={{ fontSize: 14 }}>Tap to pick a photo</span>
           <input type="file" accept="image/*" hidden onChange={onFile} />
         </label>
       )}

@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import { avatarUrl } from '../lib/avatar'
-import { QUIZ, DB_BY_KEY } from '../lib/constants'
+import { QUIZ, DB_BY_KEY, cap } from '../lib/constants'
 
 export default function Profile() {
   const { profile, signOut } = useAuth()
@@ -28,7 +28,7 @@ export default function Profile() {
   async function copyInvite() {
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
       try {
-        await navigator.share({ title: 'lik', text: 'find your uiuc roommate on lik', url: link })
+        await navigator.share({ title: 'lik', text: 'Find your UIUC roommate on lik', url: link })
         return
       } catch {
         /* fall through */
@@ -40,13 +40,13 @@ export default function Profile() {
   }
 
   const rows = [
-    { label: 'photos', value: `${profile.photos?.length || 0} added`, to: '/setup/photos?edit=1' },
-    { label: 'basics', value: `${profile.name} · ${profile.year} · ${profile.major}`, to: '/setup/basics?edit=1' },
-    { label: 'housing', value: profile.housing_type, to: '/setup/housing?edit=1' },
-    { label: 'living quiz', value: `${quizDone} of ${QUIZ.length} answered`, to: '/setup/quiz?edit=1' },
-    { label: 'hard limits', value: limits.length ? limits.join(' · ') : 'none set', to: '/setup/limits?edit=1' },
+    { label: 'Photos', value: `${profile.photos?.length || 0} added`, to: '/setup/photos?edit=1' },
+    { label: 'Basics', value: `${profile.name} · ${profile.year} · ${profile.major}`, to: '/setup/basics?edit=1' },
+    { label: 'Housing', value: cap(profile.housing_type), to: '/setup/housing?edit=1' },
+    { label: 'Living quiz', value: `${quizDone} of ${QUIZ.length} answered`, to: '/setup/quiz?edit=1' },
+    { label: 'Hard limits', value: limits.length ? limits.join(' · ') : 'None set', to: '/setup/limits?edit=1' },
     {
-      label: 'logistics',
+      label: 'Logistics',
       value:
         profile.housing_type === 'dorm'
           ? `${profile.move_in || ''} · ${(profile.dorm_prefs || []).length} dorms`
@@ -59,7 +59,7 @@ export default function Profile() {
     <div className="screen">
       <Wordmark />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h2 className="screen-title">this is you</h2>
+        <h2 className="screen-title">This is you</h2>
         {avatarUrl(profile) && (
           <img
             src={avatarUrl(profile)}
@@ -68,7 +68,7 @@ export default function Profile() {
           />
         )}
       </div>
-      <p className="screen-sub">exactly how you show up in other feeds. tap anything to change it.</p>
+      <p className="screen-sub">Exactly how you show up in other feeds. Tap anything to change it.</p>
 
       <div className="profile-card" onClick={onPhotoTap}>
         {photos.length > 0 ? (
@@ -106,12 +106,12 @@ export default function Profile() {
         ))}
       </div>
 
-      <p className="section-label">bring your people</p>
+      <p className="section-label">Bring your people</p>
       <p style={{ color: 'var(--muted)', fontSize: 14, marginBottom: 12 }}>
-        friends who join through your link get a friend badge in your feed, and you in theirs. your pool gets better when you grow it.
+        Friends who join through your link get a friend badge in your feed, and you in theirs. Your pool gets better when you grow it.
       </p>
       <button className="btn btn-ghost" onClick={copyInvite}>
-        {copied ? 'link copied' : 'share your invite link'}
+        {copied ? 'Link copied' : 'Share Your Invite Link'}
       </button>
 
       <button
@@ -122,7 +122,7 @@ export default function Profile() {
           navigate('/')
         }}
       >
-        sign out
+        Sign Out
       </button>
 
       <BottomNav />

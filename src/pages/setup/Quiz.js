@@ -38,14 +38,14 @@ export default function Quiz() {
     if (missed !== -1) {
       idxRef.current = missed
       setIdx(missed)
-      setErr('this one still needs an answer')
+      setErr('This one still needs an answer')
       return
     }
     setBusy(true)
     try {
       await save({ quiz: next })
     } catch {
-      setErr('could not save. try again')
+      setErr('Could not save. Try again')
       setBusy(false)
     }
   }
@@ -88,7 +88,7 @@ export default function Quiz() {
       <div style={{ flex: 1 }} />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <button className="btn-text" style={{ visibility: idx > 0 ? 'visible' : 'hidden' }} onClick={goBack}>
-          back
+          Back
         </button>
         {busy && <div className="spin" />}
       </div>

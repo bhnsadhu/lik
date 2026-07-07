@@ -23,13 +23,13 @@ const Person = (
 export default function BottomNav({ unread }) {
   return (
     <nav className="bottom-nav">
-      <NavLink to="/feed">{Cards}<span>feed</span></NavLink>
+      <NavLink to="/feed">{Cards}<span>Feed</span></NavLink>
       <NavLink to="/matches">
         {unread ? <span className="nav-dot" /> : null}
         {Spark}
-        <span>liks</span>
+        <span>Liks</span>
       </NavLink>
-      <NavLink to="/profile">{Person}<span>you</span></NavLink>
+      <NavLink to="/profile">{Person}<span>You</span></NavLink>
     </nav>
   )
 }

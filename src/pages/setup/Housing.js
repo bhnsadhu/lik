@@ -22,7 +22,7 @@ export default function Housing() {
       }
       await save(fields)
     } catch {
-      setErr('could not save. try again')
+      setErr('Could not save. Try again')
       setBusy(false)
     }
   }
@@ -31,8 +31,8 @@ export default function Housing() {
     <div className="screen screen--bare">
       <Wordmark />
       {!editing && <StepDots current="housing" />}
-      <h2 className="screen-title">where are you living</h2>
-      <p className="screen-sub">this decides who you see. dorm people see dorm people. apartment people see apartment people.</p>
+      <h2 className="screen-title">Where are you living?</h2>
+      <p className="screen-sub">This decides who you see. Dorm people see dorm people. Apartment people see apartment people.</p>
 
       <button
         className="quiz-option"
@@ -40,8 +40,8 @@ export default function Housing() {
         onClick={() => pick('dorm')}
         style={{ padding: '26px 20px' }}
       >
-        <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 22, display: 'block' }}>dorm</span>
-        <span style={{ color: 'var(--muted)', fontSize: 14.5 }}>university housing · res halls · certified housing</span>
+        <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 22, display: 'block' }}>Dorm</span>
+        <span style={{ color: 'var(--muted)', fontSize: 14.5 }}>University housing · Res halls · Certified housing</span>
       </button>
 
       <button
@@ -50,8 +50,8 @@ export default function Housing() {
         onClick={() => pick('apartment')}
         style={{ padding: '26px 20px' }}
       >
-        <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 22, display: 'block' }}>apartment</span>
-        <span style={{ color: 'var(--muted)', fontSize: 14.5 }}>off campus · private lease · champaign or urbana</span>
+        <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 22, display: 'block' }}>Apartment</span>
+        <span style={{ color: 'var(--muted)', fontSize: 14.5 }}>Off campus · Private lease · Champaign or Urbana</span>
       </button>
 
       {err && <p className="err">{err}</p>}

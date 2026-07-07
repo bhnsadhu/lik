@@ -80,11 +80,11 @@ export function scoreProfiles(me, them) {
 // Referral relationship between me and a candidate, given all referral rows.
 export function friendSignal(meId, themId, referrals) {
   for (const r of referrals) {
-    if (r.referrer === themId && r.referred === meId) return 'they brought you to lik'
-    if (r.referrer === meId && r.referred === themId) return 'you brought them to lik'
+    if (r.referrer === themId && r.referred === meId) return 'They brought you to lik'
+    if (r.referrer === meId && r.referred === themId) return 'You brought them to lik'
   }
   const myReferrer = referrals.find((r) => r.referred === meId)?.referrer
   const theirReferrer = referrals.find((r) => r.referred === themId)?.referrer
-  if (myReferrer && myReferrer === theirReferrer) return 'you share a mutual friend'
+  if (myReferrer && myReferrer === theirReferrer) return 'You share a mutual friend'
   return null
 }

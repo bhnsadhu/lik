@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import StepDots from '../../components/StepDots'
 import Wordmark from '../../components/Wordmark'
 import useSetupSave from './useSetupSave'
-import { MOVE_IN, DORMS, AREAS } from '../../lib/constants'
+import { MOVE_IN, DORMS, AREAS, canonOne, canonList } from '../../lib/constants'
 
 // null when fine, otherwise which rule the value breaks
 function budgetIssue(value) {
@@ -24,9 +24,9 @@ export default function Logistics() {
   useEffect(() => {
     if (profile && !profile.housing_type) navigate('/setup/housing', { replace: true })
   }, [profile, navigate])
-  const [moveIn, setMoveIn] = useState(profile?.move_in || '')
-  const [dorms, setDorms] = useState(profile?.dorm_prefs || [])
-  const [areas, setAreas] = useState(profile?.areas || [])
+  const [moveIn, setMoveIn] = useState(canonOne(MOVE_IN, profile?.move_in) || '')
+  const [dorms, setDorms] = useState(canonList([...DORMS, 'No preference'], profile?.dorm_prefs) || [])
+  const [areas, setAreas] = useState(canonList([...AREAS, 'Anywhere works'], profile?.areas) || [])
   const [budgetMin, setBudgetMin] = useState(profile?.budget_min || '')
   const [budgetMax, setBudgetMax] = useState(profile?.budget_max || '')
   const [busy, setBusy] = useState(false)
@@ -53,21 +53,21 @@ export default function Logistics() {
   // one line under the budget row: the most pressing thing, specifically
   let budgetErr = ''
   if (minVisible && maxVisible && minIssue === 'empty' && maxIssue === 'empty') {
-    budgetErr = 'add your min and max budget'
+    budgetErr = 'Add your min and max budget'
   } else if (minVisible && minIssue) {
     budgetErr =
-      minIssue === 'empty' ? 'add a min budget'
-        : minIssue === 'whole' ? 'min budget needs to be a whole number'
-          : 'min budget needs to be more than 0'
+      minIssue === 'empty' ? 'Add a min budget'
+        : minIssue === 'whole' ? 'Min budget needs to be a whole number'
+          : 'Min budget needs to be more than 0'
   } else if (maxVisible && maxIssue) {
     budgetErr =
-      maxIssue === 'empty' ? 'add a max budget'
-        : maxIssue === 'whole' ? 'max budget needs to be a whole number'
-          : 'max budget needs to be more than 0'
+      maxIssue === 'empty' ? 'Add a max budget'
+        : maxIssue === 'whole' ? 'Max budget needs to be a whole number'
+          : 'Max budget needs to be more than 0'
   } else if (!minIssue && !maxIssue) {
     // both filled and numeric: range problems show live, no touch needed
-    if (Number(budgetMin) > Number(budgetMax)) budgetErr = "min budget can't be higher than max"
-    else if (Number(budgetMin) === Number(budgetMax)) budgetErr = 'min budget needs to be less than max'
+    if (Number(budgetMin) > Number(budgetMax)) budgetErr = "Min budget can't be higher than max"
+    else if (Number(budgetMin) === Number(budgetMax)) budgetErr = 'Min budget needs to be less than max'
   }
 
   const rangeBad = !minIssue && !maxIssue && Number(budgetMin) >= Number(budgetMax)
@@ -75,9 +75,9 @@ export default function Logistics() {
   const maxErrOn = (maxVisible && maxIssue) || rangeBad
 
   const budgetValid = !minIssue && !maxIssue && Number(budgetMin) < Number(budgetMax)
-  const moveInErr = !moveIn ? "pick when you're moving in" : ''
-  const dormsErr = isDorm && dorms.length === 0 ? 'pick at least one dorm' : ''
-  const areasErr = !isDorm && areas.length === 0 ? 'pick at least one area' : ''
+  const moveInErr = !moveIn ? "Pick when you're moving in" : ''
+  const dormsErr = isDorm && dorms.length === 0 ? 'Pick at least one dorm' : ''
+  const areasErr = !isDorm && areas.length === 0 ? 'Pick at least one area' : ''
 
   const ready = !moveInErr && (isDorm ? !dormsErr : !areasErr && budgetValid)
 
@@ -105,7 +105,7 @@ export default function Logistics() {
             }
       )
     } catch {
-      setErr('could not save. try again')
+      setErr('Could not save. Try again')
       setBusy(false)
     }
   }
@@ -114,11 +114,11 @@ export default function Logistics() {
     <div className="screen screen--bare">
       <Wordmark />
       {!editing && <StepDots current="logistics" />}
-      <h2 className="screen-title">the practical stuff</h2>
-      <p className="screen-sub">{isDorm ? 'when and where on campus.' : 'budget, timing, and where in town.'}</p>
+      <h2 className="screen-title">The practical stuff</h2>
+      <p className="screen-sub">{isDorm ? 'When and where on campus.' : 'Budget, timing, and where in town.'}</p>
 
       <div className="field">
-        <span className="field-label">moving in</span>
+        <span className="field-label">Moving In</span>
         <div className="chip-wrap">
           {MOVE_IN.map((m) => (
             <button key={m} className={`chip ${moveIn === m ? 'on' : ''}`} aria-pressed={moveIn === m} onClick={() => setMoveIn(m)}>
@@ -131,14 +131,14 @@ export default function Logistics() {
 
       {isDorm ? (
         <div className="field">
-          <span className="field-label">dorms you are considering</span>
+          <span className="field-label">Dorms You Are Considering</span>
           <div className="chip-wrap">
-            {[...DORMS, 'no preference'].map((d) => (
+            {[...DORMS, 'No preference'].map((d) => (
               <button
                 key={d}
                 className={`chip ${dorms.includes(d) ? 'on' : ''}`}
                 aria-pressed={dorms.includes(d)}
-                onClick={() => toggleExclusive(dorms, setDorms, d, 'no preference')}
+                onClick={() => toggleExclusive(dorms, setDorms, d, 'No preference')}
               >
                 {d}
               </button>
@@ -149,40 +149,40 @@ export default function Logistics() {
       ) : (
         <>
           <div className="field">
-            <span className="field-label">monthly budget (usd)</span>
+            <span className="field-label">Monthly Budget (USD)</span>
             <div className="input-row">
               <input
                 className={`input ${minErrOn ? 'is-err' : ''}`}
                 type="number"
                 inputMode="numeric"
-                placeholder="min · 500"
+                placeholder="Min · 500"
                 value={budgetMin}
                 onChange={(e) => setBudgetMin(e.target.value)}
                 onBlur={() => setTouched((t) => ({ ...t, min: true }))}
-                aria-label="min budget"
+                aria-label="Min budget"
               />
               <input
                 className={`input ${maxErrOn ? 'is-err' : ''}`}
                 type="number"
                 inputMode="numeric"
-                placeholder="max · 900"
+                placeholder="Max · 900"
                 value={budgetMax}
                 onChange={(e) => setBudgetMax(e.target.value)}
                 onBlur={() => setTouched((t) => ({ ...t, max: true }))}
-                aria-label="max budget"
+                aria-label="Max budget"
               />
             </div>
             {budgetErr && <p className="field-err">{budgetErr}</p>}
           </div>
           <div className="field">
-            <span className="field-label">areas you are considering</span>
+            <span className="field-label">Areas You Are Considering</span>
             <div className="chip-wrap">
-              {[...AREAS, 'anywhere works'].map((a) => (
+              {[...AREAS, 'Anywhere works'].map((a) => (
                 <button
                   key={a}
                   className={`chip ${areas.includes(a) ? 'on' : ''}`}
                   aria-pressed={areas.includes(a)}
-                  onClick={() => toggleExclusive(areas, setAreas, a, 'anywhere works')}
+                  onClick={() => toggleExclusive(areas, setAreas, a, 'Anywhere works')}
                 >
                   {a}
                 </button>
@@ -201,7 +201,7 @@ export default function Logistics() {
         disabled={busy}
         onClick={onNextTap}
       >
-        {busy ? 'saving...' : editing ? 'save' : 'done · show me people'}
+        {busy ? 'Saving...' : editing ? 'Save' : 'Done · Show Me People'}
       </button>
     </div>
   )

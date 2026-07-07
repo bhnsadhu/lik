@@ -82,12 +82,12 @@ export default function Chat() {
   return (
     <div className="chat-screen">
       <div className="chat-head">
-        <button aria-label="back" onClick={() => navigate('/matches')} style={{ fontSize: 22, color: 'var(--muted)', padding: '0 4px' }}>
+        <button aria-label="Back" onClick={() => navigate('/matches')} style={{ fontSize: 22, color: 'var(--muted)', padding: '0 4px' }}>
           &#8249;
         </button>
         <button
           className="chat-head__person"
-          aria-label={other ? `view ${other.name}'s profile` : 'view profile'}
+          aria-label={other ? `View ${other.name}'s profile` : 'View profile'}
           disabled={!other}
           onClick={() => setShowProfile(true)}
         >
@@ -101,8 +101,8 @@ export default function Chat() {
           <div className="empty"><div className="spin" /></div>
         ) : msgs.length === 0 ? (
           <div className="empty">
-            <h2>it's a lik. now what.</h2>
-            <p>open strong. ask about their thermostat stance. mention the quiz answer you share. anything beats hey.</p>
+            <h2>It's a lik. Now what?</h2>
+            <p>Open strong. Ask about their thermostat stance. Mention the quiz answer you share. Anything beats hey.</p>
           </div>
         ) : (
           msgs.map((m) => (
@@ -129,11 +129,11 @@ export default function Chat() {
           className="input"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder={other ? `message ${other.name}` : 'message'}
+          placeholder={other ? `Message ${other.name}` : 'Message'}
           maxLength={2000}
         />
         <button className="chat-send" type="submit" disabled={!draft.trim() || sending}>
-          send
+          Send
         </button>
       </form>
     </div>

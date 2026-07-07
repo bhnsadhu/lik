@@ -30,7 +30,7 @@ export default function Auth() {
     setErr('')
     const clean = validEmail(email)
     if (!clean) {
-      setErr('lik is for uiuc students. use your illinois.edu email')
+      setErr('lik is for UIUC students. Use your illinois.edu email')
       return
     }
     setBusy(true)
@@ -40,7 +40,7 @@ export default function Auth() {
     })
     setBusy(false)
     if (error) {
-      setErr(error.message.toLowerCase().replace(/\.$/, ''))
+      setErr(error.message.replace(/\.$/, ''))
       return
     }
     setStage('code')
@@ -58,7 +58,7 @@ export default function Auth() {
       email: validEmail(email),
       options: { shouldCreateUser: true, emailRedirectTo: undefined },
     })
-    if (error) setErr(error.message.toLowerCase().replace(/\.$/, ''))
+    if (error) setErr(error.message.replace(/\.$/, ''))
   }
 
   async function verify(fullCode) {
@@ -71,7 +71,7 @@ export default function Auth() {
     })
     setBusy(false)
     if (error) {
-      setErr('that code did not work. check it and try again')
+      setErr('That code did not work. Check it and try again')
       setCode(Array(CODE_LEN).fill(''))
       boxRefs.current[0]?.focus()
     }
@@ -122,16 +122,16 @@ export default function Auth() {
           <Wordmark size="clamp(88px, 30vw, 140px)" style={{ display: 'block' }} />
         </h1>
         <p className="overline" style={{ color: 'var(--muted)', margin: '14px 0 10px' }}>
-          a friend who happens to split rent
+          A friend who happens to split rent
         </p>
         <p style={{ fontSize: 19, fontWeight: 500, margin: '0 0 36px', color: 'var(--paper)' }}>
-          find a place you lik.<br />with someone you lik.
+          Find a place you lik.<br />With someone you lik.
         </p>
 
         {stage === 'email' && (
           <form onSubmit={sendCode}>
             <div className="field">
-              <label className="field-label" htmlFor="email">illinois email</label>
+              <label className="field-label" htmlFor="email">Illinois Email</label>
               <input
                 id="email"
                 className="input"
@@ -150,19 +150,19 @@ export default function Auth() {
             </div>
             {err && <p className="err">{err}</p>}
             <button className="btn btn-volt" type="submit" disabled={busy || !email.trim()} style={{ marginTop: 8 }}>
-              {busy ? 'sending...' : 'send my code'}
+              {busy ? 'Sending...' : 'Send My Code'}
             </button>
             <p style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', marginTop: 18 }}>
-              illinois students only. no exceptions.
+              Illinois students only. No exceptions.
             </p>
           </form>
         )}
 
         {stage === 'code' && (
           <div>
-            <h2 style={{ fontSize: 24, marginBottom: 8 }}>check your inbox</h2>
+            <h2 style={{ fontSize: 24, marginBottom: 8 }}>Check your inbox</h2>
             <p style={{ color: 'var(--muted)', fontSize: 14.5, marginBottom: 16 }}>
-              we sent an {CODE_LEN} digit code to {email.trim().toLowerCase()}
+              We sent an {CODE_LEN}-digit code to {email.trim().toLowerCase()}
             </p>
             <div className="otp-row">
               {code.map((c, i) => (
@@ -199,7 +199,7 @@ export default function Auth() {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 12l6 6L20 6" />
                     </svg>
-                    sent
+                    Sent
                   </motion.span>
                 ) : (
                   <motion.span
@@ -210,7 +210,7 @@ export default function Auth() {
                     exit={{ opacity: 0, y: 4 }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
                   >
-                    resend code
+                    Resend Code
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -226,7 +226,7 @@ export default function Auth() {
                 clearTimeout(resendTimerRef.current)
               }}
             >
-              wrong email? go back
+              Wrong email? Go back
             </button>
           </div>
         )}
