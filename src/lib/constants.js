@@ -238,6 +238,20 @@ export const DEALBREAKERS = [
 
 export const DB_BY_KEY = Object.fromEntries(DEALBREAKERS.map((d) => [d.key, d]))
 
+// User-written hard limits live in the same dealbreakers array as the
+// presets, namespaced so they can never collide with a preset key.
+export const CUSTOM_DB_PREFIX = 'custom:'
+
+// Display label for any stored dealbreaker entry: preset label, the text of
+// a custom entry, or null for keys this build doesn't know.
+export function dbLabel(key) {
+  if (DB_BY_KEY[key]) return DB_BY_KEY[key].label
+  if (typeof key === 'string' && key.startsWith(CUSTOM_DB_PREFIX)) {
+    return key.slice(CUSTOM_DB_PREFIX.length)
+  }
+  return null
+}
+
 export const BIO_PLACEHOLDERS = [
   'CS major who actually does the dishes',
   'I will fight you for the window side',

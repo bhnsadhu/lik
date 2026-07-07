@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
 import { avatarUrl } from '../lib/avatar'
-import { DB_BY_KEY } from '../lib/constants'
+import { dbLabel } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import PersonSheet from '../components/PersonSheet'
@@ -112,13 +112,15 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <span className="fit-badge">{fit.score}% fit</span>
           {friend && <span className="chip-tag chip-tag--sky">{friend}</span>}
-          {(person.dealbreakers || []).slice(0, 2).map((k) =>
-            DB_BY_KEY[k] ? (
-              <span key={k} className="chip-tag">
-                {DB_BY_KEY[k].label}
+          {(person.dealbreakers || [])
+            .map((k) => dbLabel(k))
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((label) => (
+              <span key={label} className="chip-tag">
+                {label}
               </span>
-            ) : null
-          )}
+            ))}
         </div>
       </div>
     </motion.div>

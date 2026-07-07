@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { DB_BY_KEY } from '../lib/constants'
+import { dbLabel } from '../lib/constants'
 
 // Full profile bottom sheet: photos, bio, shared traits, conflicts, hard
 // limits, logistics. Used by the feed's card detail and the chat header.
@@ -53,9 +53,10 @@ export default function PersonSheet({ person, fit, friend, onClose }) {
           <>
             <p className="section-label">Their hard limits</p>
             <div className="chip-wrap">
-              {person.dealbreakers.map((k) =>
-                DB_BY_KEY[k] ? <span key={k} className="chip-tag chip-tag--outline">{DB_BY_KEY[k].label}</span> : null
-              )}
+              {person.dealbreakers.map((k) => {
+                const label = dbLabel(k)
+                return label ? <span key={k} className="chip-tag chip-tag--outline">{label}</span> : null
+              })}
             </div>
           </>
         )}

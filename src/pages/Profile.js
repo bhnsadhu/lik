@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import { avatarUrl } from '../lib/avatar'
-import { QUIZ, DB_BY_KEY, cap } from '../lib/constants'
+import { QUIZ, dbLabel, cap } from '../lib/constants'
 
 export default function Profile() {
   const { profile, signOut } = useAuth()
@@ -14,7 +14,7 @@ export default function Profile() {
 
   const link = `${window.location.origin}/?ref=${profile.referral_code}`
   const quizDone = Object.keys(profile.quiz || {}).length
-  const limits = (profile.dealbreakers || []).map((k) => DB_BY_KEY[k]?.label).filter(Boolean)
+  const limits = (profile.dealbreakers || []).map((k) => dbLabel(k)).filter(Boolean)
   const photos = profile.photos || []
 
   function onPhotoTap(e) {

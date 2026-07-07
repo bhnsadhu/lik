@@ -1,4 +1,4 @@
-import { QUIZ, DB_BY_KEY } from './constants'
+import { QUIZ, DB_BY_KEY, dbLabel } from './constants'
 
 // Same-gender pools by default, kept symmetric so a like can always be
 // answered: girl<->girl, guy<->guy, nonbinary sees and is seen by everyone.
@@ -63,16 +63,16 @@ export function scoreProfiles(me, them) {
   score -= conflicts.length * 17
   if (conflicts.length === 0 && myDb.length > 0 && theirDb.length > 0) score += 5
 
-  const sharedLimits = myDb.filter((k) => theirDb.includes(k) && DB_BY_KEY[k])
+  const sharedLimits = myDb.filter((k) => theirDb.includes(k) && dbLabel(k))
   score += Math.min(sharedLimits.length * 2, 6)
 
   return {
     score: Math.max(8, Math.min(99, Math.round(score))),
     shared,
-    sharedLimits: sharedLimits.map((k) => DB_BY_KEY[k].label),
+    sharedLimits: sharedLimits.map((k) => dbLabel(k)),
     conflicts: conflicts.map((c) => ({
-      mine: DB_BY_KEY[c.mine].label,
-      theirs: DB_BY_KEY[c.theirs].label,
+      mine: dbLabel(c.mine),
+      theirs: dbLabel(c.theirs),
     })),
   }
 }
