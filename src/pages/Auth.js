@@ -170,6 +170,7 @@ export default function Auth() {
                   key={i}
                   ref={(el) => (boxRefs.current[i] = el)}
                   className="otp-box"
+                  aria-label={`Digit ${i + 1}`}
                   inputMode="numeric"
                   autoComplete={i === 0 ? 'one-time-code' : 'off'}
                   value={c}

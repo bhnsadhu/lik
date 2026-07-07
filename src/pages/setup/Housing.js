@@ -54,6 +54,12 @@ export default function Housing() {
         <span style={{ color: 'var(--muted)', fontSize: 14.5 }}>Off campus · Private lease · Champaign or Urbana</span>
       </button>
 
+      {editing && profile?.housing_type && (
+        <p style={{ color: 'var(--muted)', fontSize: 12.5, marginTop: 4 }}>
+          Switching resets your dorm, area, and budget picks.
+        </p>
+      )}
+
       {err && <p className="err">{err}</p>}
     </div>
   )

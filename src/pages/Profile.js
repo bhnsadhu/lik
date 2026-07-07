@@ -46,7 +46,7 @@ export default function Profile() {
     { label: 'Living quiz', value: `${quizDone} of ${QUIZ.length} answered`, to: '/setup/quiz?edit=1' },
     { label: 'Hard limits', value: limits.length ? limits.join(' · ') : 'None set', to: '/setup/limits?edit=1' },
     {
-      label: 'Logistics',
+      label: 'Preferences',
       value:
         profile.housing_type === 'dorm'
           ? `${profile.move_in || ''} · ${(profile.dorm_prefs || []).length} dorms`
