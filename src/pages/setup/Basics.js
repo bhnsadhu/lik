@@ -161,7 +161,7 @@ export default function Basics() {
             onChange={(e) => { setMajor(e.target.value); setShowMajors(true) }}
             onFocus={() => setShowMajors(true)}
             onBlur={() => { setTimeout(() => setShowMajors(false), 150); touch('major') }}
-            placeholder="Undeclared counts"
+            placeholder="Start typing · Undeclared counts"
           />
           {showMajors && majorMatches.length > 0 && (
             <div className="major-dropdown">
