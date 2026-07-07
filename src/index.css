@@ -297,6 +297,27 @@ a {
   flex: 1;
 }
 
+/* a symbol anchored inside the input's left edge, never part of the value */
+.input-affix {
+  position: relative;
+  min-width: 0;
+}
+
+.input-affix__symbol {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.input-affix .input {
+  width: 100%;
+  padding-left: 32px;
+}
+
 .major-dropdown {
   position: absolute;
   top: 100%;

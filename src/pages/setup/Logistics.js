@@ -151,26 +151,32 @@ export default function Logistics() {
           <div className="field">
             <span className="field-label">Monthly Budget (USD)</span>
             <div className="input-row">
-              <input
-                className={`input ${minErrOn ? 'is-err' : ''}`}
-                type="number"
-                inputMode="numeric"
-                placeholder="Min · 500"
-                value={budgetMin}
-                onChange={(e) => setBudgetMin(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, min: true }))}
-                aria-label="Min budget"
-              />
-              <input
-                className={`input ${maxErrOn ? 'is-err' : ''}`}
-                type="number"
-                inputMode="numeric"
-                placeholder="Max · 900"
-                value={budgetMax}
-                onChange={(e) => setBudgetMax(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, max: true }))}
-                aria-label="Max budget"
-              />
+              <div className="input-affix">
+                <span className="input-affix__symbol" aria-hidden="true">$</span>
+                <input
+                  className={`input ${minErrOn ? 'is-err' : ''}`}
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Min"
+                  value={budgetMin}
+                  onChange={(e) => setBudgetMin(e.target.value)}
+                  onBlur={() => setTouched((t) => ({ ...t, min: true }))}
+                  aria-label="Min budget in dollars"
+                />
+              </div>
+              <div className="input-affix">
+                <span className="input-affix__symbol" aria-hidden="true">$</span>
+                <input
+                  className={`input ${maxErrOn ? 'is-err' : ''}`}
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Max"
+                  value={budgetMax}
+                  onChange={(e) => setBudgetMax(e.target.value)}
+                  onBlur={() => setTouched((t) => ({ ...t, max: true }))}
+                  aria-label="Max budget in dollars"
+                />
+              </div>
             </div>
             {budgetErr && <p className="field-err">{budgetErr}</p>}
           </div>
