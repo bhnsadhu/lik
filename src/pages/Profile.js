@@ -124,6 +124,9 @@ export default function Profile() {
       >
         Sign Out
       </button>
+      <button className="btn-text" style={{ display: 'block', marginTop: 2 }} onClick={() => navigate('/privacy')}>
+        Privacy Policy
+      </button>
 
       <BottomNav />
     </div>

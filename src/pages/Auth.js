@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { WHITELIST } from '../lib/constants'
@@ -154,6 +155,11 @@ export default function Auth() {
             </button>
             <p style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', marginTop: 18 }}>
               Illinois students only. No exceptions.
+            </p>
+            <p style={{ textAlign: 'center', marginTop: 6 }}>
+              <Link to="/privacy" style={{ color: 'var(--muted)', fontSize: 13, textDecoration: 'underline' }}>
+                Privacy Policy
+              </Link>
             </p>
           </form>
         )}

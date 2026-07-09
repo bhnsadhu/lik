@@ -13,6 +13,7 @@ import Feed from './pages/Feed'
 import Matches from './pages/Matches'
 import Chat from './pages/Chat'
 import Profile from './pages/Profile'
+import Privacy from './pages/Privacy'
 
 // capture ?ref=code before anything else so it survives the auth redirect
 function useReferralCapture() {
@@ -78,6 +79,7 @@ export default function App() {
           )
         }
       />
+      <Route path="/privacy" element={<Privacy />} />
       <Route path="/setup/housing" element={<Gate><Housing /></Gate>} />
       <Route path="/setup/basics" element={<Gate><Basics /></Gate>} />
       <Route path="/setup/photos" element={<Gate><Photos /></Gate>} />
