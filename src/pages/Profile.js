@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -15,6 +15,13 @@ export default function Profile() {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [deleteErr, setDeleteErr] = useState('')
+  const confirmRef = useRef(null)
+
+  // the box opens at the very bottom of the page, where the fixed nav can
+  // sit on top of it - a tap meant for delete would hit the nav instead
+  useEffect(() => {
+    if (confirmingDelete) confirmRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [confirmingDelete])
 
   async function deleteAccount() {
     setDeleting(true)
@@ -164,7 +171,7 @@ export default function Profile() {
           Delete My Account
         </button>
       ) : (
-        <div style={{ marginTop: 14, padding: 16, border: '1px solid var(--coral)', borderRadius: 'var(--r-s)' }}>
+        <div ref={confirmRef} style={{ marginTop: 14, padding: 16, border: '1px solid var(--coral)', borderRadius: 'var(--r-s)' }}>
           <p style={{ fontSize: 14.5, fontWeight: 600, marginBottom: 6 }}>Delete your account for good?</p>
           <p style={{ color: 'var(--muted)', fontSize: 13.5, marginBottom: 14 }}>
             Your profile, photos, swipes, matches, and every message go with it. Immediately, permanently, no undo.
