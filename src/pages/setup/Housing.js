@@ -14,13 +14,16 @@ export default function Housing() {
     try {
       // switching pools resets pool-specific preferences
       const fields = { housing_type: type }
-      if (profile?.housing_type && profile.housing_type !== type) {
+      const switched = profile?.housing_type && profile.housing_type !== type
+      if (switched) {
         fields.dorm_prefs = []
         fields.areas = []
         fields.budget_min = null
         fields.budget_max = null
       }
-      await save(fields)
+      // a pool switch while editing wiped those picks - go straight to
+      // preferences to make new ones instead of back to the profile
+      await save(fields, switched ? { after: '/setup/logistics?edit=1' } : undefined)
     } catch {
       setErr('Could not save. Try again')
       setBusy(false)

@@ -4,14 +4,16 @@ import { supabase } from '../../lib/supabase'
 import { STEPS } from '../../lib/onboarding'
 
 // Saves fields for the current setup step, then advances the flow.
-// When the user is editing from their profile (?edit=1), save returns them there.
+// When the user is editing from their profile (?edit=1), save returns them
+// there - unless the step passes `after`, a path that must be visited next
+// (e.g. re-picking preferences right after a housing pool switch).
 export default function useSetupSave(step) {
   const { user, profile, setProfile } = useAuth()
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const editing = params.get('edit') === '1' && profile?.onboarding_step === 'done'
 
-  async function save(fields) {
+  async function save(fields, { after } = {}) {
     const idx = STEPS.indexOf(step)
     const nextStep = editing
       ? 'done'
@@ -39,7 +41,7 @@ export default function useSetupSave(step) {
     setProfile(data)
 
     if (editing) {
-      navigate('/profile')
+      navigate(after || '/profile')
     } else if (nextStep === 'done') {
       localStorage.setItem('lik-show-referral', '1')
       navigate('/feed')
