@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
 import { avatarUrl } from '../lib/avatar'
+import { SHARE_ORIGIN } from '../lib/site'
 import { dbLabel, REVIEWER_EMAIL } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
@@ -174,7 +175,7 @@ function MatchTakeover({ me, them, matchId, onClose }) {
 
 function ReferralPrompt({ profile, onClose }) {
   const [copied, setCopied] = useState(false)
-  const link = `${window.location.origin}/?ref=${profile.referral_code}`
+  const link = `${SHARE_ORIGIN}/?ref=${profile.referral_code}`
 
   async function share() {
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {

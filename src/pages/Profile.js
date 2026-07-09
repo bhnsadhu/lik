@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import { avatarUrl } from '../lib/avatar'
+import { SHARE_ORIGIN } from '../lib/site'
 import { QUIZ, dbLabel, cap } from '../lib/constants'
 
 export default function Profile() {
@@ -46,7 +47,7 @@ export default function Profile() {
     }
   }
 
-  const link = `${window.location.origin}/?ref=${profile.referral_code}`
+  const link = `${SHARE_ORIGIN}/?ref=${profile.referral_code}`
   const quizDone = Object.keys(profile.quiz || {}).length
   const limits = (profile.dealbreakers || []).map((k) => dbLabel(k)).filter(Boolean)
   const photos = profile.photos || []
