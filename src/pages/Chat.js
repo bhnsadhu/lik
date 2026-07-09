@@ -25,6 +25,14 @@ export default function Chat() {
     })
   }, [])
 
+  // Full refetch, merged so nothing already on screen ever disappears.
+  const loadMessages = useCallback(async () => {
+    const { data } = await supabase.from('messages').select('*').eq('match_id', matchId).order('created_at')
+    if (data) {
+      setMsgs((cur) => [...data, ...(cur || []).filter((m) => !data.some((d) => d.id === m.id))])
+    }
+  }, [matchId])
+
   useEffect(() => {
     ;(async () => {
       const { data: match } = await supabase.from('matches').select('*').eq('id', matchId).maybeSingle()
@@ -33,14 +41,14 @@ export default function Chat() {
         return
       }
       const otherId = match.user_a === user.id ? match.user_b : match.user_a
-      const [{ data: person }, { data: messages }] = await Promise.all([
+      const [{ data: person }] = await Promise.all([
         supabase.from('profiles').select('*').eq('id', otherId).single(),
-        supabase.from('messages').select('*').eq('match_id', matchId).order('created_at'),
+        loadMessages(),
       ])
       setOther(person)
-      setMsgs(messages || [])
+      setMsgs((cur) => cur || [])
     })()
-  }, [matchId, user.id, navigate])
+  }, [matchId, user.id, navigate, loadMessages])
 
   useEffect(() => {
     const channel = supabase
@@ -50,11 +58,15 @@ export default function Chat() {
         { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${matchId}` },
         (payload) => appendUnique(payload.new)
       )
-      .subscribe()
+      // anything sent between the initial fetch and the channel going live
+      // would otherwise be lost until the chat is reopened
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') loadMessages()
+      })
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [matchId, appendUnique])
+  }, [matchId, appendUnique, loadMessages])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
