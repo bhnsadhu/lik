@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
@@ -7,10 +8,36 @@ import { avatarUrl } from '../lib/avatar'
 import { QUIZ, dbLabel, cap } from '../lib/constants'
 
 export default function Profile() {
-  const { profile, signOut } = useAuth()
+  const { user, profile, signOut } = useAuth()
   const navigate = useNavigate()
   const [copied, setCopied] = useState(false)
   const [photoIdx, setPhotoIdx] = useState(0)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteErr, setDeleteErr] = useState('')
+
+  async function deleteAccount() {
+    setDeleting(true)
+    setDeleteErr('')
+    try {
+      // photos first, while the session still exists: uploaded card photos
+      // and cropped avatars all live under the user's own storage folder
+      const { data: files } = await supabase.storage.from('photos').list(user.id, { limit: 100 })
+      if (files?.length) {
+        await supabase.storage.from('photos').remove(files.map((f) => `${user.id}/${f.name}`))
+      }
+      // deletes the auth user; profile, swipes, matches, messages, and
+      // referrals all cascade from it
+      const { error } = await supabase.rpc('delete_account')
+      if (error) throw error
+      // local scope: the server session is already gone with the user
+      await supabase.auth.signOut({ scope: 'local' })
+      navigate('/')
+    } catch {
+      setDeleteErr('Something went wrong. Nothing was deleted - try again')
+      setDeleting(false)
+    }
+  }
 
   const link = `${window.location.origin}/?ref=${profile.referral_code}`
   const quizDone = Object.keys(profile.quiz || {}).length
@@ -127,6 +154,43 @@ export default function Profile() {
       <button className="btn-text" style={{ display: 'block', marginTop: 2 }} onClick={() => navigate('/privacy')}>
         Privacy Policy
       </button>
+
+      {!confirmingDelete ? (
+        <button
+          className="btn-text"
+          style={{ display: 'block', marginTop: 2, color: 'var(--coral)' }}
+          onClick={() => setConfirmingDelete(true)}
+        >
+          Delete My Account
+        </button>
+      ) : (
+        <div style={{ marginTop: 14, padding: 16, border: '1px solid var(--coral)', borderRadius: 'var(--r-s)' }}>
+          <p style={{ fontSize: 14.5, fontWeight: 600, marginBottom: 6 }}>Delete your account for good?</p>
+          <p style={{ color: 'var(--muted)', fontSize: 13.5, marginBottom: 14 }}>
+            Your profile, photos, swipes, matches, and every message go with it. Immediately, permanently, no undo.
+          </p>
+          <button
+            className="btn"
+            style={{ background: 'var(--coral)', color: 'var(--ink)' }}
+            disabled={deleting}
+            onClick={deleteAccount}
+          >
+            {deleting ? 'Deleting...' : 'Yes, Delete Everything'}
+          </button>
+          <button
+            className="btn-text"
+            style={{ display: 'block', marginTop: 8 }}
+            disabled={deleting}
+            onClick={() => {
+              setConfirmingDelete(false)
+              setDeleteErr('')
+            }}
+          >
+            Never Mind
+          </button>
+          {deleteErr && <p className="err">{deleteErr}</p>}
+        </div>
+      )}
 
       <BottomNav />
     </div>
