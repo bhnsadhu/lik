@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
 import { avatarUrl } from '../lib/avatar'
-import { dbLabel } from '../lib/constants'
+import { dbLabel, REVIEWER_EMAIL } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import PersonSheet from '../components/PersonSheet'
@@ -262,8 +262,12 @@ export default function Feed() {
     ])
     const seen = new Set((swipes || []).map((s) => s.target))
     const allRefs = refs || []
+    // demo profiles exist only so App Review can complete the loop solo;
+    // real users never see them
+    const isReviewer = user.email === REVIEWER_EMAIL
     const scored = (people || [])
       .filter((p) => !seen.has(p.id))
+      .filter((p) => (isReviewer ? true : !p.is_demo))
       .filter((p) => gendersCompatible(profile.gender, p.gender))
       .map((p) => ({
         person: p,
@@ -273,7 +277,7 @@ export default function Feed() {
       .sort((a, b) => (b.friend ? 12 : 0) + b.fit.score - ((a.friend ? 12 : 0) + a.fit.score))
     setQueue(scored)
     setIdx(0)
-  }, [user.id, profile])
+  }, [user.id, user.email, profile])
 
   useEffect(() => {
     load()

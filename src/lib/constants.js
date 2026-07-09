@@ -1,4 +1,13 @@
+// Owner test accounts: these two addresses may sign in with the normal OTP
+// flow despite not being illinois.edu. Invisible to everyone else - the
+// list gates nothing but the email-format check on the login screen.
 export const WHITELIST = ['bhnsadhu@gmail.com', 'sadhubhanu07@gmail.com']
+
+// App Store review account. This address signs in with a password (set in
+// Supabase, shared privately in App Review notes) instead of an email code,
+// because Apple reviewers can't receive illinois.edu mail. It is also the
+// only account that can see demo profiles in its feed.
+export const REVIEWER_EMAIL = 'applereview@getlik.com'
 
 export const MIN_PHOTOS = 6
 

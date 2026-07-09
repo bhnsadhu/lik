@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
-import { WHITELIST } from '../lib/constants'
+import { WHITELIST, REVIEWER_EMAIL } from '../lib/constants'
 import Wordmark from '../components/Wordmark'
 
 const CODE_LEN = 8
 
 function validEmail(email) {
   const e = email.trim().toLowerCase()
+  if (e === REVIEWER_EMAIL) return e
   if (WHITELIST.includes(e)) return e
   if (/^[^@\s]+@illinois\.edu$/.test(e)) return e
   return null
@@ -17,6 +18,7 @@ function validEmail(email) {
 export default function Auth() {
   const [stage, setStage] = useState('email')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [code, setCode] = useState(Array(CODE_LEN).fill(''))
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -32,6 +34,12 @@ export default function Auth() {
     const clean = validEmail(email)
     if (!clean) {
       setErr('lik is for UIUC students. Use your illinois.edu email')
+      return
+    }
+    // App Review account signs in with a password, not an email code -
+    // reviewers can't receive illinois.edu mail
+    if (clean === REVIEWER_EMAIL) {
+      setStage('password')
       return
     }
     setBusy(true)
@@ -107,6 +115,19 @@ export default function Auth() {
     }
   }
 
+  async function reviewerSignIn(e) {
+    e.preventDefault()
+    setErr('')
+    setBusy(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: REVIEWER_EMAIL,
+      password,
+    })
+    setBusy(false)
+    if (error) setErr('That password did not work')
+    // success: onAuthStateChange routes us
+  }
+
   return (
     <div className="screen screen--bare" style={{ justifyContent: 'center', position: 'relative' }}>
       <div className="glow-field">
@@ -161,6 +182,43 @@ export default function Auth() {
                 Privacy Policy
               </Link>
             </p>
+          </form>
+        )}
+
+        {stage === 'password' && (
+          <form onSubmit={reviewerSignIn}>
+            <h2 style={{ fontSize: 24, marginBottom: 8 }}>Review account</h2>
+            <p style={{ color: 'var(--muted)', fontSize: 14.5, marginBottom: 16 }}>
+              Enter the password from the review notes
+            </p>
+            <div className="field">
+              <label className="field-label" htmlFor="reviewer-password">Password</label>
+              <input
+                id="reviewer-password"
+                className="input"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoFocus
+              />
+            </div>
+            {err && <p className="err">{err}</p>}
+            <button className="btn btn-volt" type="submit" disabled={busy || !password} style={{ marginTop: 8 }}>
+              {busy ? 'Signing In...' : 'Sign In'}
+            </button>
+            <button
+              type="button"
+              className="btn-text"
+              style={{ display: 'block', marginTop: 10 }}
+              onClick={() => {
+                setStage('email')
+                setPassword('')
+                setErr('')
+              }}
+            >
+              Wrong email? Go back
+            </button>
           </form>
         )}
 
