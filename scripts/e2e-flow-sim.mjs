@@ -1,9 +1,22 @@
 // Full-flow logic simulation: walks two synthetic accounts through every
 // onboarding step and the feed/match logic, using the app's real modules.
+// Run from anywhere: node scripts/e2e-flow-sim.mjs
 import assert from 'node:assert/strict'
-import { STEPS, isStepComplete, firstIncompleteStep } from './tmp/onboarding.mjs'
-import { scoreProfiles, gendersCompatible, friendSignal } from './tmp/compatibility.mjs'
-import { QUIZ, MIN_PHOTOS, DEALBREAKERS, dbLabel, CUSTOM_DB_PREFIX } from './tmp/constants.mjs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// src modules are ESM-in-.js (CRA); copy them to .mjs so Node can import them
+const here = dirname(fileURLToPath(import.meta.url))
+mkdirSync(join(here, 'tmp'), { recursive: true })
+for (const f of ['constants', 'onboarding', 'compatibility']) {
+  const src = readFileSync(join(here, '../src/lib', `${f}.js`), 'utf8')
+  writeFileSync(join(here, 'tmp', `${f}.mjs`), src.replace(/from '\.\/constants'/g, "from './constants.mjs'"))
+}
+
+const { STEPS, isStepComplete, firstIncompleteStep } = await import('./tmp/onboarding.mjs')
+const { scoreProfiles, gendersCompatible, friendSignal } = await import('./tmp/compatibility.mjs')
+const { QUIZ, MIN_PHOTOS, DEALBREAKERS, dbLabel, CUSTOM_DB_PREFIX } = await import('./tmp/constants.mjs')
 
 let passed = 0
 function ok(name, fn) {

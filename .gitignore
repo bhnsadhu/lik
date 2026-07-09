@@ -10,3 +10,6 @@ npm-debug.log*
 .vercel
 .env*
 .test-assets/
+
+# generated module copies for scripts/e2e-flow-sim.mjs
+scripts/tmp/
