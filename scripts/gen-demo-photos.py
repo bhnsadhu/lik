@@ -10,9 +10,15 @@ on purpose, never mistakable for a broken asset.
 
     python3 scripts/gen-demo-photos.py [outdir]
 
-Writes <name>-1.png .. <name>-3.png per demo profile at 900x1200 (the 3:4
-the swipe card crops to). The card darkens its lower half behind the name
-block, so every composition keeps its subject in the upper two thirds.
+Writes six frames plus a square avatar per demo profile as WebP into
+public/demo/ by default, so the artwork ships with the app itself. It
+deliberately does NOT live in Supabase storage: those files are owned by the
+demo auth users, and deleting those accounts orphans every URL the profiles
+point at - which is exactly how the demo feed broke once already.
+
+Frames are 720x960 (the 3:4 the swipe card crops to) and avatars 320x320.
+The card darkens its lower half behind the name block, so every composition
+keeps its subject in the upper two thirds.
 """
 import math
 import os
@@ -26,12 +32,22 @@ INK = (16, 13, 28)
 INK_2 = (24, 20, 42)
 PAPER = (250, 246, 234)
 
-# one accent per profile, straight from the night-city palette
+# One accent per profile. The first four are the night-city palette proper;
+# the rest stay in the same family (saturated, mid-to-high value, readable on
+# ink) so a scrolled feed looks varied without leaving the brand.
 PEOPLE = {
     "jordan": (78, 217, 232),   # sky
     "sam": (242, 233, 0),       # volt
     "riley": (255, 61, 166),    # neon
     "casey": (255, 90, 72),     # coral
+    "priya": (255, 176, 32),    # amber
+    "maya": (168, 225, 12),     # lime
+    "andre": (47, 212, 168),    # teal
+    "tomas": (165, 123, 255),   # violet
+    "ava": (255, 111, 145),     # rose
+    "nadia": (127, 200, 255),   # ice
+    "devin": (232, 197, 71),    # gold
+    "marcus": (255, 122, 61),   # flame
 }
 
 
@@ -192,14 +208,20 @@ def bloom(accent):
 VARIANTS = (orbit, bands, aurora, matrix, horizon, bloom)
 
 
+CARD = (720, 960)
+AVATAR = (320, 320)
+
+
 def main():
-    out = sys.argv[1] if len(sys.argv) > 1 else "demo-photos"
+    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "public", "demo"
+    )
     os.makedirs(out, exist_ok=True)
     for name, accent in PEOPLE.items():
         for i, make in enumerate(VARIANTS, start=1):
             img = vignette(grain(make(accent)))
-            path = os.path.join(out, f"{name}-{i}.png")
-            img.save(path, optimize=True)
+            path = os.path.join(out, f"{name}-{i}.webp")
+            img.resize(CARD, Image.LANCZOS).save(path, "WEBP", quality=82, method=6)
             print("wrote", path)
             # square identity crop around the first frame's focal point, for
             # the avatar shown in liks, chat headers and the match takeover
@@ -207,8 +229,8 @@ def main():
                 box = 640
                 cx, cy = W // 2, int(H * 0.36)
                 img.crop((cx - box // 2, cy - box // 2, cx + box // 2, cy + box // 2)) \
-                   .resize((320, 320), Image.LANCZOS) \
-                   .save(os.path.join(out, f"{name}-avatar.png"), optimize=True)
+                   .resize(AVATAR, Image.LANCZOS) \
+                   .save(os.path.join(out, f"{name}-avatar.webp"), "WEBP", quality=88, method=6)
 
 
 if __name__ == "__main__":
