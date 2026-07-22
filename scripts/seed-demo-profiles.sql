@@ -149,14 +149,20 @@ select
   s.slug || '@demo.getlik.com',
   s.name, s.age, s.gender, s.year, s.major, s.housing_type, s.bio, s.caption,
   s.move_in, s.dorm_prefs, s.areas, s.budget_min, s.budget_max, s.dealbreakers, s.quiz,
-  'https://getlik.com/demo/' || s.slug || '-avatar.webp',
+  -- Root-relative on purpose, NOT https://getlik.com/... . Capacitor copies
+  -- build/ into the app bundle, so inside the iOS app these resolve against
+  -- capacitor://localhost and load straight off disk: no network, no CDN, and
+  -- nothing the Vercel firewall can challenge. An <img> that receives a bot
+  -- challenge page just fails to render, and a WKWebView cannot solve one.
+  -- On the web build they resolve against the app's own origin as usual.
+  '/demo/' || s.slug || '-avatar.webp',
   array[
-    'https://getlik.com/demo/' || s.slug || '-1.webp',
-    'https://getlik.com/demo/' || s.slug || '-2.webp',
-    'https://getlik.com/demo/' || s.slug || '-3.webp',
-    'https://getlik.com/demo/' || s.slug || '-4.webp',
-    'https://getlik.com/demo/' || s.slug || '-5.webp',
-    'https://getlik.com/demo/' || s.slug || '-6.webp'
+    '/demo/' || s.slug || '-1.webp',
+    '/demo/' || s.slug || '-2.webp',
+    '/demo/' || s.slug || '-3.webp',
+    '/demo/' || s.slug || '-4.webp',
+    '/demo/' || s.slug || '-5.webp',
+    '/demo/' || s.slug || '-6.webp'
   ],
   true,
   'done'
