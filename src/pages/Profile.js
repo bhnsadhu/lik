@@ -74,18 +74,24 @@ export default function Profile() {
     setTimeout(() => setCopied(false), 1800)
   }
 
+  const placeCount =
+    profile.housing_type === 'dorm' ? (profile.dorm_prefs || []).length : (profile.areas || []).length
+  const placeWord = profile.housing_type === 'dorm' ? 'dorm' : 'area'
+
   const rows = [
     { label: 'Photos', value: `${profile.photos?.length || 0} added`, to: '/setup/photos?edit=1' },
-    { label: 'Basics', value: `${profile.name} · ${profile.year} · ${profile.major}`, to: '/setup/basics?edit=1' },
+    { label: 'Basics', value: [profile.name, profile.year, profile.major].filter(Boolean).join(' · '), to: '/setup/basics?edit=1' },
     { label: 'Housing', value: cap(profile.housing_type), to: '/setup/housing?edit=1' },
     { label: 'Living quiz', value: `${quizDone} of ${QUIZ.length} answered`, to: '/setup/quiz?edit=1' },
     { label: 'Hard limits', value: limits.length ? limits.join(' · ') : 'None set', to: '/setup/limits?edit=1' },
     {
       label: 'Preferences',
+      // built by join so a missing move-in never leaves a dangling separator,
+      // and one dorm never reads as "1 dorms"
       value:
-        profile.housing_type === 'dorm'
-          ? `${profile.move_in || ''} · ${(profile.dorm_prefs || []).length} dorms`
-          : `${profile.move_in || ''} · ${(profile.areas || []).length} areas`,
+        [profile.move_in, `${placeCount} ${placeWord}${placeCount === 1 ? '' : 's'}`]
+          .filter(Boolean)
+          .join(' · '),
       to: '/setup/logistics?edit=1',
     },
   ]

@@ -23,6 +23,7 @@ export default function Auth() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [resendState, setResendState] = useState('idle') // 'idle' | 'sent'
+  const [resending, setResending] = useState(false)
   const boxRefs = useRef([])
   const resendTimerRef = useRef(null)
 
@@ -57,6 +58,10 @@ export default function Auth() {
   }
 
   async function resendCode() {
+    // without this a double tap fires two OTP requests, and the second
+    // invalidates the code from the first
+    if (resending) return
+    setResending(true)
     clearTimeout(resendTimerRef.current)
     setResendState('sent')
     resendTimerRef.current = setTimeout(() => setResendState('idle'), 2000)
@@ -67,6 +72,7 @@ export default function Auth() {
       email: validEmail(email),
       options: { shouldCreateUser: true, emailRedirectTo: undefined },
     })
+    setResending(false)
     if (error) setErr(error.message.replace(/\.$/, ''))
   }
 

@@ -104,7 +104,7 @@ export default function Photos() {
                 aria-label="Remove photo"
                 onClick={() => setPhotos((p) => p.filter((u) => u !== url))}
               >
-                x
+                <span aria-hidden="true">×</span>
               </button>
             </div>
           ) : (

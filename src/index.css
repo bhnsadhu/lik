@@ -61,16 +61,6 @@ h3 {
   line-height: 1.05;
 }
 
-/* poster voice: condensed caps for the moments that shout */
-.shout {
-  font-family: var(--display);
-  font-stretch: 75%;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  line-height: 0.95;
-}
-
 /* spaced caps overline, the eyebrow lockup device under the wordmark */
 .overline {
   font-family: var(--display);
@@ -889,16 +879,6 @@ a {
   height: 22px;
 }
 
-.nav-dot {
-  position: absolute;
-  margin-left: 26px;
-  margin-top: -2px;
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  background: var(--volt);
-}
-
 /* ---------- avatar cropper ---------- */
 
 .cropper {
@@ -1278,12 +1258,6 @@ a {
   aspect-ratio: 3/4;
   background: var(--ink-2);
   border: 1px solid var(--line);
-}
-
-.pill-btn-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
 }
 
 .edit-row {

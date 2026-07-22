@@ -20,15 +20,11 @@ const Person = (
   </svg>
 )
 
-export default function BottomNav({ unread }) {
+export default function BottomNav() {
   return (
     <nav className="bottom-nav">
       <NavLink to="/feed">{Cards}<span>Feed</span></NavLink>
-      <NavLink to="/matches">
-        {unread ? <span className="nav-dot" /> : null}
-        {Spark}
-        <span>Liks</span>
-      </NavLink>
+      <NavLink to="/matches">{Spark}<span>Liks</span></NavLink>
       <NavLink to="/profile">{Person}<span>You</span></NavLink>
     </nav>
   )

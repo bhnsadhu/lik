@@ -65,7 +65,7 @@ function Card({ person, fit, friend, top, onSwipe, onOpen, registerFly }) {
       onDragEnd={release}
       initial={top ? false : { scale: 0.95, opacity: 0.7 }}
       animate={top ? { scale: 1, opacity: 1 } : { scale: 0.95, opacity: 0.7 }}
-      onTap={(e, info) => {
+      onTap={(e) => {
         if (top && Math.abs(x.get()) < 8) onPhotoTap(e)
       }}
     >
