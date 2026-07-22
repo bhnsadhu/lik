@@ -177,17 +177,18 @@ on conflict (id) do update set
   profile_pic_url = excluded.profile_pic_url, photos = excluded.photos,
   is_demo = true, onboarding_step = 'done';
 
--- 3. Keep demo rows off real students' devices -------------------------------
--- The feed already filters is_demo client-side, but the old SELECT policy was
--- `true`, so every real user's client still downloaded the demo rows. This
--- makes the server refuse to send them to anyone but the review account.
-drop policy if exists "profiles readable by authed" on profiles;
-create policy "profiles readable by authed" on profiles
-  for select using (
-    not coalesce(is_demo, false)
-    or id = auth.uid()
-    or coalesce(auth.jwt() ->> 'email', '') = 'applereview@getlik.com'
-  );
+-- 3. This file no longer touches the SELECT policy ---------------------------
+-- It used to re-tighten the demo-visibility RLS policy here, which silently
+-- undid the "open demo profiles for testing" decision every time the seed was
+-- run - the exact bug that made demo profiles vanish from the feed. Visibility
+-- is now owned in ONE place so the two can't drift:
+--
+--   testing (now): SHOW_DEMO_PROFILES_TO_EVERYONE=true  + policy `using (true)`
+--   launch:        SHOW_DEMO_PROFILES_TO_EVERYONE=false + reviewer-only policy
+--
+-- Change both together (see the flag in src/lib/constants.js and the restore
+-- SQL in the reopen_demo_profiles_for_testing migration). Seeding profiles and
+-- deciding who can see them are separate concerns; this file only seeds.
 
 commit;
 
