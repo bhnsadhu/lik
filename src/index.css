@@ -500,7 +500,10 @@ a {
 .deck {
   position: relative;
   flex: 1;
-  min-height: 480px;
+  /* a flat 480px floor overflowed a 667pt iPhone SE once the header, the
+     action row and the bottom nav were accounted for, pushing pass/lik below
+     the fold on the app's main screen. Tall phones still grow via flex. */
+  min-height: min(480px, 62dvh);
 }
 
 .person-card {
