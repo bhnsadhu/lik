@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
 import { avatarUrl } from '../lib/avatar'
 import { SHARE_ORIGIN } from '../lib/site'
-import { dbLabel, REVIEWER_EMAIL } from '../lib/constants'
+import { dbLabel, REVIEWER_EMAIL, SHOW_DEMO_PROFILES_TO_EVERYONE } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import PersonSheet from '../components/PersonSheet'
@@ -282,12 +282,13 @@ export default function Feed() {
     const { data: people } = peopleRes
     const seen = new Set((swipes || []).map((s) => s.target))
     const allRefs = refs || []
-    // demo profiles exist only so App Review can complete the loop solo;
-    // real users never see them
-    const isReviewer = user.email === REVIEWER_EMAIL
+    // demo profiles exist so App Review can complete the loop solo. They are
+    // currently open to everyone for testing - see SHOW_DEMO_PROFILES_TO_EVERYONE,
+    // which must go back to false before public launch.
+    const canSeeDemos = SHOW_DEMO_PROFILES_TO_EVERYONE || user.email === REVIEWER_EMAIL
     const scored = (people || [])
       .filter((p) => !seen.has(p.id))
-      .filter((p) => (isReviewer ? true : !p.is_demo))
+      .filter((p) => (canSeeDemos ? true : !p.is_demo))
       .filter((p) => gendersCompatible(profile.gender, p.gender))
       .map((p) => ({
         person: p,

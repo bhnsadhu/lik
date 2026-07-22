@@ -9,6 +9,20 @@ export const WHITELIST = ['bhnsadhu@gmail.com', 'sadhubhanu07@gmail.com']
 // only account that can see demo profiles in its feed.
 export const REVIEWER_EMAIL = 'applereview@getlik.com'
 
+// DECIDE BEFORE PUBLIC LAUNCH.
+//
+// true  - every signed-in account sees the demo profiles. This is on so the
+//         team can test swipe -> match -> chat from their own accounts
+//         instead of having to sign in as the review account.
+// false - only REVIEWER_EMAIL sees them, which is what real students must get.
+//
+// Shipping this as true to a public audience means real UIUC students would
+// find profiles of people who do not exist, and liking one instantly "matches"
+// them via the handle_demo_swipe trigger. Flip to false before launch, and
+// re-tighten the matching row-level security policy on profiles (see
+// scripts/seed-demo-profiles.sql) - both gates have to move together.
+export const SHOW_DEMO_PROFILES_TO_EVERYONE = true
+
 export const MIN_PHOTOS = 6
 
 export const YEARS = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Grad student']

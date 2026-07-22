@@ -92,6 +92,26 @@ values ('3c9e970a-8ee1-48a8-984e-b7024406bcd1', 'applereview@getlik.com', 'housi
 on conflict (id) do update set onboarding_step = 'housing';
 ```
 
+## Open item: demo profiles are currently visible to everyone
+
+`SHOW_DEMO_PROFILES_TO_EVERYONE` in `src/lib/constants.js` is `true`, and
+the row-level security policy on `profiles` is correspondingly open, so
+any signed-in account sees the demo profiles. This is deliberate — it
+lets the team test swipe, match and chat from their own accounts instead
+of signing in as the review account.
+
+It is fine for App Review (the reviewer is meant to see them). It is
+**not** fine for a public launch: real UIUC students would find profiles
+of people who do not exist, and liking one would instantly "match" them
+through the `handle_demo_swipe` trigger.
+
+Both gates move together:
+
+1. Set `SHOW_DEMO_PROFILES_TO_EVERYONE = false`.
+2. Restore the reviewer-only RLS predicate (the SQL is in the
+   `open_demo_profiles_for_testing` migration comment, and in
+   `scripts/seed-demo-profiles.sql`).
+
 ## Before every submission
 
 - [ ] **Supabase project must not be paused.** The project is on the
@@ -104,6 +124,9 @@ on conflict (id) do update set onboarding_step = 'housing';
       the day of submission.
 - [ ] `select count(*) from profiles where is_demo` returns 12, and the
       review account has a `profiles` row.
+- [ ] Decide on `SHOW_DEMO_PROFILES_TO_EVERYONE` (see the open item
+      above). It must be `false`, with the RLS policy re-tightened,
+      before real students are let in.
 - [ ] Reviewer password from `applereview@getlik.com` is pasted into the
       App Store Connect review notes.
 - [ ] App name in App Store Connect matches `CFBundleDisplayName` in
