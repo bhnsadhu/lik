@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import { STEPS, firstIncompleteStep } from './lib/onboarding'
+import { LoadError } from './components/EmptyState'
 import Auth from './pages/Auth'
 import Housing from './pages/setup/Housing'
 import Basics from './pages/setup/Basics'
@@ -24,13 +25,42 @@ function useReferralCapture() {
   }, [location.search])
 }
 
+// Signed in, but the profile behind the session could not be read. Without
+// this the app sat on a spinner forever whenever the backend was unreachable.
+function ProfileUnavailable() {
+  const { profileError, profileRetrying, retryProfile, signOut } = useAuth()
+  const navigate = useNavigate()
+
+  async function out() {
+    await signOut()
+    navigate('/', { replace: true })
+  }
+
+  return (
+    <div className="screen screen--bare" style={{ justifyContent: 'center' }}>
+      <LoadError
+        title={profileError ? "Can't reach lik right now" : "We couldn't open your profile"}
+        message={
+          profileError
+            ? 'Your profile is safe. Check your connection and give it another go.'
+            : 'Nothing is lost. Signing in again rebuilds it.'
+        }
+        onRetry={retryProfile}
+        retrying={profileRetrying}
+        secondaryLabel="Sign Out"
+        onSecondary={out}
+      />
+    </div>
+  )
+}
+
 function Gate({ children }) {
   const { session, profile, loading } = useAuth()
   const location = useLocation()
 
   if (loading) return <div className="center-load"><div className="spin" /></div>
   if (!session) return <Navigate to="/" replace />
-  if (!profile) return <div className="center-load"><div className="spin" /></div>
+  if (!profile) return <ProfileUnavailable />
 
   const done = profile.onboarding_step === 'done'
   // derived from real profile data, not the raw pointer, so it self-corrects
@@ -74,6 +104,10 @@ export default function App() {
               }
               replace
             />
+          ) : session ? (
+            // signed in but the profile never loaded: show why, not the
+            // login screen, which would look like the session was dropped
+            <ProfileUnavailable />
           ) : (
             <Auth />
           )

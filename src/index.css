@@ -1330,6 +1330,31 @@ a {
   max-width: 280px;
 }
 
+/* one mark for every kind of nothing, so an empty feed, an empty liks list
+   and a failed load all read as the same deliberate screen */
+.empty-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.empty-mark svg {
+  width: 26px;
+  height: 26px;
+}
+
+.empty-mark--alert {
+  color: var(--coral);
+  border-color: rgba(255, 90, 72, 0.4);
+}
+
 /* ---------- misc ---------- */
 
 .spin {
