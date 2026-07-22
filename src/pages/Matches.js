@@ -1,22 +1,36 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, withTimeout } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import { avatarUrl } from '../lib/avatar'
+import EmptyState, { LoadError } from '../components/EmptyState'
 
 export default function Matches() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [rows, setRows] = useState(null)
+  const [loadError, setLoadError] = useState(false)
+  const [retrying, setRetrying] = useState(false)
 
   const load = useCallback(async () => {
-    const { data: matches } = await supabase
-      .from('matches')
-      .select('*')
-      .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
-      .order('created_at', { ascending: false })
+    const { data: matches, error } = await withTimeout(
+      supabase
+        .from('matches')
+        .select('*')
+        .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
+        .order('created_at', { ascending: false })
+    )
+
+    // "no liks yet" and "we couldn't load your liks" are very different things
+    // to be told; never show the first when the second happened
+    if (error) {
+      setLoadError(true)
+      setRows(null)
+      return
+    }
+    setLoadError(false)
 
     if (!matches?.length) {
       setRows([])
@@ -25,15 +39,25 @@ export default function Matches() {
 
     const otherIds = matches.map((m) => (m.user_a === user.id ? m.user_b : m.user_a))
     const matchIds = matches.map((m) => m.id)
-    const [{ data: people }, { data: msgs }] = await Promise.all([
-      supabase.from('profiles').select('id, name, photos, profile_pic_url').in('id', otherIds),
-      supabase
-        .from('messages')
-        .select('match_id, sender, body, created_at')
-        .in('match_id', matchIds)
-        .order('created_at', { ascending: false }),
+    const [peopleRes, msgRes] = await Promise.all([
+      withTimeout(supabase.from('profiles').select('id, name, photos, profile_pic_url').in('id', otherIds)),
+      withTimeout(
+        supabase
+          .from('messages')
+          .select('match_id, sender, body, created_at')
+          .in('match_id', matchIds)
+          .order('created_at', { ascending: false })
+      ),
     ])
 
+    if (peopleRes.error) {
+      setLoadError(true)
+      setRows(null)
+      return
+    }
+
+    const { data: people } = peopleRes
+    const { data: msgs } = msgRes
     const personById = Object.fromEntries((people || []).map((p) => [p.id, p]))
     const lastByMatch = {}
     for (const m of msgs || []) {
@@ -55,6 +79,12 @@ export default function Matches() {
     load()
   }, [load])
 
+  async function retryLoad() {
+    setRetrying(true)
+    await load()
+    setRetrying(false)
+  }
+
   useEffect(() => {
     const channel = supabase
       .channel('matches-page')
@@ -74,13 +104,21 @@ export default function Matches() {
       <h2 className="screen-title">Your liks</h2>
       <p className="screen-sub">Mutual only. Everyone here already said yes to you.</p>
 
-      {!rows ? (
+      {loadError ? (
+        <LoadError
+          title="Can't load your liks right now"
+          message="Nothing has been lost. Check your connection and give it another go."
+          onRetry={retryLoad}
+          retrying={retrying}
+        />
+      ) : !rows ? (
         <div className="empty"><div className="spin" /></div>
       ) : rows.length === 0 ? (
-        <div className="empty">
-          <h2>No liks yet.</h2>
-          <p>Keep swiping. When someone liks you back, they land here and the conversation starts.</p>
-        </div>
+        <EmptyState
+          mark="spark"
+          title="No liks yet."
+          message="Keep swiping. When someone liks you back, they land here and the conversation starts."
+        />
       ) : (
         <div>
           {rows.map((r) => (

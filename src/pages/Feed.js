@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useMotionValue, useTransform, animate } from 'framer-motion'
-import { supabase } from '../lib/supabase'
+import { supabase, withTimeout } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { scoreProfiles, friendSignal, gendersCompatible } from '../lib/compatibility'
 import { avatarUrl } from '../lib/avatar'
@@ -10,6 +10,7 @@ import { dbLabel, REVIEWER_EMAIL } from '../lib/constants'
 import BottomNav from '../components/BottomNav'
 import Wordmark from '../components/Wordmark'
 import PersonSheet from '../components/PersonSheet'
+import EmptyState, { LoadError } from '../components/EmptyState'
 
 const FLY = 1.25
 
@@ -224,6 +225,9 @@ export default function Feed() {
   const [detail, setDetail] = useState(false)
   const [match, setMatch] = useState(null)
   const [showReferral, setShowReferral] = useState(false)
+  const [loadError, setLoadError] = useState(false)
+  const [retrying, setRetrying] = useState(false)
+  const [swipeErr, setSwipeErr] = useState('')
   const busyRef = useRef(false)
   const topFlyRef = useRef(null)
   const registerFly = useCallback((fn) => {
@@ -251,16 +255,31 @@ export default function Feed() {
       }
     }
 
-    const [{ data: swipes }, { data: refs }, { data: people }] = await Promise.all([
-      supabase.from('swipes').select('target').eq('swiper', user.id),
-      supabase.from('referrals').select('referrer, referred'),
-      supabase
-        .from('profiles')
-        .select('*')
-        .eq('housing_type', profile.housing_type)
-        .eq('onboarding_step', 'done')
-        .neq('id', user.id),
+    const [swipeRes, refRes, peopleRes] = await Promise.all([
+      withTimeout(supabase.from('swipes').select('target').eq('swiper', user.id)),
+      withTimeout(supabase.from('referrals').select('referrer, referred')),
+      withTimeout(
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('housing_type', profile.housing_type)
+          .eq('onboarding_step', 'done')
+          .neq('id', user.id)
+      ),
     ])
+
+    // a failed load must never render as "that's everyone" - an empty feed and
+    // an unreachable backend look identical to the user otherwise
+    if (swipeRes.error || refRes.error || peopleRes.error) {
+      setLoadError(true)
+      setQueue(null)
+      return
+    }
+    setLoadError(false)
+
+    const { data: swipes } = swipeRes
+    const { data: refs } = refRes
+    const { data: people } = peopleRes
     const seen = new Set((swipes || []).map((s) => s.target))
     const allRefs = refs || []
     // demo profiles exist only so App Review can complete the loop solo;
@@ -283,6 +302,12 @@ export default function Feed() {
   useEffect(() => {
     load()
   }, [load])
+
+  async function retryLoad() {
+    setRetrying(true)
+    await load()
+    setRetrying(false)
+  }
 
   // one-time invite prompt right after onboarding
   useEffect(() => {
@@ -317,16 +342,24 @@ export default function Feed() {
     busyRef.current = true
     const target = current.person
     setDetail(false)
+    setSwipeErr('')
     setIdx((i) => i + 1)
-    const { error } = await supabase.from('swipes').insert({ swiper: user.id, target: target.id, liked })
-    if (!error && liked) {
+    const { error } = await withTimeout(
+      supabase.from('swipes').insert({ swiper: user.id, target: target.id, liked })
+    )
+    if (error) {
+      // the swipe never landed: put the card back rather than quietly losing
+      // the person off the end of the deck
+      setIdx((i) => Math.max(0, i - 1))
+      setSwipeErr("That didn't save. Check your connection and try again")
+      busyRef.current = false
+      return
+    }
+    if (liked) {
       const [a, b] = [user.id, target.id].sort()
-      const { data: m } = await supabase
-        .from('matches')
-        .select('id')
-        .eq('user_a', a)
-        .eq('user_b', b)
-        .maybeSingle()
+      const { data: m } = await withTimeout(
+        supabase.from('matches').select('id').eq('user_a', a).eq('user_b', b).maybeSingle()
+      )
       if (m) setMatch({ them: target, matchId: m.id })
     }
     busyRef.current = false
@@ -343,18 +376,24 @@ export default function Feed() {
         </span>
       </div>
 
-      {!queue ? (
+      {loadError ? (
+        <LoadError
+          message="Your feed is still here. Check your connection and give it another go."
+          onRetry={retryLoad}
+          retrying={retrying}
+        />
+      ) : !queue ? (
         <div className="empty"><div className="spin" /></div>
       ) : empty ? (
-        <div className="empty">
-          <h2>That's everyone. For now.</h2>
-          <p>
-            New people join every day, especially before move-in. Bring a friend and grow your own pool.
-          </p>
+        <EmptyState
+          mark="deck"
+          title="That's everyone. For now."
+          message="New people join every day, especially before move-in. Bring a friend and grow your own pool."
+        >
           <button className="btn btn-line" style={{ marginTop: 22, width: 'auto', padding: '13px 24px' }} onClick={() => setShowReferral(true)}>
             Invite a Friend
           </button>
-        </div>
+        </EmptyState>
       ) : (
         <>
           <div className="deck" style={{ marginTop: 14 }}>
@@ -390,6 +429,7 @@ export default function Feed() {
               lik
             </button>
           </div>
+          {swipeErr && <p className="err" style={{ textAlign: 'center', marginTop: 0 }}>{swipeErr}</p>}
         </>
       )}
 
