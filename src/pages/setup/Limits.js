@@ -136,7 +136,7 @@ export default function Limits() {
       {err && <p className="err">{err}</p>}
       <div style={{ flex: 1 }} />
       <button className="btn btn-volt" disabled={busy} onClick={next}>
-        {busy ? 'Saving...' : editing ? 'Save' : picked.length ? 'Next' : 'No Hard Limits · Next'}
+        {busy ? 'Saving...' : editing ? 'Save' : 'Done · Show Me People'}
       </button>
     </div>
   )

@@ -207,7 +207,7 @@ export default function Logistics() {
         disabled={busy}
         onClick={onNextTap}
       >
-        {busy ? 'Saving...' : editing ? 'Save' : 'Done · Show Me People'}
+        {busy ? 'Saving...' : editing ? 'Save' : 'Next'}
       </button>
     </div>
   )
