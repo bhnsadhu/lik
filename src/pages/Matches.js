@@ -8,11 +8,12 @@ import { avatarUrl } from '../lib/avatar'
 import EmptyState, { LoadError } from '../components/EmptyState'
 
 export default function Matches() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const navigate = useNavigate()
   const [rows, setRows] = useState(null)
   const [loadError, setLoadError] = useState(false)
   const [retrying, setRetrying] = useState(false)
+  const myHousing = profile?.housing_type
 
   const load = useCallback(async () => {
     const { data: matches, error } = await withTimeout(
@@ -40,7 +41,7 @@ export default function Matches() {
     const otherIds = matches.map((m) => (m.user_a === user.id ? m.user_b : m.user_a))
     const matchIds = matches.map((m) => m.id)
     const [peopleRes, msgRes] = await Promise.all([
-      withTimeout(supabase.from('profiles').select('id, name, photos, profile_pic_url').in('id', otherIds)),
+      withTimeout(supabase.from('profiles').select('id, name, photos, profile_pic_url, housing_type').in('id', otherIds)),
       withTimeout(
         supabase
           .from('messages')
@@ -71,9 +72,15 @@ export default function Matches() {
           person: personById[m.user_a === user.id ? m.user_b : m.user_a],
           last: lastByMatch[m.id] || null,
         }))
-        .filter((r) => r.person)
+        // Display filter only, never a delete: a match shows if and only if
+        // both people currently share a housing type. A cross-pool match (one
+        // side switched dorm<->apartment) disappears from the list but keeps
+        // all its messages, and returns untouched the moment the types line up
+        // again. Because myHousing is a load dependency, switching pools
+        // re-runs this and the list re-filters on its own.
+        .filter((r) => r.person && r.person.housing_type === myHousing)
     )
-  }, [user.id])
+  }, [user.id, myHousing])
 
   useEffect(() => {
     load()

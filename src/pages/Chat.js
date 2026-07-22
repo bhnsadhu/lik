@@ -62,10 +62,24 @@ export default function Chat() {
       setLoadError(true)
       return
     }
+    // Same rule as the liks list: a chat is only reachable while both people
+    // share a housing type. If a pool switch has made this a cross-pool match,
+    // treat it like one that isn't there and fall back to the list - the match
+    // and every message stay in the database, untouched, and the thread
+    // reappears if the housing types line up again. Guard on both being known
+    // so a not-yet-loaded profile never triggers a false redirect.
+    if (
+      profile?.housing_type &&
+      personRes.data.housing_type &&
+      personRes.data.housing_type !== profile.housing_type
+    ) {
+      navigate('/matches', { replace: true })
+      return
+    }
     setLoadError(false)
     setOther(personRes.data)
     setMsgs((cur) => cur || [])
-  }, [matchId, user.id, navigate, loadMessages])
+  }, [matchId, user.id, profile?.housing_type, navigate, loadMessages])
 
   useEffect(() => {
     loadThread()
